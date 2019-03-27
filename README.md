@@ -1,5 +1,8 @@
+# Kozapy
 This directory contains sample code for GWpy [https://gwpy.github.io/docs/stable/index.html].
- 
+
+
+## Contents 
 #### example_plot.py
   This is for GWpy beginers. Basic script to plot timeseries, spectrum and spectrogram. I recommend to check other sample code according to your purpose, they have more convenient functions.
 

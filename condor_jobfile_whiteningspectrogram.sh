@@ -38,8 +38,8 @@ return
 
 name="Whitening_spectrogram"
 
-run="/home/chihiro.kozakai/detchar/analysis/code/gwpy/newyear/run_whitening_spectrogram.sh"
-#run="/home/chihiro.kozakai/detchar/analysis/code/gwpy/newyear/run.sh"
+
+run="$PWD/run_whitening_spectrogram.sh"
 channel=()
 channel+=("K1:PEM-PSL_ACC_PERI_REFCAV_OUT_DQ")
 channel+=("K1:PEM-PSL_ACC_PERI_EXIT_OUT_DQ")

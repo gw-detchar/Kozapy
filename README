@@ -26,6 +26,8 @@ This directory contains sample code for GWpy.
   it executes batch_whitening_spectrogram.py. 
   The job status can be checked by 
   $ condor_q
+  If you want to kill you jobs, 
+  $ condor_rm (job number)
   After the jobs are finished, 
   you can check if they finished successfully by using successcheck.sh. 
   Please replace job number and sdf filename.
@@ -33,3 +35,4 @@ This directory contains sample code for GWpy.
   It will provide a new sdf file for failed job. 
   If the problem is not bug but any accidental one, 
   you can use it for re-submission of jobs.
+  

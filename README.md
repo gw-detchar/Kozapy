@@ -47,5 +47,5 @@ This directory contains sample code for GWpy [https://gwpy.github.io/docs/stable
 #### example_read
 Basic examples for begginer to read data 
 
-#### example_cache
+#### script
 Script for making a cache file.

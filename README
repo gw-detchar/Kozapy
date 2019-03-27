@@ -17,6 +17,7 @@ This directory contains sample code for GWpy.
 
 * batch_whitening_spectrogram.py, condor_jobfile_whiteningspectrogram.sh, run_whitening_spectrogram.sh, successcheck.sh
   They are scripts for batch job of condor. 
+  They make whitened spectrograms.
   Please try it after replacing output directory 
   in condor_jobfile_whiteningspectrogram.sh. 
   To submit jobs, 
@@ -36,3 +37,6 @@ This directory contains sample code for GWpy.
   If the problem is not bug but any accidental one, 
   you can use it for re-submission of jobs.
   
+* batch_coherence.py, condor_jobfile_coherence.sh, run_coherence.sh
+  They make coherence plots in batch job. 
+  Please see the description for batch job for whitening spectrum to learn how to use them. 

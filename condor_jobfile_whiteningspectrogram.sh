@@ -40,6 +40,7 @@ name="Whitening_spectrogram"
 
 
 run="$PWD/run_whitening_spectrogram.sh"
+echo $run
 channel=()
 channel+=("K1:PEM-PSL_ACC_PERI_REFCAV_OUT_DQ")
 channel+=("K1:PEM-PSL_ACC_PERI_EXIT_OUT_DQ")

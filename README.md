@@ -49,3 +49,47 @@ Basic examples for begginer to read data
 
 #### script
 Script for making a cache file.
+
+## Tips for condor
+
+##### ジョブファイルの例
+Universe     = vanilla
+Executable   = [実行ファイルの名前、絶対PATHで書いておくと便利]
+Notify_User  =
+Notification = always
+GetEnv       = true
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+Arguments    = [Executableの後ろに引数やオプションが必要であればここに書く、ないなら空白にしておく]
+Output       = result/out_$(Cluster).$(Process).txt
+Error        = result/err_$(Cluster).$(Process).txt
+Log          = result/log_$(Cluster).$(Process).txt
+Queue
+##### 例おわり #####
+
+Output, Error, Logは実行結果がそこに出力されます、Outputは標準出力、Errorは標準エラー、Logは実行時間や必要だったメモリ量などが記録されます
+$(Cluster).$(Process)とか書いてますが、これは実行時に自動的に置き換わるマクロ変数なので気にせずこのままにしておくと便利です
+
+注意しておいたほうがいいこととしては、実行ファイルの中で相対PATHを使ったファイル入出力はできないということです
+たぶんハマるとしたらここなのでご注意ください
+
+#########
+以下はジョブファイルを扱うコマンドの一例です、自分が知ってて使ってるほぼすべてです(なにか他に便利なコマンドがわかりましたら教えてください)
+
+ジョブファイルをcondorに投げる
+% condor_submit [ジョブファイル]
+
+ジョブの状況を確認する
+% condor_q
+
+他の人のも見たいとき
+% condor_q -all
+
+すべてのオプションを表示したいとき
+% condor_q -w
+
+ジョブを止めたいとき
+ジョブ番号はcondor_qで一番左端にあるIDのこと
+15371.0と15371.1が同時に走っているときはcondor_rm 15371で2つとも止めることもできます
+% condor_rm [ジョブの番号]

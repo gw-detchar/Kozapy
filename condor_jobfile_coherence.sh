@@ -20,6 +20,7 @@ _channelList=($@)
 echo "Executable = ${_exeName}"
 echo "Universe   = vanilla"
 echo "Notification = always"
+echo "request_memory = 1 GB"
 echo "Getenv  = True            # the environment variables will be copied."
 echo ""
 echo "# comment out the followings if you don't need to save STDOUT/STDERR/CondorLog"

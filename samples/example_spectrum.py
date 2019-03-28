@@ -67,8 +67,10 @@ for channel in channels:
             sources.remove(y)
 
         data = TimeSeries.read(sources,channel,format='gwf.lalframe',nproc=2,start=int(gpsstart),end=int(gpsend))
-    
-        spectrum = data.asd(fftlength=10)
+
+        fft=10
+        ol=fft/2.
+        spectrum = data.asd(fftlength=fft,overlap=ol)
 
         if isFirst:           
             fplot=spectrum.plot(figsize = (16, 9))

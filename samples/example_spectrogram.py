@@ -76,8 +76,10 @@ for channel in channels:
     #end=1231133860       : end time can be selected.
     #resample=10.         : change the sampling rate. [Hz]
     #data.override_unit(unit)
-    
-    spectrogram = data.spectrogram(1, fftlength=1)
+
+    fft=1
+    ol=fft/2.
+    spectrogram = data.spectrogram(1, fftlength=fft,overlap=ol)
     print(4)   
     ftplot=spectrogram.plot(norm='log')
     ax = ftplot.axes

@@ -54,7 +54,9 @@ fplot.close()
 spectrum.write('frequencyseries.txt')
 
 # Transform to spectrogram
-sg = data.spectrogram(20,fftlength=8,overlap=4)
+fft=8
+ol=fft/2.
+sg = data.spectrogram(20,fftlength=fft,overlap=ol)
 # 1 is time bin width in sec.
 
 ftplot = sg.plot(norm='log',vmin=1e-6, vmax=1)

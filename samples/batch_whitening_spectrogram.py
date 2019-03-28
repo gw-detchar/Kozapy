@@ -65,12 +65,13 @@ for y in removelist:
 
 data = TimeSeries.read(sources,channel,format='gwf.lalframe',nproc=2,start=int(gpsstart),end=int(gpsend))
 
-print(data.unit)
-    
 #white = data.whiten(fftlength=512)
 #whitespectrogram = white.spectrogram(512,fftlength=8)
-white = data.whiten(fftlength=1)
-whitespectrogram = white.spectrogram(1)
+
+fft=1
+ol=fft/2.
+white = data.whiten(fftlength=fft,overlap=ol)
+whitespectrogram = white.spectrogram(1,fftlength=fft,overlap=ol)
 
 sgplot=whitespectrogram.plot(figsize = (16, 9))
 ax = sgplot.gca()

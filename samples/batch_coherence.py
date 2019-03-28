@@ -74,7 +74,9 @@ ref = data[refchannel]
 acc = data[channel]
 
 #coh = ref.coherence_spectrogram(acc,512,fftlength=64)
-coh = ref.coherence_spectrogram(acc,2048,fftlength=256)
+fftlength=256
+ol=fft/2.
+coh = ref.coherence_spectrogram(acc,2048,fftlength=fft,overlap=ol)
 
 cohplot=coh.plot(figsize = (16, 9))
 ax = cohplot.gca()

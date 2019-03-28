@@ -18,7 +18,8 @@ _channelList=($@)
 echo "Executable = ${_exeName}"
 echo "Universe   = vanilla"
 echo "Notification = always"
-echo "request_memory = 1 GB"
+# if needed, use following line to set the necessary amount of the memory for a job. In Kashiwa, each node has total memory 256 GB, 2 CPU, 28 cores.  
+#echo "request_memory = 1 GB"
 echo "Getenv  = True            # the environment variables will be copied."
 echo ""
 echo "# comment out the followings if you don't need to save STDOUT/STDERR/CondorLog"
@@ -51,19 +52,17 @@ channel+=("K1:PEM-PSL_ACC_TABLE1_Z_OUT_DQ")
 channel+=("K1:PEM-PSL_ACC_TABLE2_Z_OUT_DQ")
 channel+=("K1:PEM-PSL_ACC_TABLE3_Z_OUT_DQ")
 channel+=("K1:PEM-PSL_MIC_CENTER_OUT_DQ")
-#gpsstart="1230044418"
-#gpsend="1230087618"
-#gpsstart="1230104898"
-#gpsend="1230182658"
-#gpsstart="1230199938"
-#gpsend="1230390018"
+
 gpsstart="1230407298"
 gpsend="1230433218"
 
-outdir="/home/chihiro.kozakai/detchar/analysis/condor/result/whitening_spectrogram/"
+outdir="$PWD/result/whitening_spectrogram/"
 date="190314"
 
-mkdir $outdir
+if [ ! -e $outdir ]; then
+    mkdir -p $outdir
+fi
+
 writeSum ${name} $run $gpsstart $gpsend $outdir $date ${channel[@]}  > job_${name}_${gpsstart}.sdf
 
 echo job_${name}_${gpsstart}.sdf

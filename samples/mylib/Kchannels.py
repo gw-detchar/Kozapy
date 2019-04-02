@@ -19,6 +19,15 @@ if __name__ == '__main__':
     file = open('Kchannels.sh','w')
 
     file.write("#!/bin/bash\n")
+    file.write("\n")
+    file.write("# PLEASE NEVER CHANGE THIS FILE BY HAND. \n")
+    file.write("# This file is generated from Kchannels.py. \n")
+    file.write("# If you need a new list, please write it in Kchannels.py. \n")
+    file.write("# Please also copy and paste the last 2 lines and replace the channel name.\n")
+    file.write("# $ python Kchannels.py \n")
+    file.write("# will update this file including your new list. \n")
+    file.write("\n")
+
     str = "export PEM_PSL_old=(\"" + "\" \"".join(PEM_PSL_old) + "\")\n"
     file.write(str)
 

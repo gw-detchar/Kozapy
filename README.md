@@ -1,8 +1,22 @@
 # Kozapy
-This directory contains sample code for GWpy [https://gwpy.github.io/docs/stable/index.html].
+This repository contains sample code for GWpy [https://gwpy.github.io/docs/stable/index.html].
 
 
 ## Contents 
+
+#### example_read
+Basic examples for begginer to read data 
+
+#### script
+Script for making a cache file.
+
+#### sample/mylib/*
+Making libraries. 
+###### Kchannels.py, Kchannel.sh
+Channel lists are given. If you want to add new list, first write it in the python file and then copy and paste the last 2 lines replacing channel name to your new channnel list. Please do "python Kchannels.py", and you will get Kchannel.sh with new list. it can be used by exporting.
+###### ck.py
+It has convenient functions. 
+
 #### example_plot.py
   This is for GWpy beginers. Basic script to plot timeseries, spectrum and spectrogram. I recommend to check other sample code according to your purpose, they have more convenient functions.
 
@@ -44,12 +58,6 @@ This directory contains sample code for GWpy [https://gwpy.github.io/docs/stable
   They make coherence plots in batch job. 
   Please see the description for batch job for whitening spectrum to learn how to use them. 
   
-#### example_read
-Basic examples for begginer to read data 
-
-#### script
-Script for making a cache file.
-
 ## Tips for condor
 
 ##### ジョブファイルの例

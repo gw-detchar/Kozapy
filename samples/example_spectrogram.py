@@ -79,7 +79,13 @@ for channel in channels:
 
     fft=1
     ol=fft/2.
-    spectrogram = data.spectrogram(1, fftlength=fft,overlap=ol)
+    stride=1
+
+    if fft > stride:
+        print('Warning: stride is shorter than fft length. Set stride=fft.')
+        stride=fft
+
+    spectrogram = data.spectrogram(stride, fftlength=fft,overlap=ol)
     print(4)   
     ftplot=spectrogram.plot(norm='log')
     ax = ftplot.axes

@@ -1,3 +1,11 @@
+'''
+Channel lists are given. 
+If you want to add new list, first write it in it.  
+Then copy and paste the last 2 lines replacing channel name to your new channnel list. 
+Please do "python Kchannels.py", 
+and you will get Kchannel.sh with new list. It can be used by exporting.
+'''
+
 LAS_IMC = ['K1:LAS-POW_IMC_DC_INMON']
 
 IMC = ['K1:IMC-CAV_REFL_OUT_DQ',

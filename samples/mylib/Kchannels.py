@@ -32,8 +32,8 @@ PEM_IMC = ['K1:PEM-SEIS_MCE_GND_EW_IN1_DQ',
            'K1:PEM-MIC_MCF_TABLE_IMCREFL_Z_OUT_DQ',
            'K1:PEM-MIC_MCE_TABLE_IMCTRANS_Z_OUT_DQ']
 
-PSL_PMC = ['K1:PSL-PMC_CAV_REFL_DC_OUT_DQ',
-           'K1:PSL-PMC_CAV_TRANS_DV_OUT_DQ',
+PSL_PMC = ['K1:PSL-PMC_REFL_DC_OUT_DQ',
+           'K1:PSL-PMC_TRANS_DC_OUT_DQ',
            'K1:PSL-PMC_MIXER_MON_OUT_DQ',
            'K1:PSL-PMC_PZT_HV_MON_OUT_DQ',
            'K1:PSL-PMC_SLOW_MON_OUT_DQ',
@@ -109,3 +109,5 @@ if __name__ == '__main__':
 
     str = "export PEM_PSL_slow=(\"" + "\" \"".join(PEM_PSL_slow) + "\")\n"
     file.write(str)
+
+    print("Kchannels.sh is generated.")

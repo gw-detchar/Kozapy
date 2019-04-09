@@ -32,6 +32,17 @@ PEM_IMC = ['K1:PEM-SEIS_MCE_GND_EW_IN1_DQ',
            'K1:PEM-MIC_MCF_TABLE_IMCREFL_Z_OUT_DQ',
            'K1:PEM-MIC_MCE_TABLE_IMCTRANS_Z_OUT_DQ']
 
+SEIS_IXV = ['K1:PEM-SEIS_IXV_GND_EW_IN1_DQ',
+           'K1:PEM-SEIS_IXV_GND_NS_IN1_DQ',
+           'K1:PEM-SEIS_IXV_GND_UD_IN1_DQ']
+
+VIS_IMC = ['K1:VIS-MCE_TM_OPLEV_YAW_OUT_DQ',
+           'K1:VIS-MCE_TM_OPLEV_PIT_OUT_DQ',
+           'K1:VIS-MCI_TM_OPLEV_YAW_OUT_DQ',
+           'K1:VIS-MCI_TM_OPLEV_PIT_OUT_DQ',
+           'K1:VIS-MCO_TM_OPLEV_YAW_OUT_DQ',
+           'K1:VIS-MCO_TM_OPLEV_PIT_OUT_DQ']
+
 PSL_PMC = ['K1:PSL-PMC_REFL_DC_OUT_DQ',
            'K1:PSL-PMC_TRANS_DC_OUT_DQ',
            'K1:PSL-PMC_MIXER_MON_OUT_DQ',
@@ -87,25 +98,28 @@ if __name__ == '__main__':
     file.write("# will update this file including your new list. \n")
     file.write("\n")
 
-    str = "export LAS_IMC=(\"" + "\" \"".join(LAS_IMC) + "\")\n"
+    str = "export LAS_IMC=(\"" + "\" \"".join(LAS_IMC) + "\" )\n"
     file.write(str)
 
-    str = "export IMC=(\"" + "\" \"".join(IMC) + "\")\n"
+    str = "export IMC=(\"" + "\" \"".join(IMC) + "\" )\n"
     file.write(str)
 
-    str = "export PEM_IMC=(\"" + "\" \"".join(PEM_IMC) + "\")\n"
+    str = "export PEM_IMC=(\"" + "\" \"".join(PEM_IMC) + "\" )\n"
     file.write(str)
 
-    str = "export PSL_PMC=(\"" + "\" \"".join(PSL_PMC) + "\")\n"
+    str = "export SEIS_IXV=(\"" + "\" \"".join(SEIS_IXV) + "\" )\n"
     file.write(str)
 
-    str = "export PSL_FSS=(\"" + "\" \"".join(PSL_FSS) + "\")\n"
+    str = "export PSL_PMC=(\"" + "\" \"".join(PSL_PMC) + "\" )\n"
     file.write(str)
 
-    str = "export PEM_PSL_old=(\"" + "\" \"".join(PEM_PSL_old) + "\")\n"
+    str = "export PSL_FSS=(\"" + "\" \"".join(PSL_FSS) + "\" )\n"
     file.write(str)
 
-    str = "export PEM_PSL_slow=(\"" + "\" \"".join(PEM_PSL_slow) + "\")\n"
+    str = "export PEM_PSL_old=(\"" + "\" \"".join(PEM_PSL_old) + "\" )\n"
+    file.write(str)
+
+    str = "export PEM_PSL_slow=(\"" + "\" \"".join(PEM_PSL_slow) + "\" )\n"
     file.write(str)
 
     print("Kchannels.sh is generated.")

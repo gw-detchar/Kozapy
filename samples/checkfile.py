@@ -4,8 +4,8 @@ from gwpy.timeseries import TimeSeriesDict
 from matplotlib import pylab as pl
 from gwpy.detector import Channel
 
-gpsstart = '1229044418'
-gpsend = '1230044418'
+gpsstart = '1237885260'
+gpsend = '1238007618'
 
 sources = []
 

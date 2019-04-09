@@ -76,7 +76,13 @@ acc = data[channel]
 #coh = ref.coherence_spectrogram(acc,512,fftlength=64)
 fftlength=256
 ol=fft/2.
-coh = ref.coherence_spectrogram(acc,2048,fftlength=fft,overlap=ol)
+stride=256
+
+if fft > stride:
+        print('Warning: stride is shorter than fft length. Set stride=fft.')
+        stride=fft
+
+coh = ref.coherence_spectrogram(acc,stride,fftlength=fft,overlap=ol)
 
 cohplot=coh.plot(figsize = (16, 9))
 ax = cohplot.gca()
@@ -84,6 +90,7 @@ ax.set_ylabel('Frequency [Hz]')
 ax.set_yscale('log')
 ax.set_title(latexrefchnames + ' ' + latexchnames)
 ax.set_ylim(0.1,1000)
+ax.set_zlim(0.,1.)
 
 cohplot.add_colorbar(cmap='winter',label='Coherence')
 

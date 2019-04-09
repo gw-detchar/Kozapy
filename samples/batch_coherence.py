@@ -1,105 +1,88 @@
-
+'''Make coherencegram.
+'''
 
 __author__ = "Chihiro Kozakai"
 
-import sys
-import glob
+import os
 import matplotlib
+matplotlib.use('Agg')  # this line is required for the batch job before importing other matplotlib modules.     
 
-matplotlib.use('Agg')  # this line is required for the batch job before importing other matplotlib modules.
-
+import subprocess
+import glob
 from gwpy.timeseries import TimeSeries
 from gwpy.timeseries import TimeSeriesDict
-#from matplotlib import pylab as pl
+from matplotlib import pylab as pl
 from gwpy.detector import Channel
 from matplotlib import cm
+from mylib import mylib
 
+#  argument processing
+import argparse
 
-args = sys.argv
+parser = argparse.ArgumentParser(description='Make coherencegram.')
+parser.add_argument('-o','--outdir',help='output directory.',default='result')
+parser.add_argument('-r','--refchannel',help='main reference channel.',required=True)
+parser.add_argument('-c','--channel',help='compared channel.',required=True)
+parser.add_argument('-s','--gpsstart',help='GPS starting time.',required=True)
+parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True
+)
+parser.add_argument('-f','--fftlength',help='FFT length.',type=float,default=1.)
+parser.add_argument('--stride',help='Stride of the coherencegram.',type=float,default=10.)
+parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
 
-refchannel = args[1]
-channel = args[2]
-gpsstart = args[3]
-gpsend = args[4]
-outdir = args[5]
-date = args[6]
+# define variables
+args = parser.parse_args()
+outdir=args.outdir
 
-print('gpsstart ' + gpsstart)
-print('gpsend ' + gpsend)
-print('refchannel ' + refchannel)
-print('channel ' + channel)
-print('outdir' + outdir)
-print('date' + date)
+refchannel=args.refchannel
+channel=args.channel
+latexchname = channel.replace('_','\_')
+latexrefchname = refchannel.replace('_','\_')
 
+gpsstart=args.gpsstart
+gpsend=args.gpsend
+index=args.index
+stride=args.stride
+fft=args.fftlength
+ol=fft/2.  #  overlap in FFTs. 
 
-
-unit = ''
-if channel.find('TEMPERATURE') != -1:
-    unit = r'Temperature [\textcelsius]' 
-elif channel.find('HUMIDITY') != -1:
-    unit = 'Humidity [\%]'
-elif channel.find('ACC') != -1:
+if fft > stride/2.:
+    print('Warning: stride is shorter than fft length. Set stride=fft*2.')
+    stride=fft*2.
+    
+unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
+if channel.find('ACC') != -1:
     unit = r'Acceleration [$m/s^2$]'
 elif channel.find('MIC') != -1:
     unit = 'Sound [Pa]'
 
+# Get data from frame files
+    
+sources = mylib.GetFilelist(gpsstart,gpsend)
+
 channels = [refchannel, channel]
-    
-latexchnames = channel.replace('_','\_')
-latexrefchnames = refchannel.replace('_','\_')
 
-sources = []
+data = TimeSeriesDict.read(sources,channels,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
 
-for i in range(int(gpsstart[0:5]),int(gpsend[0:5])+1):
-    dir = '/data/full/' + str(i) + '/*'
-    source = glob.glob(dir)
-    sources.extend(source)
-    
-sources.sort()
-    
-removelist = []
-
-for x in sources:
-    if int(x[24:34])<(int(gpsstart)-31):
-        removelist.append(x)
-    if int(x[24:34])>int(gpsend):
-        removelist.append(x)
-
-for y in removelist:
-    sources.remove(y)
-
-data = TimeSeriesDict.read(sources,channels,format='gwf.lalframe',nproc=2,start=int(gpsstart),end=int(gpsend))
-    
 ref = data[refchannel]
-acc = data[channel]
+com = data[channel]
 
-#coh = ref.coherence_spectrogram(acc,512,fftlength=64)
-fftlength=256
-ol=fft/2.
-stride=256
+coh = ref.coherence_spectrogram(com,stride,fftlength=fft,overlap=ol)
 
-if fft > stride:
-        print('Warning: stride is shorter than fft length. Set stride=fft.')
-        stride=fft
-
-coh = ref.coherence_spectrogram(acc,stride,fftlength=fft,overlap=ol)
-
-cohplot=coh.plot(figsize = (16, 9))
+cohplot=coh.plot(figsize = (12, 8),vmin=0.,vmax=1.)
 ax = cohplot.gca()
 ax.set_ylabel('Frequency [Hz]')
 ax.set_yscale('log')
-ax.set_title(latexrefchnames + ' ' + latexchnames)
+ax.set_title(latexrefchname + ' ' + latexchname)
 ax.set_ylim(0.1,1000)
-ax.set_zlim(0.,1.)
 
-cohplot.add_colorbar(cmap='winter',label='Coherence')
+cohplot.add_colorbar(cmap='YlGnBu_r',label='Coherence')
 
-#sgplot.savefig('/home/chihiro.kozakai/detchar/analysis/condor/result/' + channel + '_whiteningspectrogram_'+ gpsstart + '-' + gpsend +'_190314.pdf')
-#cohplot.savefig(outdir + refchannel + '_' + channel + '_coherence_'+ gpsstart + '_' + gpsend +'_' + date +'.pdf')
-cohplot.savefig(outdir + refchannel + '_' + channel + '_coherence_'+ gpsstart + '_' + gpsend +'_' + date +'.png')
+fname = outdir + refchannel + '_' + channel + '_coherence_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
+cohplot.savefig(fname)
 
 cohplot.clf()
 cohplot.close()
 
-print(outdir + refchannel + '_' + channel + '_coherence_'+ gpsstart + '_' + gpsend +'_' + date +'.pdf')
+print(fname)
 print('Successfully finished !')

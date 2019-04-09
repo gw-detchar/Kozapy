@@ -75,14 +75,7 @@ for channel in channels:
         else:
             ax.plot(spectrum)
 
-        print('plot is given.')
-        print(ltype)
-        print(gpsstart)
-        print(gpsend)
-        print(channel)
         legend+=(mylib.GetLegend(ltype,gpsstart,gpsend,channel))
-        print(legend)
-
 
 ax.legend(legend,bbox_to_anchor = mylib.GetBBTA(lposition),loc=mylib.Getloc(lposition),borderaxespad=1)
 
@@ -93,5 +86,3 @@ fplot.close()
 
 print(fname)
 print('Successfully finished !')
-
-

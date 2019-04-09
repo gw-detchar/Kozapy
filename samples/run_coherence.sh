@@ -1,15 +1,8 @@
 #!/bin/bash
 
-#source /home/chihiro.kozakai/.bashrc
-
-#source /opt/intel/bin/compilervars.sh intel64
-
-# Source global definitions                                                                            
-#if [ -f /etc/bashrc ]; then
-#        . /etc/bashrc
-#fi
+# PLEASE NEVER CHANGE THIS FILE BY HAND.
+# This file is generated from condor_jobfile_coherence.sh.
+# If you need to change, please edit condor_jobfile_coherence.sh.
 
 echo $@
-python /home/chihiro.kozakai/detchar/analysis/code/gwpy/newyear/batch_coherence.py $@
-#python /home/chihiro.kozakai/detchar/analysis/code/gwpy/newyear/batch_test1.py $@
-
+python /home/chihiro.kozakai/detchar/analysis/code/gwpy/Kozapy/samples/batch_coherence.py $@

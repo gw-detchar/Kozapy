@@ -1,73 +1,110 @@
 #!/bin/bash
 
-function writeSum(){
-_suffix=$1
-_exeName=$2
-_gpsstart=$3
-_gpsend=$4
-_outdir=$5
-_date=$6
-_refchannel=$7
-shift
-shift
-shift
-shift
-shift
-shift
-shift
-_channelList=($@)
+# This file is for submitting coherencegram plot job into condor.
+#
+# $condir will be used as output directory.
+#
+# Recommendation: 
+# 
+# In python script, package Kozapy/samples/mylib/ is reuired.
+# Please make symbolic link in your working directory like this. 
+# $ ln -s /path/to/Kozapy/samples/mylib/ mylib
+#
+# Edit your ~/.bashrc file and insert the output directory.
+#  export condir=~/path/to/output/directory/
+# If $condir is empty, current directory will be used.
 
-echo "Executable = ${_exeName}"
+# $index will be added to the output file name to distinguish from others. 
+index="190409"
+
+# Set the output directory.
+
+name="coherence"
+  
+if [ $condir = "" ]; then
+    condir=$PWD
+fi
+
+outdir="$condir/${name}/"
+
+# Confirm the existance of output directory.
+
+if [ ! -e $outdir ]; then
+    mkdir -p $outdir
+fi
+
+logdir="$PWD/log/"
+if [ ! -e $logdir ]; then
+    mkdir -p $logdir
+fi
+
+# make main script.
+
+run="$PWD/run_${name}.sh"
+py="$PWD/batch_${name}.py"
+#py="~/batch_coherence.py"  # For the case you use non-conventional python script name.
+
+{
+echo "#!/bin/bash"
+echo ""
+echo "# PLEASE NEVER CHANGE THIS FILE BY HAND."
+echo "# This file is generated from `basename $0`."
+echo "# If you need to change, please edit `basename $0`."
+echo ""
+echo "echo \$@"
+echo "python $py \$@"
+
+} > $run
+
+chmod u+x $run
+
+# Define variables.
+
+source mylib/Kchannels.sh  #  This shell script includes some channel lists. If you need new list, please see mylib/Kchannels.py. 
+
+refchannels=("K1:IMC-CAV_TRANS_OUT_DQ" "K1:IMC-CAV_REFL_OUT_DQ")
+
+channels=(${LAS_IMC[@]})
+channels+=(${SEIS_IXV[@]})
+
+gpsstarts=("1237888878" "1237923078")  # array of starting times
+gpsends=("1237888978" "1237923178")  # array of ending times
+
+# Write a file for condor submission.
+
+{
+echo "Executable = ${run}"
 echo "Universe   = vanilla"
 echo "Notification = always"
 # if needed, use following line to set the necessary amount of the memory for a job. In Kashiwa, each node has total memory 256 GB, 2 CPU, 28 cores.
 echo "request_memory = 1 GB"
 echo "Getenv  = True            # the environment variables will be copied."
 echo ""
-echo "# comment out the followings if you don't need to save STDOUT/STDERR/CondorLog"
-echo "Log        = out_${_suffix}.log"
-echo ""
 echo "should_transfer_files = YES"
 echo "when_to_transfer_output = ON_EXIT"
+echo ""
+} > job_${name}_${channels[0]}_${gpsstart[0]}.sdf
 
-for _channel in ${_channelList[@]}; do
-	    echo "Arguments = ${_refchannel} ${_channel} ${_gpsstart} ${_gpsend} ${_outdir} ${_date}"
-	    echo "Output       = log/out_\$(Cluster).\$(Process).txt"
-	    echo "Error        = log/err_\$(Cluster).\$(Process).txt"
-	    echo "Log          = log/log_\$(Cluster).\$(Process).txt"
-	    echo "Queue"
+# Loop over each plot. 
+
+for refchannel in ${refchannels[@]}; do
+    for channel in ${channels[@]}; do
+	for i in ${!gpsstarts[@]}; do
+	    {
+		# channel can be array for the argument. 
+		# if you need, you can use argument of -f (FFT length) and --stride (stride of the coherencegram). Please try 
+		#  $ python batch_spectrum.py -h
+		# for detail.
+		echo "Arguments = -r ${refchannel} -c ${channel} -s ${gpsstarts[i]} -e ${gpsends[i]} -o ${outdir} -i ${index} "
+		echo "Output       = log/out_\$(Cluster).\$(Process).txt"
+		echo "Error        = log/err_\$(Cluster).\$(Process).txt"
+		echo "Log          = log/log_\$(Cluster).\$(Process).txt"
+		echo "Queue"
+	    } >> job_${name}_${channels[0]}_${gpsstart[0]}.sdf
+	done
+    done
 done
-return
-}
+# Submit job into condor.
 
-name="coherence"
-
-run="$PWD/run_coherence.sh"
-
-# ref channel is main channel. 
-refchannel="K1:PEM-PSL_MIC_CENTER_OUT_DQ"
-
-# coherence between refchannel and each below will be made.
-channel=()
-channel+=("K1:PEM-PSL_ACC_PERI_REFCAV_OUT_DQ")
-channel+=("K1:PEM-PSL_ACC_PERI_EXIT_OUT_DQ")
-channel+=("K1:PEM-PSL_ACC_SIGNAL1_OUT_DQ")
-channel+=("K1:PEM-PSL_ACC_SIGNAL2_OUT_DQ")
-channel+=("K1:PEM-PSL_ACC_TABLE1_Z_OUT_DQ")
-channel+=("K1:PEM-PSL_ACC_TABLE2_Z_OUT_DQ")
-channel+=("K1:PEM-PSL_ACC_TABLE3_Z_OUT_DQ")
-channel+=("K1:PEM-PSL_MIC_CENTER_OUT_DQ")
-gpsstart="1230044418"
-gpsend="1230433218"
-
-outdir="$PWD/result/coherence/"
-date="190318"
-
-if [ ! -e $outdir ]; then
-    mkdir -p $outdir
-fi
-
-writeSum ${name} $run $gpsstart $gpsend $outdir $date $refchannel ${channel[@]}  > job_${name}_${gpsstart}.sdf
-
-echo job_${name}_${gpsstart}.sdf
-condor_submit job_${name}_${gpsstart}.sdf
+echo job_${name}_${channels[0]}_${gpsstart[0]}.sdf
+condor_submit job_${name}_${channels[0]}_${gpsstart[0]}.sdf

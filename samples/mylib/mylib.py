@@ -86,11 +86,6 @@ def GetLegend(ltype,gpsstart,gpsend,channel):
     It gives string for legend description.
     '''
 
-    print('GetLegend is called.')
-    print(ltype)
-    print(gpsstart)
-    print(gpsend)
-    print(channel)    
     if(ltype=='time'):
         return [gpsstart + '-' + gpsend]
 

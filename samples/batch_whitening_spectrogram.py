@@ -1,92 +1,81 @@
-
+'''Make spectrogram.
+'''
 
 __author__ = "Chihiro Kozakai"
 
-import sys
-import glob
+import os
 import matplotlib
+matplotlib.use('Agg')  # this line is required for the batch job before importing other matplotlib modules.     
 
-matplotlib.use('Agg')  # this line is required for the batch job before importing other matplotlib modules.
-
+import subprocess
+import glob
 from gwpy.timeseries import TimeSeries
 from gwpy.timeseries import TimeSeriesDict
-#from matplotlib import pylab as pl
+from matplotlib import pylab as pl
 from gwpy.detector import Channel
 from matplotlib import cm
+from mylib import mylib
 
+#  argument processing
+import argparse
 
-args = sys.argv
+parser = argparse.ArgumentParser(description='Make coherencegram.')
+parser.add_argument('-o','--outdir',help='output directory.',default='result')
+parser.add_argument('-c','--channel',help='compared channel.',required=True)
+parser.add_argument('-s','--gpsstart',help='GPS starting time.',required=True)
+parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True
+)
+parser.add_argument('-f','--fftlength',help='FFT length.',type=float,default=1.)
+parser.add_argument('--stride',help='Stride of the coherencegram.',type=float,default=10.)
+parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
 
-channel = args[1]
-gpsstart = args[2]
-gpsend = args[3]
-outdir = args[4]
-date = args[5]
+# define variables
+args = parser.parse_args()
+outdir=args.outdir
 
-print('gpsstart ' + gpsstart)
-print('gpsend ' + gpsend)
-print('channel ' + channel)
-print('outdir' + outdir)
-print('date' + date)
+channel=args.channel
+latexchname = channel.replace('_','\_')
 
-print(outdir + channel + '_whiteningspectrogram_'+ gpsstart + '_' + gpsend +'_' + date +'.pdf')
+gpsstart=args.gpsstart
+gpsend=args.gpsend
+index=args.index
+stride=args.stride
+fft=args.fftlength
+ol=fft/2.  #  overlap in FFTs. 
 
-unit = ''
-if channel.find('TEMPERATURE') != -1:
-    unit = r'Temperature [\textcelsius]' 
-elif channel.find('HUMIDITY') != -1:
-    unit = 'Humidity [\%]'
-elif channel.find('ACC') != -1:
+if fft*2. > stride:
+    print('Warning: stride is shorter than fft length. Set stride=fft*2.')
+    stride=fft*2.
+    
+unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
+if channel.find('ACC') != -1:
     unit = r'Acceleration [$m/s^2$]'
 elif channel.find('MIC') != -1:
     unit = 'Sound [Pa]'
+
+# Get data from frame files
     
-latexchnames = channel.replace('_','\_')
+sources = mylib.GetFilelist(gpsstart,gpsend)
 
-sources = []
+data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
 
-for i in range(int(gpsstart[0:5]),int(gpsend[0:5])+1):
-    dir = '/data/full/' + str(i) + '/*'
-    source = glob.glob(dir)
-    sources.extend(source)
-    
-sources.sort()
-    
-removelist = []
-
-for x in sources:
-    if int(x[24:34])<(int(gpsstart)-31):
-        removelist.append(x)
-    if int(x[24:34])>int(gpsend):
-        removelist.append(x)
-
-for y in removelist:
-    sources.remove(y)
-
-data = TimeSeries.read(sources,channel,format='gwf.lalframe',nproc=2,start=int(gpsstart),end=int(gpsend))
-
-#white = data.whiten(fftlength=512)
-#whitespectrogram = white.spectrogram(512,fftlength=8)
-
-fft=1
-ol=fft/2.
 white = data.whiten(fftlength=fft,overlap=ol)
 whitespectrogram = white.spectrogram(1,fftlength=fft,overlap=ol)
 
-sgplot=whitespectrogram.plot(figsize = (16, 9))
+sgplot=whitespectrogram.plot(figsize = (12, 8))
 ax = sgplot.gca()
 ax.set_ylabel('Frequency [Hz]')
 ax.set_yscale('log')
-ax.set_title(latexchnames)
+ax.set_title(latexchname)
 ax.set_ylim(0.1,1000)
 
-sgplot.add_colorbar(cmap='winter',label='Arbitrary')
+sgplot.add_colorbar(cmap='YlGnBu_r',label='Arbitrary')
 
-#sgplot.savefig('/home/chihiro.kozakai/detchar/analysis/condor/result/' + channel + '_whiteningspectrogram_'+ gpsstart + '-' + gpsend +'_190314.pdf')
-sgplot.savefig(outdir + channel + '_whiteningspectrogram_'+ gpsstart + '_' + gpsend +'_' + date +'.png')
+fname = outdir + '/' + channel + '_whiteningspectrogram_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
+sgplot.savefig(fname)
 
 sgplot.clf()
 sgplot.close()
 
-print(outdir + channel + '_whiteningspectrogram_'+ gpsstart + '_' + gpsend +'_' + date +'.png')
+print(fname)
 print('Successfully finished !')

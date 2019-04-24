@@ -11,6 +11,8 @@ import subprocess
 import glob
 from gwpy.timeseries import TimeSeries
 from gwpy.timeseries import TimeSeriesDict
+from gwpy.segments import DataQualityFlag
+
 from matplotlib import pylab as pl
 from gwpy.detector import Channel
 from matplotlib import cm
@@ -29,6 +31,11 @@ parser.add_argument('-f','--fftlength',help='FFT length.',type=float,default=1.)
 parser.add_argument('--stride',help='Stride of the coherencegram.',type=float,default=10.)
 parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
 
+parser.add_argument('-l','--lchannel',help='Make locked segment bar plot.',default='')
+parser.add_argument('--llabel',help='Label of the locked segment bar plot.',default='')
+parser.add_argument('-n','--lnumber',help='The requirement for judging locked. lchannel==lnumber will be used as locked.',default=99)
+
+
 # define variables
 args = parser.parse_args()
 outdir=args.outdir
@@ -42,6 +49,12 @@ index=args.index
 stride=args.stride
 fft=args.fftlength
 ol=fft/2.  #  overlap in FFTs. 
+
+lchannel=args.lchannel
+lnumber=int(args.lnumber)
+llabel=args.llabel
+
+lflag=bool(lchannel)
 
 if fft*2. > stride:
     print('Warning: stride is shorter than fft length. Set stride=fft*2.')
@@ -63,6 +76,7 @@ white = data.whiten(fftlength=fft,overlap=ol)
 whitespectrogram = white.spectrogram(1,fftlength=fft,overlap=ol)
 
 sgplot=whitespectrogram.plot(figsize = (12, 8))
+
 ax = sgplot.gca()
 ax.set_ylabel('Frequency [Hz]')
 ax.set_yscale('log')
@@ -70,6 +84,14 @@ ax.set_title(latexchname)
 ax.set_ylim(0.1,1000)
 
 sgplot.add_colorbar(cmap='YlGnBu_r',label='Arbitrary')
+
+if lflag:
+    ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
+    locked = ldata == lnumber
+    flag = locked.to_dqflag(name = '', label = llabel, round = True)
+    sgplot.add_state_segments(flag)
+else:
+    pass
 
 fname = outdir + '/' + channel + '_whiteningspectrogram_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
 sgplot.savefig(fname)

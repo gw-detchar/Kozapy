@@ -53,7 +53,12 @@ It has convenient functions.
   It will provide a new sdf file for failed job. 
   If the problem is not bug but any accidental one, 
   you can use it for re-submission of jobs.
-  
+
+  4/24: Added new feature. 
+  locked segments can be plotted below the spectrogram.
+  To use it, add options of 
+  -l 'guardian channel' -n number of required state --llabel optional, for ytitle
+  ex) -l 'K1:GRD-IO_STATE_N' -n 99 --llabel 'IMC_LSC'
 #### batch_coherence.py, condor_jobfile_coherence.sh, run_coherence.sh
   They make coherence plots in batch job. 
   Please see the description for batch job for whitening spectrum to learn how to use them. 

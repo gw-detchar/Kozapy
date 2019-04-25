@@ -25,15 +25,14 @@ parser = argparse.ArgumentParser(description='Make coherencegram.')
 parser.add_argument('-o','--outdir',help='output directory.',default='result')
 parser.add_argument('-c','--channel',help='channel list.',nargs='*',required=True)
 parser.add_argument('-s','--gpsstart',help='GPS starting time.',required=True)
-parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True
-)
+parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True)
+parser.add_argument('-d','--datatype',help='Data type. Options are minute(default), second, and full.',default='minute',choices=['minute','second','full'])
 parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
 parser.add_argument('-p','--lposition',help='Legend position. Choice is \'br\'(bottom right), \'bl\'(bottom left), \'tr\'(top right), or \'tl\'(top left), .',default='tr',choices=['br','bl','tr','tl'])
 
 parser.add_argument('-l','--lchannel',help='Make locked segment bar plot.',default='')
 parser.add_argument('--llabel',help='Label of the locked segment bar plot.',default='')
 parser.add_argument('-n','--lnumber',help='The requirement for judging locked. lchannel==lnumber will be used as locked.',default=99,type=int)
-
 
 # define variables
 args = parser.parse_args()
@@ -45,6 +44,8 @@ latexchnames = [c.replace('_','\_') for c in channel]
 
 gpsstart = args.gpsstart
 gpsend = args.gpsend
+
+datatype = args.datatype
 index = args.index
 
 lposition=args.lposition
@@ -57,7 +58,12 @@ llabel = args.llabel
 lflag = bool(lchannel)
 
 # Get data from frame files
-sources = mylib.GetMtrendFilelist(gpsstart,gpsend)
+if datatype == 'minute':
+    sources = mylib.GetMtrendFilelist(gpsstart,gpsend)
+elif datatype == 'second':
+    sources = mylib.GetStrendFilelist(gpsstart,gpsend)
+if datatype == 'full':
+    sources = mylib.GetFilelist(gpsstart,gpsend)
 
 unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
 if channel[0].find('ACC') != -1:
@@ -66,7 +72,6 @@ elif channel[0].find('MIC') != -1:
     unit = 'Sound [Pa]'
 
 data = TimeSeriesDict.read(sources,channel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
-print(data)
 plot=data.plot(figsize = (12, 8))
 
 ax = plot.gca()

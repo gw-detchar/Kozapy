@@ -1,5 +1,6 @@
 #!/bin/bash
 
+################################################################
 # This file is for submitting time series plot job into condor.
 #
 # $condir will be used as output directory.
@@ -13,9 +14,37 @@
 # Edit your ~/.bashrc file and insert the output directory.
 #  export condir=~/path/to/output/directory/
 # If $condir is empty, current directory will be used.
+################################################################
+
+# Define variables.
 
 # $index will be added to the output file name to distinguish from others. 
 index="190425"
+
+source mylib/Kchannels.sh  #  This shell script includes some channel lists. If you need new list, please see mylib/Kchannels.py. 
+
+#channels=("K1:IMC-CAV_TRANS_OUT_DQ" "K1:IMC-CAV_REFL_OUT_DQ")
+
+channels=(${LAS_IMC[@]})
+channels+=(${SEIS_IXV[@]})
+
+suffix=(".mean" ".max" ".min")
+
+gpsstarts=("1237888878" "1237923078")  # array of starting times
+gpsends=("1237889878" "1237924078")  # array of ending times
+
+# default is to use minutes trend. second trend or full data can be used with following flags. Please set one of them true and set the others false. Or it will give warning message and exit. 
+
+data="minute"
+#data="second"
+#data="full"
+
+# For locked segments bar plot.
+lock=true
+
+lchannel="K1:GRD-IO_STATE_N.mean"  #guardian channel
+lnumber=99  #number of the required state
+llabel='IMC_LSC'  #y-axis label for the bar plot.
 
 # Set the output directory.
 
@@ -58,19 +87,6 @@ echo "python $py \$@"
 
 chmod u+x $run
 
-# Define variables.
-
-source mylib/Kchannels.sh  #  This shell script includes some channel lists. If you need new list, please see mylib/Kchannels.py. 
-
-#channels=("K1:IMC-CAV_TRANS_OUT_DQ" "K1:IMC-CAV_REFL_OUT_DQ")
-
-channels=(${LAS_IMC[@]})
-channels+=(${SEIS_IXV[@]})
-
-suffix=(".mean" ".max" ".min")
-
-gpsstarts=("1237888878" "1237923078")  # array of starting times
-gpsends=("1237889878" "1237924078")  # array of ending times
 
 # Write a file for condor submission.
 
@@ -85,9 +101,21 @@ echo ""
 echo "should_transfer_files = YES"
 echo "when_to_transfer_output = ON_EXIT"
 echo ""
-} > job_${name}_${channels[0]}_${gpsstart[0]}.sdf
+} > job_${name}.sdf
 
 # Loop over each plot. 
+option=""
+if [ lock ] ; then
+    option+=" -l ${lchannel} -n ${lnumber} --llabel ${llabel}"
+fi
+echo $data
+if [ $data = "minute" ] ; then
+    option+=" -d minute"
+elif [ $data = "second" ] ; then
+    option+=" -d second"
+elif [ $data = "full" ] ; then
+    option+=" -d full"
+fi
 
 for channel in ${channels[@]}; do
     for i in ${!gpsstarts[@]}; do
@@ -95,20 +123,22 @@ for channel in ${channels[@]}; do
 	for s in ${suffix[@]}; do
 	    chlist+=( $channel$s )
 	done
+
 	{
 	    # Please try
 	    #  $ python batch_spectrum.py -h
 	    # for option detail.
-	    echo "Arguments = -c ${chlist[@]} -s ${gpsstarts[i]} -e ${gpsends[i]} -o ${outdir} -i ${index} "
+
+	    echo "Arguments = -c ${chlist[@]} -s ${gpsstarts[i]} -e ${gpsends[i]} -o ${outdir} -i ${index} ${option}"
 	    echo "Output       = log/out_\$(Cluster).\$(Process).txt"
 	    echo "Error        = log/err_\$(Cluster).\$(Process).txt"
 	    echo "Log          = log/log_\$(Cluster).\$(Process).txt"
 	    echo "Queue"
-	} >> job_${name}_${channels[0]}_${gpsstart[0]}.sdf
+	} >> job_${name}.sdf
     done
 done
 
 # Submit job into condor.
 
-echo job_${name}_${channels[0]}_${gpsstart[0]}.sdf
-condor_submit job_${name}_${channels[0]}_${gpsstart[0]}.sdf
+echo job_${name}.sdf
+condor_submit job_${name}.sdf

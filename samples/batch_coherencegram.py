@@ -30,6 +30,10 @@ parser.add_argument('-f','--fftlength',help='FFT length.',type=float,default=1.)
 parser.add_argument('--stride',help='Stride of the coherencegram.',type=float,default=10.)
 parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
 
+parser.add_argument('-l','--lchannel',help='Make locked segment bar plot.',default='')
+parser.add_argument('--llabel',help='Label of the locked segment bar plot.',default='')
+parser.add_argument('-n','--lnumber',help='The requirement for judging locked. lchannel==lnumber will be used as locked.',default=99,type=int)
+
 # define variables
 args = parser.parse_args()
 outdir=args.outdir
@@ -45,6 +49,13 @@ index=args.index
 stride=args.stride
 fft=args.fftlength
 ol=fft/2.  #  overlap in FFTs. 
+
+lchannel = args.lchannel
+lnumber = args.lnumber
+llabel = args.llabel
+
+# If lflag is True, locked segments is plotted.            
+lflag = bool(lchannel)
 
 if fft > stride/2.:
     print('Warning: stride is shorter than fft length. Set stride=fft*2.')
@@ -77,6 +88,14 @@ ax.set_title(latexrefchname + ' ' + latexchname)
 ax.set_ylim(0.1,1000)
 
 cohplot.add_colorbar(cmap='YlGnBu_r',label='Coherence')
+
+if lflag:
+    ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
+    locked = ldata == lnumber
+    flag = locked.to_dqflag(name = '', label = llabel, round = True)
+    plot.add_state_segments(flag)
+else:
+    pass
 
 fname = outdir + refchannel + '_' + channel + '_coherence_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
 cohplot.savefig(fname)

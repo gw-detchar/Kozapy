@@ -63,6 +63,14 @@ It has convenient functions.
   They make coherence plots in batch job. 
   Please see the description for batch job for whitening spectrum to learn how to use them. 
   
+#### batch_timeseries.py, condor_jobfile_timeseries.sh, run_timeseries.sh
+  They make timeseries plots in batch job. 
+  Please see the description for batch job for whitening spectrum to learn how to use them. 
+  
+#### batch_spectrum.py, condor_jobfile_spectrum.sh, run_spectrum.sh
+  They make spectrum plots in batch job. 
+  Please see the description for batch job for whitening spectrum to learn how to use them. 
+  
 ## Tips for condor
 
 ##### ジョブファイルの例

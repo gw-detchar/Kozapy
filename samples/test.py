@@ -1,9 +1,22 @@
-from mylib import ck
+from gwpy.timeseries import TimeSeries
+from gwpy.segments import DataQualityFlag
+from mylib import mylib
 
-files=ck.GetStrendFilelist('1230111111','1230121111')
 
-print(files)
+lchannel='K1:GRD-IO_STATE_N'
+gpsstart = '1237888878'
+gpsend = '1237892078'
 
-from mylib import Kchannels as K1
+lnumber=99
+llabel='IMC_LSC'
+sources=mylib.GetFilelist(gpsstart,gpsend)
 
-print(K1.PEM_PSL_old)
+ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
+print(ldata)
+locked = ldata == lnumber
+print(locked)
+flag = locked.to_dqflag(name = '', label = llabel, round = True)
+plot = flag.plot()
+plot.show()
+
+plot.close()

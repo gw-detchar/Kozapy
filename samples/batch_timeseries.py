@@ -1,4 +1,4 @@
-'''Make spectrogram.
+'''Make timeseries.
 '''
 
 __author__ = "Chihiro Kozakai"
@@ -23,13 +23,12 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Make coherencegram.')
 parser.add_argument('-o','--outdir',help='output directory.',default='result')
-parser.add_argument('-c','--channel',help='channel.',required=True)
+parser.add_argument('-c','--channel',help='channel list.',nargs='*',required=True)
 parser.add_argument('-s','--gpsstart',help='GPS starting time.',required=True)
 parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True
 )
-parser.add_argument('-f','--fftlength',help='FFT length.',type=float,default=1.)
-parser.add_argument('--stride',help='Stride of the coherencegram.',type=float,default=10.)
 parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
+parser.add_argument('-p','--lposition',help='Legend position. Choice is \'br\'(bottom right), \'bl\'(bottom left), \'tr\'(top right), or \'tl\'(top left), .',default='tr',choices=['br','bl','tr','tl'])
 
 parser.add_argument('-l','--lchannel',help='Make locked segment bar plot.',default='')
 parser.add_argument('--llabel',help='Label of the locked segment bar plot.',default='')
@@ -38,66 +37,56 @@ parser.add_argument('-n','--lnumber',help='The requirement for judging locked. l
 
 # define variables
 args = parser.parse_args()
-outdir=args.outdir
+outdir = args.outdir
 
-channel=args.channel
-latexchname = channel.replace('_','\_')
+channel = args.channel
 
-gpsstart=args.gpsstart
-gpsend=args.gpsend
-index=args.index
-stride=args.stride
-fft=args.fftlength
-ol=fft/2.  #  overlap in FFTs. 
+latexchnames = [c.replace('_','\_') for c in channel]
 
-lchannel=args.lchannel
-lnumber=args.lnumber
-llabel=args.llabel
+gpsstart = args.gpsstart
+gpsend = args.gpsend
+index = args.index
 
-lflag=bool(lchannel)
+lposition=args.lposition
 
-if fft*2. > stride:
-    print('Warning: stride is shorter than fft length. Set stride=fft*2.')
-    stride=fft*2.
-    
-unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
-if channel.find('ACC') != -1:
-    unit = r'Acceleration [$m/s^2$]'
-elif channel.find('MIC') != -1:
-    unit = 'Sound [Pa]'
+lchannel = args.lchannel
+lnumber = args.lnumber
+llabel = args.llabel
+
+# If lflag is True, locked segments is plotted. 
+lflag = bool(lchannel)
 
 # Get data from frame files
-    
-sources = mylib.GetFilelist(gpsstart,gpsend)
+sources = mylib.GetMtrendFilelist(gpsstart,gpsend)
 
-data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
+unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
+if channel[0].find('ACC') != -1:
+    unit = r'Acceleration [$m/s^2$]'
+elif channel[0].find('MIC') != -1:
+    unit = 'Sound [Pa]'
 
-white = data.whiten(fftlength=fft,overlap=ol)
-whitespectrogram = white.spectrogram(1,fftlength=fft,overlap=ol)
+data = TimeSeriesDict.read(sources,channel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
+print(data)
+plot=data.plot(figsize = (12, 8))
 
-sgplot=whitespectrogram.plot(figsize = (12, 8))
-
-ax = sgplot.gca()
-ax.set_ylabel('Frequency [Hz]')
-ax.set_yscale('log')
-ax.set_title(latexchname)
-ax.set_ylim(0.1,1000)
-
-sgplot.add_colorbar(cmap='YlGnBu_r',label='Arbitrary')
+ax = plot.gca()
+ax.set_ylabel(unit)
+#ax.set_yscale('log')
+ax.legend(latexchnames,bbox_to_anchor = mylib.GetBBTA(lposition),loc=mylib.Getloc(lposition),borderaxespad=1)
 
 if lflag:
     ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
     locked = ldata == lnumber
     flag = locked.to_dqflag(name = '', label = llabel, round = True)
-    sgplot.add_state_segments(flag)
+    plot.add_state_segments(flag)
 else:
     pass
 
-fname = outdir + '/' + channel + '_whiteningspectrogram_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
-sgplot.savefig(fname)
+fname = outdir + '/' + channel[0] + '_timeseries_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
+plot.savefig(fname)
 
-sgplot.clf()
-sgplot.close()
+plot.clf()
+plot.close()
 
 print(fname)
 print('Successfully finished !')

@@ -59,8 +59,8 @@ It has convenient functions.
   To use it, add options of 
   -l 'guardian channel' -n number of required state --llabel optional, for ytitle
   ex) -l 'K1:GRD-IO_STATE_N' -n 99 --llabel 'IMC_LSC'
-#### batch_coherence.py, condor_jobfile_coherence.sh, run_coherence.sh
-  They make coherence plots in batch job. 
+#### batch_coherencegram.py, condor_jobfile_coherencegram.sh, run_coherencegram.sh
+  They make coherencegram plots in batch job. 
   Please see the description for batch job for whitening spectrum to learn how to use them. 
   
 #### batch_timeseries.py, condor_jobfile_timeseries.sh, run_timeseries.sh

@@ -38,7 +38,7 @@ lnumber=99  #number of the required state
 llabel='IMC_LSC'  #y-axis label for the bar plot.
 # Set the output directory.
 
-name="coherence"
+name="coherencegram"
   
 if [ $condir = "" ]; then
     condir=$PWD
@@ -61,7 +61,7 @@ fi
 
 run="$PWD/run_${name}.sh"
 py="$PWD/batch_${name}.py"
-#py="~/batch_coherence.py"  # For the case you use non-conventional python script name.
+#py="~/batch_coherencegram.py"  # For the case you use non-conventional python script name.
 
 {
 echo "#!/bin/bash"

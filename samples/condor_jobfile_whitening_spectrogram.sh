@@ -30,6 +30,7 @@ channels+=(${SEIS_IXV[@]})
 gpsstarts=("1237888878" "1237923078")  # array of starting times
 gpsends=("1237888978" "1237923178")  # array of ending times
 
+whitening=true
 
 # Set the output directory.
 
@@ -88,6 +89,8 @@ echo ""
 } > job_${name}.sdf
 
 # Loop over each plot. 
+
+
 
 for channel in ${channels[@]}; do
     for i in ${!gpsstarts[@]}; do

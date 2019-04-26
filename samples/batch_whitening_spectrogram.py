@@ -28,8 +28,9 @@ parser.add_argument('-s','--gpsstart',help='GPS starting time.',required=True)
 parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True
 )
 parser.add_argument('-f','--fftlength',help='FFT length.',type=float,default=1.)
-parser.add_argument('--stride',help='Stride of the coherencegram.',type=float,default=10.)
+parser.add_argument('--stride',help='Stride of the spectrogram.',type=float,default=10.)
 parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
+parser.add_argument('-w','--whitening',help='Apply whitening.',action='store_true')
 
 parser.add_argument('-l','--lchannel',help='Make locked segment bar plot.',default='')
 parser.add_argument('--llabel',help='Label of the locked segment bar plot.',default='')
@@ -55,6 +56,7 @@ lnumber=args.lnumber
 llabel=args.llabel
 
 lflag=bool(lchannel)
+whitening=args.whitening
 
 if fft*2. > stride:
     print('Warning: stride is shorter than fft length. Set stride=fft*2.')
@@ -72,16 +74,23 @@ sources = mylib.GetFilelist(gpsstart,gpsend)
 
 data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
 
-white = data.whiten(fftlength=fft,overlap=ol)
-whitespectrogram = white.spectrogram(1,fftlength=fft,overlap=ol)
-
-sgplot=whitespectrogram.plot(figsize = (12, 8))
+if whitening:
+    white = data.whiten(fftlength=fft,overlap=ol)
+    whitespectrogram = white.spectrogram(1,fftlength=fft,overlap=ol)
+    
+    sgplot=whitespectrogram.plot(figsize = (12, 8))
+else:
+    spectrogram = data.spectrogram(1,fftlength=fft,overlap=ol)
+    sgplot=spectrogram.plot
 
 ax = sgplot.gca()
 ax.set_ylabel('Frequency [Hz]')
-ax.set_yscale('log')
 ax.set_title(latexchname)
-ax.set_ylim(0.1,1000)
+
+if whitening:
+    pass
+else:
+    ax.set_yscale('log')
 
 sgplot.add_colorbar(cmap='YlGnBu_r',label='Arbitrary')
 
@@ -92,8 +101,11 @@ if lflag:
     sgplot.add_state_segments(flag)
 else:
     pass
+if whitening:
+    fname = outdir + '/' + channel + '_whiteningspectrogram_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
+else:
+    fname = outdir + '/' + channel + '_spectrogram_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
 
-fname = outdir + '/' + channel + '_whiteningspectrogram_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
 sgplot.savefig(fname)
 
 sgplot.clf()

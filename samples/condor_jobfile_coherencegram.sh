@@ -94,7 +94,7 @@ echo ""
 } > job_${name}.sdf
 
 option=""
-if [ lock ] ; then
+if "${lock}" ; then
     option+=" -l ${lchannel} -n ${lnumber} --llabel ${llabel}"
 fi
 

@@ -32,6 +32,7 @@ gpsends=("1237888978" "1237923178")  # array of ending times
 
 whitening=true
 
+
 # Set the output directory.
 
 name="whitening_spectrogram"
@@ -90,7 +91,10 @@ echo ""
 
 # Loop over each plot. 
 
-
+option=""
+if "${lock}" ; then
+    option+=" -l ${lchannel} -n ${lnumber} --llabel ${llabel}"
+fi
 
 for channel in ${channels[@]}; do
     for i in ${!gpsstarts[@]}; do

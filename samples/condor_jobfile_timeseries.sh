@@ -37,6 +37,7 @@ data="minute"
 
 # For locked segments bar plot.
 lock=true
+#lock=false
 
 lchannel="K1:GRD-IO_STATE_N.mean"  #guardian channel
 lnumber=99  #number of the required state
@@ -100,8 +101,10 @@ echo ""
 
 # Loop over each plot. 
 option=""
-if [ lock ] ; then
+if "${lock}" ; then
     option+=" -l ${lchannel} -n ${lnumber} --llabel ${llabel}"
+else
+    echo "lock is false."
 fi
 
 if [ $data = "minute" ] ; then
@@ -132,4 +135,4 @@ done
 # Submit job into condor.
 
 echo job_${name}.sdf
-condor_submit job_${name}.sdf
+#condor_submit job_${name}.sdf

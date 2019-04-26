@@ -5,16 +5,19 @@
 #
 # $condir will be used as output directory.
 #
-# Recommendation: 
+# Requirement:
 # 
-# In python script, package Kozapy/samples/mylib/ is reuired.
+# In python script used in this condor job, package Kozapy/samples/mylib/ is reuired.
 # Please make symbolic link in your working directory like this. 
 # $ ln -s /path/to/Kozapy/samples/mylib/ mylib
+#
+# Recommendation: 
 #
 # Edit your ~/.bashrc file and insert the output directory.
 #  export condir=~/path/to/output/directory/
 # If $condir is empty, current directory will be used.
 ################################################################
+
 # Define variables.
 
 # $index will be added to the output file name to distinguish from others. 
@@ -22,16 +25,24 @@ index="190409"
 
 source mylib/Kchannels.sh  #  This shell script includes some channel lists. If you need new list, please see mylib/Kchannels.py. 
 
-#channels=("K1:IMC-CAV_TRANS_OUT_DQ" "K1:IMC-CAV_REFL_OUT_DQ")
+channels=("K1:IMC-CAV_TRANS_OUT_DQ" "K1:IMC-CAV_REFL_OUT_DQ")
 
-channels=(${LAS_IMC[@]})
-channels+=(${SEIS_IXV[@]})
+#channels=(${LAS_IMC[@]})
+#channels+=(${SEIS_IXV[@]})
 
 gpsstarts=("1237888878" "1237923078")  # array of starting times
 gpsends=("1237888978" "1237923178")  # array of ending times
 
 whitening=true
+#whitening=false
 
+# For locked segments bar plot.                        
+lock=true
+#lock=false                                            
+
+lchannel="K1:GRD-IO_STATE_N"  #guardian channel   
+lnumber=99  #number of the required state              
+llabel='IMC_LSC'  #y-axis label for the bar plot. 
 
 # Set the output directory.
 
@@ -92,8 +103,13 @@ echo ""
 # Loop over each plot. 
 
 option=""
+
 if "${lock}" ; then
     option+=" -l ${lchannel} -n ${lnumber} --llabel ${llabel}"
+fi
+
+if "${whitening}" ; then
+    option+=" -w"
 fi
 
 for channel in ${channels[@]}; do
@@ -102,7 +118,7 @@ for channel in ${channels[@]}; do
 	    # if you need, you can use argument of -f (FFT length) and --stride (stride of the spectrogram). Please try 
 	    #  $ python batch_spectrum.py -h
 	    # for detail.
-	    echo "Arguments = -c ${channel} -s ${gpsstarts[i]} -e ${gpsends[i]} -o ${outdir} -i ${index} "
+	    echo "Arguments = -c ${channel} -s ${gpsstarts[i]} -e ${gpsends[i]} -o ${outdir} -i ${index} ${option}"
 	    echo "Output       = log/out_\$(Cluster).\$(Process).txt"
 	    echo "Error        = log/err_\$(Cluster).\$(Process).txt"
 	    echo "Log          = log/log_\$(Cluster).\$(Process).txt"

@@ -14,7 +14,7 @@ Script for making a cache file.
 Making libraries. 
 ###### Kchannels.py, Kchannel.sh
 Channel lists are given. If you want to add new list, first write it in the python file and then copy and paste the last 2 lines replacing channel name to your new channnel list. Please do "python Kchannels.py", and you will get Kchannel.sh with new list. it can be used by exporting.
-###### ck.py
+###### mylib.py
 It has convenient functions. 
 
 #### example_plot.py
@@ -31,6 +31,9 @@ It has convenient functions.
 
 #### checkfile.py
   Check if frame file for given time span is not missing. The missing time is written down in a txt file.
+
+#### chlist.sh
+  Make channel lists file for condor_jobfile_*.sh.
 
 #### batch_whitening_spectrogram.py, condor_jobfile_whiteningspectrogram.sh, run_whitening_spectrogram.sh, successcheck.sh
   They are scripts for batch job of condor. 
@@ -59,6 +62,7 @@ It has convenient functions.
   To use it, add options of 
   -l 'guardian channel' -n number of required state --llabel optional, for ytitle
   ex) -l 'K1:GRD-IO_STATE_N' -n 99 --llabel 'IMC_LSC'
+
 #### batch_coherencegram.py, condor_jobfile_coherencegram.sh, run_coherencegram.sh
   They make coherencegram plots in batch job. 
   Please see the description for batch job for whitening spectrum to learn how to use them. 

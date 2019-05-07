@@ -93,7 +93,7 @@ if lflag:
     ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
     locked = ldata == lnumber
     flag = locked.to_dqflag(name = '', label = llabel, round = True)
-    plot.add_state_segments(flag)
+    cohplot.add_state_segments(flag)
 else:
     pass
 

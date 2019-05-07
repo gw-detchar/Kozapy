@@ -18,7 +18,7 @@
 # Define variables.
 
 # $index will be added to the output file name to distinguish from others. 
-index="190409"
+index="190507"
 
 source mylib/Kchannels.sh  #  This shell script includes some channel lists. If you need new list, please see mylib/Kchannels.py. 
 

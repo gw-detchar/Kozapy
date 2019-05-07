@@ -18,9 +18,9 @@ if [ ! -e $tmp ]; then
     # First line has to be ended by        } > $tmp
     # The other lines have to be ended by  } >> $tmp
 
-    {
-	echo ${SEIS_IXV[@]} ${LAS_IMC[@]}
-    } > $tmp
+#    {
+#	echo ${SEIS_IXV[@]} ${LAS_IMC[@]}
+#    } > $tmp
 
     {
 	channel=${LAS_IMC[@]}

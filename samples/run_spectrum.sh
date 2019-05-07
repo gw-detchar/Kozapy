@@ -5,4 +5,4 @@
 # If you need to change, please edit condor_jobfile_spectrum.sh.
 
 echo $@
-python /Users/kozakai/Documents/GitHub/Kozapy/samples/batch_spectrum.py $@
+python /home/chihiro.kozakai/detchar/analysis/code/gwpy/Kozapy/samples/batch_spectrum.py $@

@@ -46,6 +46,7 @@ data.write('timeseries.txt')
 
 # Transform to frequency series
 spectrum = data.psd()
+#spectrum = data.asd()
 
 fplot = spectrum.plot()
 fplot.savefig('result_frequencyseries.png')
@@ -56,8 +57,12 @@ spectrum.write('frequencyseries.txt')
 # Transform to spectrogram
 fft=8
 ol=fft/2.
-sg = data.spectrogram(20,fftlength=fft,overlap=ol)
+stride=20
+sg = data.spectrogram(stride,fftlength=fft,overlap=ol) ** (1/2.)
 # 1 is time bin width in sec.
+# spectrogram() returns Power Spectrum Density. To get Amplitude Spectrum Dendity,  ** (1/2.) is added.
+# spectrogram2 will give accumulated result.
+#sg = data.spectrogram2(20,fftlength=fft,overlap=ol) ** (1/2.)
 
 ftplot = sg.plot(norm='log',vmin=1e-6, vmax=1)
 ax1 = ftplot.gca()

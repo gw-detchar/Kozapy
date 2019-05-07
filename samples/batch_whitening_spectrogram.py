@@ -80,12 +80,12 @@ data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=int(gpsstart)
 if whitening:
     print('Whitening applied.')
     white = data.whiten(fftlength=fft,overlap=ol)
-    whitespectrogram = white.spectrogram(1,fftlength=fft,overlap=ol)
+    whitespectrogram = white.spectrogram(1,fftlength=fft,overlap=ol) ** (1/2.)
 
     sgplot=whitespectrogram.plot(figsize = (12, 8))
 else:
     print('Not whitening applied.')
-    spectrogram = data.spectrogram(1,fftlength=fft,overlap=ol)
+    spectrogram = data.spectrogram(1,fftlength=fft,overlap=ol) ** (1/2.)
     sgplot=spectrogram.plot(figsize = (12, 8),norm='log')
 
 ax = sgplot.gca()

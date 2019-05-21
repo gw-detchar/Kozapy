@@ -81,6 +81,87 @@ def GetStrendFilelist(gpsstart,gpsend):
 
     return sources
 
+def GetFilelist_Kamioka(gpsstart,gpsend):
+    '''
+    This function gives full data frame file list for Kashiwa server.
+    '''
+
+    sources = []
+
+    for i in range(int(gpsstart[0:5]),int(gpsend[0:5])+1):
+        dir = '/frame0/full/' + str(i) + '/*'
+        source = glob.glob(dir)
+        sources.extend(source)
+        
+    sources.sort()
+        
+    removelist = []
+
+    for x in sources:
+        if int(x[26:36])<(int(gpsstart)-31):
+            removelist.append(x)
+        if int(x[26:36])>int(gpsend):
+            removelist.append(x)
+
+    for y in removelist:
+        sources.remove(y)
+
+    return sources
+
+def GetMtrendFilelist_Kamioka(gpsstart,gpsend):
+    '''
+    This function gives minutes trend data frame file list.
+    '''
+
+    sources = []
+
+    for i in range(int(gpsstart[0:5]),int(gpsend[0:5])+1):
+        dir = '/frame0/trend/minute/' + str(i) + '/*'
+        source = glob.glob(dir)
+        sources.extend(source)
+        
+    sources.sort()
+        
+    removelist = []
+
+    for x in sources:
+        if int(x[34:44])<(int(gpsstart)-3599):
+            removelist.append(x)
+        if int(x[34:44])>int(gpsend):
+            removelist.append(x)
+
+    for y in removelist:
+        sources.remove(y)
+
+    return sources
+
+def GetStrendFilelist_Kamioka(gpsstart,gpsend):
+    '''
+    This function gives second trend data frame file list.
+    '''
+
+    sources = []
+
+    for i in range(int(gpsstart[0:5]),int(gpsend[0:5])+1):
+        dir = '/frame0/trend/second/' + str(i) + '/*'
+        source = glob.glob(dir)
+        sources.extend(source)
+        
+    sources.sort()
+        
+    removelist = []
+
+    for x in sources:
+        if int(x[34:44])<(int(gpsstart)-3599):
+            removelist.append(x)
+        if int(x[34:44])>int(gpsend):
+            removelist.append(x)
+
+    for y in removelist:
+        sources.remove(y)
+
+    return sources
+
 def GetLegend(ltype,gpsstart,gpsend,channel):
     '''
     It gives string for legend description.

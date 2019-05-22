@@ -22,16 +22,17 @@ IMC = ['K1:IMC-CAV_REFL_OUT_DQ',
        'K1:IMC-SERVO_SLOW_DAQ_OUT_DQ',
        'K1:IMC-MCL_SERVO_OUT_DQ']
 
-PEM_IMC = ['K1:PEM-SEIS_MCE_GND_EW_IN1_DQ',
+PEM_IMC =  ['K1:PEM-ACC_MCF_TABLE_IMCREFL_Z_OUT_DQ',
+           'K1:PEM-MIC_MCF_TABLE_IMCREFL_Z_OUT_DQ',
+           'K1:PEM-MIC_MCE_TABLE_IMCTRANS_Z_OUT_DQ']
+
+SEIS_IMC = ['K1:PEM-SEIS_MCE_GND_EW_IN1_DQ',
            'K1:PEM-SEIS_MCE_GND_NS_IN1_DQ',
            'K1:PEM-SEIS_MCE_GND_UD_IN1_DQ',
            'K1:PEM-SEIS_MCF_GND_EW_IN1_DQ',
            'K1:PEM-SEIS_MCF_GND_NS_IN1_DQ',
-           'K1:PEM-SEIS_MCF_GND_UD_IN1_DQ',
-           'K1:PEM-ACC_MCF_TABLE_IMCREFL_Z_OUT_DQ',
-           'K1:PEM-MIC_MCF_TABLE_IMCREFL_Z_OUT_DQ',
-           'K1:PEM-MIC_MCE_TABLE_IMCTRANS_Z_OUT_DQ']
-
+           'K1:PEM-SEIS_MCF_GND_UD_IN1_DQ']
+           
 SEIS_IXV = ['K1:PEM-SEIS_IXV_GND_EW_IN1_DQ',
            'K1:PEM-SEIS_IXV_GND_NS_IN1_DQ',
            'K1:PEM-SEIS_IXV_GND_UD_IN1_DQ']
@@ -66,6 +67,8 @@ PEM_PSL = ['K1:PEM-ACC_PSL_TABLE_PSL1_Z_OUT_DQ',
            'K1:PEM-ACC_PSL_TABLE_PSL3_Z_OUT_DQ',
            'K1:PEM-ACC_PSL_PERI_PSL1_Y_OUT_DQ',
            'K1:PEM-ACC_PSL_PERI_PSL2_X_OUT_DQ',
+           'K1:PEM-ACC_PSL_PORTABLE_1_OUT_DQ',
+           'K1:PEM-ACC_PSL_PORTABLE_2_OUT_DQ',
            'K1:PEM-MIC_PSL_TABLE_PSL4_Z_OUT_DQ']
 
 PEM_PSL_old = ['K1:PEM-PSL_ACC_PERI_REFCAV_OUT_DQ',
@@ -110,10 +113,16 @@ if __name__ == '__main__':
     str = "export SEIS_IXV=(\"" + "\" \"".join(SEIS_IXV) + "\" )\n"
     file.write(str)
 
+    str = "export VIS_IMC=(\"" + "\" \"".join(VIS_IMC) + "\" )\n"
+    file.write(str)
+
     str = "export PSL_PMC=(\"" + "\" \"".join(PSL_PMC) + "\" )\n"
     file.write(str)
 
     str = "export PSL_FSS=(\"" + "\" \"".join(PSL_FSS) + "\" )\n"
+    file.write(str)
+
+    str = "export PEM_PSL=(\"" + "\" \"".join(PEM_PSL) + "\" )\n"
     file.write(str)
 
     str = "export PEM_PSL_old=(\"" + "\" \"".join(PEM_PSL_old) + "\" )\n"

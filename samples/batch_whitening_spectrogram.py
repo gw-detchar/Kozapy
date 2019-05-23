@@ -36,7 +36,7 @@ parser.add_argument('-i','--index',help='It will be added to the output file nam
 parser.add_argument('-l','--lchannel',help='Make locked segment bar plot.',default='')
 parser.add_argument('--llabel',help='Label of the locked segment bar plot.',default='')
 parser.add_argument('-n','--lnumber',help='The requirement for judging locked. lchannel==lnumber will be used as locked.',default=99,type=int)
-
+parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',action='store_true')
 
 # define variables
 args = parser.parse_args()
@@ -61,6 +61,8 @@ llabel=args.llabel
 
 lflag=bool(lchannel)
 
+kamioka = args.kamioka
+
 if fft*2. > stride:
     print('Warning: stride is shorter than fft length. Set stride=fft*2.')
     stride=fft*2.
@@ -72,8 +74,10 @@ elif channel.find('MIC') != -1:
     unit = 'Sound [Pa]'
 
 # Get data from frame files
-    
-sources = mylib.GetFilelist(gpsstart,gpsend)
+if kamioka:
+    sources = mylib.GetFilelist_Kamioka(gpsstart,gpsend)
+else:
+    sources = mylib.GetFilelist(gpsstart,gpsend)
 
 data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
 

@@ -29,6 +29,7 @@ parser.add_argument('-t','--ltype',help='Legend type. Choice is \'time\', \'chan
 parser.add_argument('-p','--lposition',help='Legend position. Choice is \'br\'(bottom right), \'bl\'(bottom left), \'tr\'(top right), or \'tl\'(top left), .',default='tr',choices=['br','bl','tr','tl'])
 parser.add_argument('-f','--fftlength',help='FFT length.',type=float,default=1.)
 parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
+parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',action='store_true')
 
 # define variables
 args = parser.parse_args()
@@ -42,6 +43,8 @@ ol=fft/2.  #  overlap in FFTs.
 
 ltype=args.ltype
 lposition=args.lposition
+
+kamioka = args.kamioka
 
 # Loop over channels and gps times.
 isFirst = True
@@ -58,7 +61,10 @@ for channel in channels:
 
     for gpsstart,gpsend in zip(gpsstarts,gpsends):
 
-        sources = mylib.GetFilelist(gpsstart,gpsend)
+        if kamioka:
+            sources = mylib.GetFilelist_Kamioka(gpsstart,gpsend)
+        else:
+            sources = mylib.GetFilelist(gpsstart,gpsend)
 
         data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
 
@@ -79,7 +85,7 @@ for channel in channels:
 
 ax.legend(legend,bbox_to_anchor = mylib.GetBBTA(lposition),loc=mylib.Getloc(lposition),borderaxespad=1)
 
-fname = outdir + '/' + channel + '_' + gpsstart +  '_spectrum_' + index + '.png'
+fname = outdir + '/' + channel + '_spectrum_' + gpsstart +  '_' + index + '.png'
 fplot.savefig(fname)
 fplot.clf()
 fplot.close()

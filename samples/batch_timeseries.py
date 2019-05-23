@@ -33,6 +33,7 @@ parser.add_argument('-p','--lposition',help='Legend position. Choice is \'br\'(b
 parser.add_argument('-l','--lchannel',help='Make locked segment bar plot.',default='')
 parser.add_argument('--llabel',help='Label of the locked segment bar plot.',default='')
 parser.add_argument('-n','--lnumber',help='The requirement for judging locked. lchannel==lnumber will be used as locked.',default=99,type=int)
+parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',action='store_true')
 
 # define variables
 args = parser.parse_args()
@@ -54,16 +55,26 @@ lchannel = args.lchannel
 lnumber = args.lnumber
 llabel = args.llabel
 
+kamioka = args.kamioka
+
 # If lflag is True, locked segments is plotted. 
 lflag = bool(lchannel)
 
 # Get data from frame files
-if datatype == 'minute':
-    sources = mylib.GetMtrendFilelist(gpsstart,gpsend)
-elif datatype == 'second':
-    sources = mylib.GetStrendFilelist(gpsstart,gpsend)
-if datatype == 'full':
-    sources = mylib.GetFilelist(gpsstart,gpsend)
+if kamioka:
+    if datatype == 'minute':
+        sources = mylib.GetMtrendFilelist_Kamioka(gpsstart,gpsend)
+    elif datatype == 'second':
+        sources = mylib.GetStrendFilelist_Kamioka(gpsstart,gpsend)
+    elif datatype == 'full':
+        sources = mylib.GetFilelist_Kamioka(gpsstart,gpsend)
+else:
+    if datatype == 'minute':
+        sources = mylib.GetMtrendFilelist(gpsstart,gpsend)
+    elif datatype == 'second':
+        sources = mylib.GetStrendFilelist(gpsstart,gpsend)
+    elif datatype == 'full':
+        sources = mylib.GetFilelist(gpsstart,gpsend)
 
 unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
 if channel[0].find('ACC') != -1:

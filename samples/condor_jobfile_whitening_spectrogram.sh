@@ -36,6 +36,9 @@ gpsends=("1237888978" "1237923178")  # array of ending times
 whitening=true
 #whitening=false
 
+#kamioka=true
+kamioka=false 
+
 # For locked segments bar plot.                        
 lock=true
 #lock=false                                            
@@ -103,6 +106,9 @@ echo ""
 # Loop over each plot. 
 
 option=""
+if "${kamioka}" ; then
+    option+=" -k"
+fi
 
 if "${lock}" ; then
     option+=" -l ${lchannel} -n ${lnumber} --llabel ${llabel}"

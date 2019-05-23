@@ -35,6 +35,9 @@ data="minute"
 #data="second"
 #data="full"
 
+#kamioka=true
+kamioka=false
+
 # For locked segments bar plot.
 lock=true
 #lock=false
@@ -101,6 +104,11 @@ echo ""
 
 # Loop over each plot. 
 option=""
+
+if "${kamioka}" ; then
+        option+=" -k"
+fi
+
 if "${lock}" ; then
     option+=" -l ${lchannel} -n ${lnumber} --llabel ${llabel}"
 else

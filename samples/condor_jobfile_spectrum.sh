@@ -29,6 +29,9 @@ channels="chlist.dat"
 gpsstart=("1237888878" "1237923078")
 gpsend=("1237888978" "1237923178")
 
+#kamioka=true
+kamioka=false  
+
 # Set the output directory.
 
 name="spectrum"
@@ -87,6 +90,12 @@ echo ""
 
 # Loop over each plot. 
 
+# Loop over each plot.                                                  
+option=""
+if "${kamioka}" ; then
+    option+=" -k"
+fi
+
 cat $channels | while read chlist
 do
     {
@@ -95,7 +104,7 @@ do
     #  $ python batch_spectrum.py -h
     # for detail.
 #    echo "Arguments = -c ${chlist} -s ${gpsstart[@]} -e ${gpsend[@]} -o ${outdir} -i ${index} -t time"
-    echo "Arguments = -c ${chlist} -s ${gpsstart[@]} -e ${gpsend[@]} -o ${outdir} -i ${index} -t combined"
+    echo "Arguments = -c ${chlist} -s ${gpsstart[@]} -e ${gpsend[@]} -o ${outdir} -i ${index} -t combined ${option}"
     echo "Output       = log/out_\$(Cluster).\$(Process).txt"
     echo "Error        = log/err_\$(Cluster).\$(Process).txt"
     echo "Log          = log/log_\$(Cluster).\$(Process).txt"

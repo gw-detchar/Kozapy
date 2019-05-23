@@ -30,6 +30,9 @@ channels+=(${SEIS_IXV[@]})
 gpsstarts=("1237888878" "1237923078")  # array of starting times
 gpsends=("1237888978" "1237923178")  # array of ending times
 
+#kamioka=true
+kamioka=false  
+
 # For locked segments bar plot.                            
 lock=true
 
@@ -94,6 +97,10 @@ echo ""
 } > job_${name}.sdf
 
 option=""
+if "${kamioka}" ; then
+    option+=" -k"
+fi
+
 if "${lock}" ; then
     option+=" -l ${lchannel} -n ${lnumber} --llabel ${llabel}"
 fi

@@ -85,7 +85,6 @@ def GetFilelist_Kamioka(gpsstart,gpsend):
     '''
     This function gives full data frame file list for Kashiwa server.
     '''
-
     sources = []
 
     for i in range(int(gpsstart[0:5]),int(gpsend[0:5])+1):
@@ -94,7 +93,7 @@ def GetFilelist_Kamioka(gpsstart,gpsend):
         sources.extend(source)
         
     sources.sort()
-        
+
     removelist = []
 
     for x in sources:
@@ -238,3 +237,11 @@ def GetTitlefromLegend(ltype,gpsstart,gpsend,channel):
         print('Warning! Legend type is out of option.')
         return gpsstart + '-' + gpsend
 
+# Filter function for EventTable.
+# Usage: tmpevents=events.filter(('peak_time', in_time,(tmpstart,tmpend)))
+def Islarger(column,target):
+    return (column > target)
+def IsSame(column,target):
+    return (column == target)
+def between(column, interval):
+    return (column >= interval[0]) & (column < interval[1])

@@ -55,6 +55,9 @@ stride=args.stride
 fft=args.fftlength
 ol=fft/2.  #  overlap in FFTs. 
 
+print("fft="+str(fft))
+print("ol="+str(ol))
+print("stride="+str(stride))
 lchannel=args.lchannel
 lnumber=args.lnumber
 llabel=args.llabel
@@ -79,7 +82,17 @@ if kamioka:
 else:
     sources = mylib.GetFilelist(gpsstart,gpsend)
 
-data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
+data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
+
+
+if fft < data.dt.value:
+    fft=2*data.dt.value
+    ol=fft/2.  #  overlap in FFTs. 
+    stride=2*fft
+    print("Given fft/stride was bad against the sampling rate.. Automatically set to:")
+    print("fft="+str(fft))
+    print("ol="+str(ol))
+    print("stride="+str(stride))
 
 if whitening:
     print('Whitening applied.')
@@ -106,7 +119,7 @@ else:
     fname = outdir + '/' + channel + '_spectrogram_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
 
 if lflag:
-    ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
+    ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
     locked = ldata == lnumber
     flag = locked.to_dqflag(name = '', label = llabel, round = True)
     sgplot.add_state_segments(flag)

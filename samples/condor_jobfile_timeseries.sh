@@ -49,8 +49,9 @@ llabel='IMC_LSC'  #y-axis label for the bar plot.
 # Set the output directory.
 
 name="timeseries"
-  
-if [ $condir = "" ]; then
+
+echo $condir 
+if [ "$condir" = "" ]; then
     condir=$PWD
 fi
 

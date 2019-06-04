@@ -36,7 +36,7 @@ kamioka=false
 
 name="spectrum"
   
-if [ $condir = "" ]; then
+if [ "$condir" = "" ]; then
     condir=$PWD
 fi
 

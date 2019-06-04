@@ -4,6 +4,8 @@ def GetFilelist(gpsstart,gpsend):
     '''
     This function gives full data frame file list.
     '''
+    gpsstart=str(int(float(gpsstart)))
+    gpsend=str(int(float(gpsend)))
 
     sources = []
 
@@ -32,6 +34,9 @@ def GetMtrendFilelist(gpsstart,gpsend):
     This function gives minutes trend data frame file list.
     '''
 
+    gpsstart=str(int(float(gpsstart)))
+    gpsend=str(int(float(gpsend)))
+
     sources = []
 
     for i in range(int(gpsstart[0:5]),int(gpsend[0:5])+1):
@@ -59,6 +64,9 @@ def GetStrendFilelist(gpsstart,gpsend):
     This function gives second trend data frame file list.
     '''
 
+    gpsstart=str(int(float(gpsstart)))
+    gpsend=str(int(float(gpsend)))
+
     sources = []
 
     for i in range(int(gpsstart[0:5]),int(gpsend[0:5])+1):
@@ -85,6 +93,9 @@ def GetFilelist_Kamioka(gpsstart,gpsend):
     '''
     This function gives full data frame file list for Kashiwa server.
     '''
+    gpsstart=str(int(float(gpsstart)))
+    gpsend=str(int(float(gpsend)))
+
     sources = []
 
     for i in range(int(gpsstart[0:5]),int(gpsend[0:5])+1):
@@ -111,6 +122,8 @@ def GetMtrendFilelist_Kamioka(gpsstart,gpsend):
     '''
     This function gives minutes trend data frame file list.
     '''
+    gpsstart=str(int(float(gpsstart)))
+    gpsend=str(int(float(gpsend)))
 
     sources = []
 
@@ -138,6 +151,8 @@ def GetStrendFilelist_Kamioka(gpsstart,gpsend):
     '''
     This function gives second trend data frame file list.
     '''
+    gpsstart=str(int(float(gpsstart)))
+    gpsend=str(int(float(gpsend)))
 
     sources = []
 
@@ -164,6 +179,7 @@ def GetStrendFilelist_Kamioka(gpsstart,gpsend):
 def GetLegend(ltype,gpsstart,gpsend,channel):
     '''
     It gives string for legend description.
+    If any argument is not relevant, please use dummy value.
     '''
 
     if(ltype=='time'):

@@ -43,7 +43,7 @@ llabel='IMC_LSC'  #y-axis label for the bar plot.
 
 name="coherencegram"
   
-if [ $condir = "" ]; then
+if [ "$condir" = "" ]; then
     condir=$PWD
 fi
 

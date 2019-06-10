@@ -61,6 +61,7 @@ kamioka = args.kamioka
 lflag = bool(lchannel)
 
 # Get data from frame files
+
 if kamioka:
     if datatype == 'minute':
         sources = mylib.GetMtrendFilelist_Kamioka(gpsstart,gpsend)
@@ -82,7 +83,7 @@ if channel[0].find('ACC') != -1:
 elif channel[0].find('MIC') != -1:
     unit = 'Sound [Pa]'
 
-data = TimeSeriesDict.read(sources,channel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
+data = TimeSeriesDict.read(sources,channel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
 plot=data.plot(figsize = (12, 8))
 
 ax = plot.gca()
@@ -91,7 +92,8 @@ ax.set_ylabel(unit)
 ax.legend(latexchnames,bbox_to_anchor = mylib.GetBBTA(lposition),loc=mylib.Getloc(lposition),borderaxespad=1)
 
 if lflag:
-    ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
+#    ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=int(tmpgpsstart),end=int(tmpgpsend))
+    ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
     locked = ldata == lnumber
     flag = locked.to_dqflag(name = '', label = llabel)
     plot.add_state_segments(flag)

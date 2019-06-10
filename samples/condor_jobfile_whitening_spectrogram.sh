@@ -51,7 +51,7 @@ llabel='IMC_LSC'  #y-axis label for the bar plot.
 
 name="whitening_spectrogram"
   
-if [ $condir = "" ]; then
+if [ "$condir" = "" ]; then
     condir=$PWD
 fi
 

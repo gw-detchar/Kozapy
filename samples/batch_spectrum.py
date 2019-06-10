@@ -66,7 +66,7 @@ for channel in channels:
         else:
             sources = mylib.GetFilelist(gpsstart,gpsend)
 
-        data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
+        data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
 
         spectrum = data.asd(fftlength=fft,overlap=ol)
 
@@ -86,9 +86,10 @@ for channel in channels:
 ax.legend(legend,bbox_to_anchor = mylib.GetBBTA(lposition),loc=mylib.Getloc(lposition),borderaxespad=1)
 
 fname = outdir + '/' + channel + '_spectrum_' + gpsstart +  '_' + index + '.png'
+print(fname)
 fplot.savefig(fname)
 fplot.clf()
 fplot.close()
 
-print(fname)
+
 print('Successfully finished !')

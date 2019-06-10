@@ -77,10 +77,30 @@ else:
     
 channels = [refchannel, channel]
 
-data = TimeSeriesDict.read(sources,channels,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
+data = TimeSeriesDict.read(sources,channels,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
+
 
 ref = data[refchannel]
 com = data[channel]
+
+if fft < ref.dt.value:
+    fft=2*ref.dt.value
+    ol=fft/2.  #  overlap in FFTs.                        
+    stride=2*fft
+    print("Given fft/stride was bad against the sampling rate. Automatically set to\
+:")
+    print("fft="+str(fft))
+    print("ol="+str(ol))
+    print("stride="+str(stride))
+if fft < com.dt.value:
+    fft=2*com.dt.value
+    ol=fft/2.  #  overlap in FFTs.                        
+    stride=2*fft
+    print("Given fft/stride was bad against the sampling rate. Automatically set to\
+:")
+    print("fft="+str(fft))
+    print("ol="+str(ol))
+    print("stride="+str(stride))
 
 coh = ref.coherence_spectrogram(com,stride,fftlength=fft,overlap=ol)
 
@@ -94,7 +114,7 @@ ax.set_ylim(0.1,1000)
 cohplot.add_colorbar(cmap='YlGnBu_r',label='Coherence')
 
 if lflag:
-    ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
+    ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
     locked = ldata == lnumber
     flag = locked.to_dqflag(name = '', label = llabel, round = True)
     cohplot.add_state_segments(flag)

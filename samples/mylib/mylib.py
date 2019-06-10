@@ -1,4 +1,5 @@
 import glob
+from gwpy.timeseries import TimeSeries
 
 def GetFilelist(gpsstart,gpsend):
     '''
@@ -161,6 +162,35 @@ def GetStrendFilelist_Kamioka(gpsstart,gpsend):
 
     return sources
 
+def GetTriggerList(gpsstart,gpsend,channel):
+    '''
+    This function gives omicron trigger file list in Kamioka on K1sum0,1.
+    '''
+
+    sources = []
+
+    for i in range(int(gpsstart[0:5]),int(gpsend[0:5])+1):
+        #dir = '/data/full/' + str(i) + '/*'
+        dir = '/home/controls/triggers/K1/' + channel + '/' + str(i) + '/*'
+        source = glob.glob(dir)
+        sources.extend(source)
+        
+    sources.sort()
+        
+    removelist = []
+
+    for x in sources:
+        tmp = x.rsplit("-",2)
+        if int(tmp[1])<(int(gpsstart)-59):
+            removelist.append(x)
+        if int(tmp[1])>int(gpsend):
+            removelist.append(x)
+
+    for y in removelist:
+        sources.remove(y)
+
+    return sources
+
 def GetLegend(ltype,gpsstart,gpsend,channel):
     '''
     It gives string for legend description.
@@ -179,6 +209,21 @@ def GetLegend(ltype,gpsstart,gpsend,channel):
         print('Warning! Legend type is out of option.')
         return [latexchannel]
 
+def GetDQFlag(gpsstart,gpsend,config="xarm"):
+    '''
+    It gives Detector Quality Flag for pointed configuration.
+    '''
+    channel=""
+    number=-1
+    if config == "xarm":
+        channel="K1:GRD-LSC_LOCK_STATE_N"
+        number=31415
+    sources = GetFilelist_Kamioka(gpsstart,gpsend)
+    ldata = TimeSeries.read(sources,channel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
+    locked = ldata == number
+    flag = locked.to_dqflag(name = '')
+    return flag
+    
 def GetBBTA(lposition):
     '''
     It gives argument for 
@@ -241,7 +286,22 @@ def GetTitlefromLegend(ltype,gpsstart,gpsend,channel):
 # Usage: tmpevents=events.filter(('peak_time', in_time,(tmpstart,tmpend)))
 def Islarger(column,target):
     return (column > target)
+def Issmaller(column,target):
+    return (column < target)
+def Islargerequal(column,target):
+    return (column >= target)
+def Issmallerequal(column,target):
+    return (column <= target)
 def IsSame(column,target):
     return (column == target)
 def between(column, interval):
     return (column >= interval[0]) & (column < interval[1])
+def IsScienceMode(column,target,interval=60):
+
+    dqflag = GetDQFlag(str(column-interval), str(column+interval), target)
+
+    activedq = dqflag.active
+    if len(activedq) != 1:
+        return False
+    else:
+        return ((activedq[0].start == column-interval) and (activedq[0].end == column+interval))

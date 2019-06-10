@@ -93,7 +93,7 @@ ax.legend(latexchnames,bbox_to_anchor = mylib.GetBBTA(lposition),loc=mylib.Getlo
 if lflag:
     ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
     locked = ldata == lnumber
-    flag = locked.to_dqflag(name = '', label = llabel, round = True)
+    flag = locked.to_dqflag(name = '', label = llabel)
     plot.add_state_segments(flag)
 else:
     pass

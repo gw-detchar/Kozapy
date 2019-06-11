@@ -313,7 +313,9 @@ def IsSame(column,target):
 def between(column, interval):
     return (column >= interval[0]) & (column < interval[1])
 def IsScienceMode(column,target,interval=60):
-
+    '''
+    It returns true if it is science mode from column-interval to column+interval.  
+    '''
     dqflag = GetDQFlag(str(column-interval), str(column+interval), target)
 
     activedq = dqflag.active

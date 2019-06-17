@@ -225,7 +225,7 @@ def GetLegend(ltype,gpsstart,gpsend,channel):
         print('Warning! Legend type is out of option.')
         return [latexchannel]
 
-def GetDQFlag(gpsstart,gpsend,config="xarm"):
+def GetDQFlag(gpsstart,gpsend,config="xarm",kamioka=False):
     '''
     It gives Detector Quality Flag for pointed configuration.
     '''
@@ -234,7 +234,11 @@ def GetDQFlag(gpsstart,gpsend,config="xarm"):
     if config == "xarm":
         channel="K1:GRD-LSC_LOCK_STATE_N"
         number=31415
-    sources = GetFilelist_Kamioka(gpsstart,gpsend)
+    if kamioka:
+        sources = GetFilelist_Kamioka(gpsstart,gpsend)
+    else:
+        sources = GetFilelist(gpsstart,gpsend)
+
     ldata = TimeSeries.read(sources,channel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
     locked = ldata == number
     flag = locked.to_dqflag(name = '')

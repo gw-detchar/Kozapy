@@ -225,7 +225,7 @@ def GetLegend(ltype,gpsstart,gpsend,channel):
         print('Warning! Legend type is out of option.')
         return [latexchannel]
 
-def GetDQFlag(gpsstart,gpsend,config="xarm"):
+def GetDQFlag(gpsstart,gpsend,config="xarm",min_len=0):
     '''
     It gives Detector Quality Flag for pointed configuration.
     '''
@@ -234,10 +234,19 @@ def GetDQFlag(gpsstart,gpsend,config="xarm"):
     if config == "xarm":
         channel="K1:GRD-LSC_LOCK_STATE_N"
         number=31415
+    elif config == "LSC":
+        channel="K1:GRD-LSC_LOCK_OK"
+        number=1
+    elif config == "IMC":
+        channel="K1:GRD-IO_STATE_N"
+        number=99
+    else:
+        print("mylib.GetDQFlag Error: No difinition for given config.")
+        
     sources = GetFilelist_Kamioka(gpsstart,gpsend)
     ldata = TimeSeries.read(sources,channel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
     locked = ldata == number
-    flag = locked.to_dqflag(name = '')
+    flag = locked.to_dqflag(name = '',minlen=min_len)
     return flag
     
 def GetBBTA(lposition):
@@ -312,14 +321,25 @@ def IsSame(column,target):
     return (column == target)
 def between(column, interval):
     return (column >= interval[0]) & (column < interval[1])
-def IsScienceMode(column,target,interval=60):
+def IsScienceMode(gpstime,mode,interval=60):
     '''
-    It returns true if it is science mode from column-interval to column+interval.  
+    It returns true if it is science mode from gpstime-interval to gpstime+interval.  
     '''
-    dqflag = GetDQFlag(str(column-interval), str(column+interval), target)
+    dqflag = GetDQFlag(str(gpstime-interval), str(gpstime+interval), mode)
 
     activedq = dqflag.active
     if len(activedq) != 1:
         return False
     else:
-        return ((activedq[0].start == column-interval) and (activedq[0].end == column+interval))
+        return ((activedq[0].start == gpstime-interval) and (activedq[0].end == gpstime+interval))
+def IsFlagTrue(gpstime,dqflag,interval=60):
+    '''
+    It returns true if it is science mode from gpstime-interval to gpstime+interval.  
+    '''
+    dqflag = DataQualityFlag(str(gpstime-interval), str(gpstime+interval), mode)
+
+    activedq = dqflag.active
+    if len(activedq) != 1:
+        return False
+    else:
+        return ((activedq[0].start == gpstime-interval) and (activedq[0].end == gpstime+interval))

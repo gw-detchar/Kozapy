@@ -177,7 +177,7 @@ def GetStrendFilelist_Kamioka(gpsstart,gpsend):
 
     return sources
 
-def GetTriggerList(gpsstart,gpsend,channel):
+def GetTriggerList(gpsstart,gpsend,channel,kamioka=False):
     '''
     This function gives omicron trigger file list in Kamioka on K1sum0,1.
     '''
@@ -186,7 +186,10 @@ def GetTriggerList(gpsstart,gpsend,channel):
 
     for i in range(int(gpsstart[0:5]),int(gpsend[0:5])+1):
         #dir = '/data/full/' + str(i) + '/*'
-        dir = '/home/controls/triggers/K1/' + channel + '/' + str(i) + '/*'
+        if kamioka:
+            dir = '/home/controls/triggers/K1/' + channel + '/' + str(i) + '/*'
+        else:
+            dir = '/home/detchar/triggers/K1/' + channel + '/' + str(i) + '/*'
         source = glob.glob(dir)
         sources.extend(source)
         

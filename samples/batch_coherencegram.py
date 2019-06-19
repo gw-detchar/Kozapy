@@ -109,7 +109,8 @@ ax = cohplot.gca()
 ax.set_ylabel('Frequency [Hz]')
 ax.set_yscale('log')
 ax.set_title(latexrefchname + ' ' + latexchname)
-ax.set_ylim(0.1,1000)
+y_min=0.8/fft
+ax.set_ylim(y_min,1000)
 
 cohplot.add_colorbar(cmap='YlGnBu_r',label='Coherence')
 

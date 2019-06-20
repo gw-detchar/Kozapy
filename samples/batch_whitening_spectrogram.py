@@ -42,13 +42,16 @@ parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',actio
 args = parser.parse_args()
 outdir=args.outdir
 
+whitening=args.whitening
+
 channel=args.channel
 latexchname = channel.replace('_','\_')
-
+if whitening:
+    latexchname += " whitened"
 gpsstart=args.gpsstart
 gpsend=args.gpsend
 
-whitening=args.whitening
+
 
 index=args.index
 stride=args.stride

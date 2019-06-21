@@ -55,7 +55,7 @@ lposition=args.lposition
 lchannel = args.lchannel
 lnumber = args.lnumber
 llabel = args.llabel
-title = args.title
+title = args.title.replace('_','\_')
 
 kamioka = args.kamioka
 

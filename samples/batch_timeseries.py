@@ -29,6 +29,7 @@ parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True)
 parser.add_argument('-d','--datatype',help='Data type. Options are minute(default), second, and full.',default='minute',choices=['minute','second','full'])
 parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
 parser.add_argument('-p','--lposition',help='Legend position. Choice is \'br\'(bottom right), \'bl\'(bottom left), \'tr\'(top right), or \'tl\'(top left), .',default='tr',choices=['br','bl','tr','tl'])
+parser.add_argument('-t','--title',help='Plot title.',default='')
 
 parser.add_argument('-l','--lchannel',help='Make locked segment bar plot.',default='')
 parser.add_argument('--llabel',help='Label of the locked segment bar plot.',default='')
@@ -54,6 +55,7 @@ lposition=args.lposition
 lchannel = args.lchannel
 lnumber = args.lnumber
 llabel = args.llabel
+title = args.title
 
 kamioka = args.kamioka
 
@@ -87,6 +89,7 @@ data = TimeSeriesDict.read(sources,channel,format='gwf.lalframe',start=float(gps
 plot=data.plot(figsize = (12, 8))
 
 ax = plot.gca()
+ax.set_title(title)
 ax.set_ylabel(unit)
 #ax.set_yscale('log')
 ax.legend(latexchnames,bbox_to_anchor = mylib.GetBBTA(lposition),loc=mylib.Getloc(lposition),borderaxespad=1)

@@ -132,7 +132,7 @@ do
 	    #  $ python batch_spectrum.py -h
 	    # for option detail.
 
-	    echo "Arguments = -c ${chlist[@]} -s ${gpsstarts[i]} -e ${gpsends[i]} -o ${outdir} -i ${index} ${option}"
+	    echo "Arguments = -c ${chlist[@]} -s ${gpsstarts[i]} -e ${gpsends[i]} -o ${outdir} -i ${index} ${option} -t test"
 	    echo "Output       = log/out_\$(Cluster).\$(Process).txt"
 	    echo "Error        = log/err_\$(Cluster).\$(Process).txt"
 	    echo "Log          = log/log_\$(Cluster).\$(Process).txt"

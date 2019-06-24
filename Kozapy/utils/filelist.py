@@ -12,7 +12,7 @@ def filelist(start,end,trend='full',place='kashiwa',**kwargs):
         end gps time
 
     trend : `str`, optional
-        'full' or 'mtrend' or 'strend'. Default is full
+        'full' or 'minute' or 'second'. Default is full
     place : `str`, optional
         'kamioka' or 'kashiwa'. Defalut is kashiwa        
 
@@ -24,21 +24,21 @@ def filelist(start,end,trend='full',place='kashiwa',**kwargs):
     if place=='kashiwa':
         if trend=='full':
             return _full_kashiwa(start,end,**kwargs)
-        elif trend=='mtrend':
-            return _mtrend_kashiwa(start,end,**kwargs)
-        elif trend=='strend':
-            return _strend_kashiwa(start,end,**kwargs)
+        elif trend=='minute':
+            return _minute_kashiwa(start,end,**kwargs)
+        elif trend=='second':
+            return _second_kashiwa(start,end,**kwargs)
         else:
-            raise ValueError('"{}" is invalid trend name.'.format(trend))
+            raise ValueError('"{0}" is invalid trend name.'.format(trend))
     elif place=='kamioka':
         if trend=='full':
             return _full_kamioka(start,end,**kwargs)
-        elif trend=='mtrend':
-            return _mtrend_kamioka(start,end,**kwargs)
-        elif trend=='strend':
-            return _strend_kamioka(start,end,**kwargs)        
+        elif trend=='minute':
+            return _minute_kamioka(start,end,**kwargs)
+        elif trend=='second':
+            return _second_kamioka(start,end,**kwargs)        
         else:
-            raise ValueError('"{}" is invalid trend name.'.format(trend))            
+            raise ValueError('"{0}" is invalid trend name.'.format(trend))            
     else:
         raise ValueError('"{}" is invalid place name.'.format(place))
 
@@ -116,7 +116,7 @@ def _full_kashiwa(gpsstart,gpsend,**kwargs):
     return sources
 
 
-def _mtrend_kamioka(gpsstart,gpsend,**kwargs):
+def _minute_kamioka(gpsstart,gpsend,**kwargs):
     '''
     This function gives minutes trend data frame file list.
     '''
@@ -145,7 +145,7 @@ def _mtrend_kamioka(gpsstart,gpsend,**kwargs):
 
     return sources
 
-def _mtrend_kashiwa(gpsstart,gpsend,**kwargs):
+def _minute_kashiwa(gpsstart,gpsend,**kwargs):
     '''
     This function gives minutes trend data frame file list.
     '''
@@ -177,7 +177,7 @@ def _mtrend_kashiwa(gpsstart,gpsend,**kwargs):
 
 
 
-def _strend_kamioka(gpsstart,gpsend,**kwargs):
+def _second_kamioka(gpsstart,gpsend,**kwargs):
     '''
     This function gives second trend data frame file list.
     '''
@@ -207,7 +207,7 @@ def _strend_kamioka(gpsstart,gpsend,**kwargs):
     return sources
 
 
-def _strend_kashiwa(gpsstart,gpsend,**kwargs):
+def _second_kashiwa(gpsstart,gpsend,**kwargs):
     '''
     This function gives second trend data frame file list.
     '''

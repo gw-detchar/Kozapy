@@ -32,7 +32,7 @@ duration = args.triggerduration
 index = args.index
 kamioka = args.kamioka
 
-trigger = DataQualityFlag(name="Trigger event",known=[(float(gpsstart),float(gpsend))],active=[(triggertime,triggertime+duration)])
+trigger = DataQualityFlag(name="Trigger",known=[(float(gpsstart),float(gpsend))],active=[(triggertime,triggertime+duration)])
 xarm = mylib.GetDQFlag(gpsstart,gpsend,config="xarm",kamioka=kamioka)
 LSC = mylib.GetDQFlag(gpsstart,gpsend,config="LSC",kamioka=kamioka)
 IMC = mylib.GetDQFlag(gpsstart,gpsend,config="IMC",kamioka=kamioka)

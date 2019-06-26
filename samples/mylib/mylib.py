@@ -242,18 +242,21 @@ def GetDQFlag(gpsstart,gpsend,config="xarm",min_len=0,kamioka=False):
     if config == "xarm":
         channel="K1:GRD-LSC_LOCK_STATE_N"
         number=31415
+        name="X-arm"
     elif config == "LSC":
         channel="K1:GRD-LSC_LOCK_OK"
         number=1
+        name="LSC"
     elif config == "IMC":
         channel="K1:GRD-IO_STATE_N"
         number=99
+        name="IMC"
     else:
         print("mylib.GetDQFlag Error: No difinition for given config.")
         
     ldata = TimeSeries.read(sources,channel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
     locked = ldata == number
-    flag = locked.to_dqflag(name = '',minlen=min_len)
+    flag = locked.to_dqflag(label = name,minlen=min_len)
     return flag
     
 def GetBBTA(lposition):

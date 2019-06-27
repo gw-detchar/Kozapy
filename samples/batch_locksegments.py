@@ -46,4 +46,8 @@ ax.plot(IMC)
 ax.plot(PMC)
 ax.plot(FSS)
 
-plot.savefig(outdir+"/lockedsegments_"+index+".png")
+fname = outdir+"/lockedsegments_"+index+".png"
+plot.savefig(fname)
+
+print(fname)
+print('Successfully finished !')

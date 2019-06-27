@@ -262,7 +262,7 @@ def GetDQFlag(gpsstart,gpsend,config="xarm",min_len=0,kamioka=False):
     else:
         print("mylib.GetDQFlag Error: No difinition for given config.")
         
-    ldata = TimeSeries.read(sources,channel,format='gwf.lalframe',start=int(gpsstart),end=int(gpsend))
+    ldata = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
     locked = ldata == number
     flag = locked.to_dqflag(label = name,minlen=min_len)
     return flag

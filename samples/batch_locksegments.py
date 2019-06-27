@@ -33,7 +33,6 @@ index = args.index
 kamioka = args.kamioka
 
 trigger = DataQualityFlag(name="Trigger",known=[(float(gpsstart),float(gpsend))],active=[(triggertime,triggertime+duration)])
-xarm = mylib.GetDQFlag(gpsstart,gpsend,config="xarm",kamioka=kamioka)
 LSC = mylib.GetDQFlag(gpsstart,gpsend,config="LSC",kamioka=kamioka)
 IMC = mylib.GetDQFlag(gpsstart,gpsend,config="IMC",kamioka=kamioka)
 PMC = mylib.GetDQFlag(gpsstart,gpsend,config="PMC",kamioka=kamioka)
@@ -42,7 +41,6 @@ FSS = mylib.GetDQFlag(gpsstart,gpsend,config="FSS",kamioka=kamioka)
 print(trigger)
 plot = trigger.plot()
 ax = plot.gca()
-ax.plot(xarm)
 ax.plot(LSC)
 ax.plot(IMC)
 ax.plot(PMC)

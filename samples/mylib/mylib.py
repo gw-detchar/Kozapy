@@ -251,6 +251,14 @@ def GetDQFlag(gpsstart,gpsend,config="xarm",min_len=0,kamioka=False):
         channel="K1:GRD-IO_STATE_N"
         number=99
         name="IMC"
+    elif config == "PMC":
+        channel="K1:GRD-PMC_OK"
+        number=1
+        name="PMC"
+    elif config == "FSS":
+        channel="K1:GRD-FSS_OK"
+        number=1
+        name="FSS"
     else:
         print("mylib.GetDQFlag Error: No difinition for given config.")
         

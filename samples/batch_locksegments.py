@@ -36,6 +36,8 @@ trigger = DataQualityFlag(name="Trigger",known=[(float(gpsstart),float(gpsend))]
 xarm = mylib.GetDQFlag(gpsstart,gpsend,config="xarm",kamioka=kamioka)
 LSC = mylib.GetDQFlag(gpsstart,gpsend,config="LSC",kamioka=kamioka)
 IMC = mylib.GetDQFlag(gpsstart,gpsend,config="IMC",kamioka=kamioka)
+PMC = mylib.GetDQFlag(gpsstart,gpsend,config="PMC",kamioka=kamioka)
+FSS = mylib.GetDQFlag(gpsstart,gpsend,config="FSS",kamioka=kamioka)
     
 print(trigger)
 plot = trigger.plot()
@@ -43,5 +45,7 @@ ax = plot.gca()
 ax.plot(xarm)
 ax.plot(LSC)
 ax.plot(IMC)
+ax.plot(PMC)
+ax.plot(FSS)
 
 plot.savefig(outdir+"/lockedsegments_"+index+".png")

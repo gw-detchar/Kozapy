@@ -28,6 +28,7 @@ parser.add_argument('-s','--gpsstart',help='GPS starting time.',required=True)
 parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True)
 parser.add_argument('-d','--datatype',help='Data type. Options are minute(default), second, and full.',default='minute',choices=['minute','second','full'])
 parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
+parser.add_argument('--nolegend',help='Flag to make legend or not.',action='store_false')
 parser.add_argument('-p','--lposition',help='Legend position. Choice is \'br\'(bottom right), \'bl\'(bottom left), \'tr\'(top right), or \'tl\'(top left), .',default='tr',choices=['br','bl','tr','tl'])
 parser.add_argument('-t','--title',help='Plot title.',default='')
 
@@ -50,6 +51,7 @@ gpsend = args.gpsend
 datatype = args.datatype
 index = args.index
 
+legend=args.nolegend
 lposition=args.lposition
 
 lchannel = args.lchannel
@@ -86,13 +88,21 @@ elif channel[0].find('MIC') != -1:
     unit = 'Sound [Pa]'
 
 data = TimeSeriesDict.read(sources,channel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
+
+for d in data:
+    if len(data[d]) > 50000:
+        rate = 50000./len(data[d])/data[d].dt
+        data[d] = data[d].resample(rate)
+        print("The sample rate*duration is over capacity. Down sampled to rate of "+str(rate)+".")
+
 plot=data.plot(figsize = (12, 8))
 
 ax = plot.gca()
 ax.set_title(title)
 ax.set_ylabel(unit)
 #ax.set_yscale('log')
-ax.legend(latexchnames,bbox_to_anchor = mylib.GetBBTA(lposition),loc=mylib.Getloc(lposition),borderaxespad=1)
+if legend:
+    ax.legend(latexchnames,bbox_to_anchor = mylib.GetBBTA(lposition),loc=mylib.Getloc(lposition),borderaxespad=1)
 
 if lflag:
 #    ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=int(tmpgpsstart),end=int(tmpgpsend))

@@ -67,15 +67,23 @@ for channel in channels:
             sources = mylib.GetFilelist(gpsstart,gpsend)
 
         data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
-
-        spectrum = data.asd(fftlength=fft,overlap=ol)
+        
+        if fft > float(gpsend)-float(gpsstart): 
+            tmpfft = float(gpsend)-float(gpsstart)
+            tmpol = tmpfft / 2.
+            print("Given FFT length is too long. Automatically modified to given time duration.")
+            print("FFT length = " + str(tmpfft))
+        else:
+            tmpfft = fft
+            tmpol = ol
+        spectrum = data.asd(fftlength=tmpfft,overlap=tmpol)
 
         if isFirst:           
             fplot=spectrum.plot(figsize = (12, 8))
             ax = fplot.gca()
             ax.set_ylabel(unit)
             ax.set_yscale('log')
-            ax.set_title(mylib.GetTitlefromLegend(ltype,gpsstart,gpsend,channel))
+            ax.set_title(mylib.GetTitlefromLegend(ltype,gpsstart,gpsend,channel)+" Spectrum")
             isFirst = False
 
         else:

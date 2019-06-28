@@ -342,6 +342,8 @@ def between(column, interval):
 def IsScienceMode(gpstime,mode,interval=60):
     '''
     It returns true if it is science mode from gpstime-interval to gpstime+interval.  
+    If you want it in loop, it is not recommended because of the process time. 
+    Recommendation is To use GetDQFlag and SegmentList's intersect method.
     '''
     dqflag = GetDQFlag(str(gpstime-interval), str(gpstime+interval), mode)
 

@@ -1,4 +1,4 @@
-'''Make timeseries.
+'''Make coherencegram.
 '''
 
 __author__ = "Chihiro Kozakai"
@@ -11,8 +11,6 @@ import subprocess
 import glob
 from gwpy.timeseries import TimeSeries
 from gwpy.timeseries import TimeSeriesDict
-from gwpy.segments import DataQualityFlag
-
 from matplotlib import pylab as pl
 from gwpy.detector import Channel
 from matplotlib import cm
@@ -23,101 +21,115 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Make coherencegram.')
 parser.add_argument('-o','--outdir',help='output directory.',default='result')
-parser.add_argument('-c','--channel',help='channel list.',nargs='*',required=True)
+parser.add_argument('-r','--refchannel',help='main reference channel.',required=True)
+parser.add_argument('-c','--channel',help='compared channel.',required=True)
 parser.add_argument('-s','--gpsstart',help='GPS starting time.',required=True)
-parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True)
-parser.add_argument('-d','--datatype',help='Data type. Options are minute(default), second, and full.',default='minute',choices=['minute','second','full'])
+parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True
+)
+parser.add_argument('-f','--fftlength',help='FFT length.',type=float,default=1.)
+parser.add_argument('--stride',help='Stride of the coherencegram.',type=float,default=10.)
 parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
-parser.add_argument('--nolegend',help='Flag to make legend or not.',action='store_false')
-parser.add_argument('-p','--lposition',help='Legend position. Choice is \'br\'(bottom right), \'bl\'(bottom left), \'tr\'(top right), or \'tl\'(top left), .',default='tr',choices=['br','bl','tr','tl'])
-parser.add_argument('-t','--title',help='Plot title.',default='')
 
 parser.add_argument('-l','--lchannel',help='Make locked segment bar plot.',default='')
 parser.add_argument('--llabel',help='Label of the locked segment bar plot.',default='')
 parser.add_argument('-n','--lnumber',help='The requirement for judging locked. lchannel==lnumber will be used as locked.',default=99,type=int)
 parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',action='store_true')
-
 # define variables
 args = parser.parse_args()
-outdir = args.outdir
+outdir=args.outdir
 
-channel = args.channel
+refchannel=args.refchannel
+channel=args.channel
+latexchname = channel.replace('_','\_')
+latexrefchname = refchannel.replace('_','\_')
 
-latexchnames = [c.replace('_','\_') for c in channel]
-
-gpsstart = args.gpsstart
-gpsend = args.gpsend
-
-datatype = args.datatype
-index = args.index
-
-legend=args.nolegend
-lposition=args.lposition
+gpsstart=args.gpsstart
+gpsend=args.gpsend
+index=args.index
+stride=args.stride
+fft=args.fftlength
+ol=fft/2.  #  overlap in FFTs. 
 
 lchannel = args.lchannel
 lnumber = args.lnumber
 llabel = args.llabel
-title = args.title.replace('_','\_')
 
 kamioka = args.kamioka
 
-# If lflag is True, locked segments is plotted. 
+# If lflag is True, locked segments is plotted.            
 lflag = bool(lchannel)
 
-# Get data from frame files
-
-if kamioka:
-    if datatype == 'minute':
-        sources = mylib.GetMtrendFilelist_Kamioka(gpsstart,gpsend)
-    elif datatype == 'second':
-        sources = mylib.GetStrendFilelist_Kamioka(gpsstart,gpsend)
-    elif datatype == 'full':
-        sources = mylib.GetFilelist_Kamioka(gpsstart,gpsend)
-else:
-    if datatype == 'minute':
-        sources = mylib.GetMtrendFilelist(gpsstart,gpsend)
-    elif datatype == 'second':
-        sources = mylib.GetStrendFilelist(gpsstart,gpsend)
-    elif datatype == 'full':
-        sources = mylib.GetFilelist(gpsstart,gpsend)
-
+if fft > stride/2.:
+    print('Warning: stride is shorter than fft length. Set stride=fft*2.')
+    stride=fft*2.
+    
 unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
-if channel[0].find('ACC') != -1:
+if channel.find('ACC') != -1:
     unit = r'Acceleration [$m/s^2$]'
-elif channel[0].find('MIC') != -1:
+elif channel.find('MIC') != -1:
     unit = 'Sound [Pa]'
 
-data = TimeSeriesDict.read(sources,channel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
+# Get data from frame files
+if kamioka:    
+    sources = mylib.GetFilelist_Kamioka(gpsstart,gpsend)
+else:
+    sources = mylib.GetFilelist(gpsstart,gpsend)
+    
+channels = [refchannel, channel]
 
-for d in data:
-    if len(data[d]) > 50000:
-        rate = 50000./len(data[d])/data[d].dt
-        data[d] = data[d].resample(rate)
-        print("The sample rate*duration is over capacity. Down sampled to rate of "+str(rate)+".")
+data = TimeSeriesDict.read(sources,channels,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
 
-plot=data.plot(figsize = (12, 8))
 
-ax = plot.gca()
-ax.set_title(title)
-ax.set_ylabel(unit)
-#ax.set_yscale('log')
-if legend:
-    ax.legend(latexchnames,bbox_to_anchor = mylib.GetBBTA(lposition),loc=mylib.Getloc(lposition),borderaxespad=1)
+ref = data[refchannel]
+com = data[channel]
+
+if fft < ref.dt.value:
+    fft=2*ref.dt.value
+    ol=fft/2.  #  overlap in FFTs.                        
+    stride=2*fft
+    print("Given fft/stride was bad against the sampling rate. Automatically set to\
+:")
+    print("fft="+str(fft))
+    print("ol="+str(ol))
+    print("stride="+str(stride))
+if fft < com.dt.value:
+    fft=2*com.dt.value
+    ol=fft/2.  #  overlap in FFTs.                        
+    stride=2*fft
+    print("Given fft/stride was bad against the sampling rate. Automatically set to\
+:")
+    print("fft="+str(fft))
+    print("ol="+str(ol))
+    print("stride="+str(stride))
+
+coh = ref.coherence_spectrogram(com,stride,fftlength=fft,overlap=ol)
+
+# The time axis of coherencegram seems buggy in this version. Temporal fix is needed.
+coh.dx = stride
+
+cohplot=coh.plot(figsize = (12, 8),vmin=0.,vmax=1.)
+ax = cohplot.gca()
+ax.set_ylabel('Frequency [Hz]')
+ax.set_yscale('log')
+ax.set_title(latexrefchname + ' ' + latexchname)
+y_min=0.8/fft
+ax.set_ylim(y_min,1000)
+
+cohplot.add_colorbar(cmap='YlGnBu_r',label='Coherence')
 
 if lflag:
-#    ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=int(tmpgpsstart),end=int(tmpgpsend))
     ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
     locked = ldata == lnumber
-    flag = locked.to_dqflag(name = '', label = llabel)
-    plot.add_state_segments(flag)
+    flag = locked.to_dqflag(name = '', label = llabel, round = True)
+    cohplot.add_state_segments(flag)
 else:
     pass
 
-fname = outdir + '/' + channel[0] + '_timeseries_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
-plot.savefig(fname)
+fname = outdir + refchannel + '_' + channel + '_coherence_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
+cohplot.savefig(fname)
 
-plot.clf()
-plot.close()
+cohplot.clf()
+cohplot.close()
 
 print(fname)
 print('Successfully finished !')

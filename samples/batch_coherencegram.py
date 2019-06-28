@@ -104,6 +104,9 @@ if fft < com.dt.value:
 
 coh = ref.coherence_spectrogram(com,stride,fftlength=fft,overlap=ol)
 
+# The time axis of coherencegram seems buggy in this version. Temporal fix is needed.
+coh.dx = stride
+
 cohplot=coh.plot(figsize = (12, 8),vmin=0.,vmax=1.)
 ax = cohplot.gca()
 ax.set_ylabel('Frequency [Hz]')

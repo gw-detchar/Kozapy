@@ -48,6 +48,7 @@ channel=args.channel
 latexchname = channel.replace('_','\_')
 if whitening:
     latexchname += " whitened"
+latexchname += " spectrogram"
 gpsstart=args.gpsstart
 gpsend=args.gpsend
 

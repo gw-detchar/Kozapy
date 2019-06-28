@@ -84,7 +84,7 @@ plot=qgram.plot(figsize = (12, 8))
 ax = plot.gca()
 ax.set_ylabel('Frequency [Hz]')
 ax.set_yscale('log')
-ax.set_title(latexchname)
+ax.set_title(latexchname+" Q-transform")
 
 plot.add_colorbar(cmap='YlGnBu_r',label="Normalized energy")
 fname = outdir + '/' + channel + '_qtransform_'+ gpsstart + '_' + gpsend +'_' + index +'.png'

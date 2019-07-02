@@ -88,12 +88,11 @@ else:
 
 data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
 
-
-if fft < data.dt.value:
+if fft <= data.dt.value:
     fft=2*data.dt.value
     ol=fft/2.  #  overlap in FFTs. 
     stride=2*fft
-    print("Given fft/stride was bad against the sampling rate.. Automatically set to:")
+    print("Given fft/stride was bad against the sampling rate. Automatically set to:")
     print("fft="+str(fft))
     print("ol="+str(ol))
     print("stride="+str(stride))

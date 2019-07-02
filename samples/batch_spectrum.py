@@ -73,6 +73,14 @@ for channel in channels:
             tmpol = tmpfft / 2.
             print("Given FFT length is too long. Automatically modified to given time duration.")
             print("FFT length = " + str(tmpfft))
+        elif fft <= data.dt.value:
+            fft=2*data.dt.value
+            ol=fft/2.  #  overlap in FFTs.
+            stride=2*fft
+            print("Given fft/stride was bad against the sampling rate. Automatically set to:")
+            print("fft="+str(fft))
+            print("ol="+str(ol))
+            print("stride="+str(stride))
         else:
             tmpfft = fft
             tmpol = ol

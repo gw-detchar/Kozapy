@@ -90,8 +90,8 @@ elif channel[0].find('MIC') != -1:
 data = TimeSeriesDict.read(sources,channel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
 
 for d in data:
-    if len(data[d]) > 50000:
-        rate = 50000./len(data[d])/data[d].dt
+    if len(data[d]) > 10000:
+        rate = 10000./len(data[d])/data[d].dt
         data[d] = data[d].resample(rate)
         print("The sample rate*duration is over capacity. Down sampled to rate of "+str(rate)+".")
 

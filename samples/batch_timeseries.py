@@ -81,7 +81,8 @@ else:
     elif datatype == 'full':
         sources = mylib.GetFilelist(gpsstart,gpsend)
 
-unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
+#unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
+unit = ''
 if channel[0].find('ACC') != -1:
     unit = r'Acceleration [$m/s^2$]'
 elif channel[0].find('MIC') != -1:

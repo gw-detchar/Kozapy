@@ -38,6 +38,7 @@ LSC = mylib.GetDQFlag(gpsstart,gpsend,config="LSC",kamioka=kamioka)
 IMC = mylib.GetDQFlag(gpsstart,gpsend,config="IMC",kamioka=kamioka)
 PMC = mylib.GetDQFlag(gpsstart,gpsend,config="PMC",kamioka=kamioka)
 FSS = mylib.GetDQFlag(gpsstart,gpsend,config="FSS",kamioka=kamioka)
+DAQ = mylib.GetDQFlag(gpsstart,gpsend,config="DAQ",kamioka=kamioka)
     
 print(trigger)
 untriggered = ~trigger
@@ -49,6 +50,7 @@ ax.plot(LSC)
 ax.plot(IMC)
 ax.plot(PMC)
 ax.plot(FSS)
+ax.plot(DAQ)
 
 fname = outdir+"/lockedsegments_"+index+".png"
 plot.savefig(fname)

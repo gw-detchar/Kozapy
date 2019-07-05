@@ -259,6 +259,10 @@ def GetDQFlag(gpsstart,gpsend,config="xarm",min_len=0,kamioka=False):
         channel="K1:GRD-FSS_OK"
         number=1
         name="FSS"
+    elif config == "DAQ":
+        channel="K1:GRD-SYS_DAQ_OK"
+        number=1
+        name="DAQ"
     else:
         print("mylib.GetDQFlag Error: No difinition for given config.")
         

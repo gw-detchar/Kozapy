@@ -40,7 +40,6 @@ PMC = mylib.GetDQFlag(gpsstart,gpsend,config="PMC",kamioka=kamioka)
 FSS = mylib.GetDQFlag(gpsstart,gpsend,config="FSS",kamioka=kamioka)
 DAQ = mylib.GetDQFlag(gpsstart,gpsend,config="DAQ",kamioka=kamioka)
     
-print(trigger)
 untriggered = ~trigger
 plot = untriggered.plot(figsize = (12,8))
 ax = plot.gca()

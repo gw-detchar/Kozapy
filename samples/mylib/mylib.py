@@ -240,8 +240,10 @@ def GetDQFlag(gpsstart,gpsend,config="xarm",min_len=0,kamioka=False):
         sources = GetFilelist(gpsstart,gpsend)
 
     if config == "xarm":
-        channel="K1:GRD-LSC_LOCK_STATE_N"
-        number=31415
+#        channel="K1:GRD-LSC_LOCK_STATE_N"
+#        number=31415
+        channel="K1:GRD-ALS_PDHX_OK"
+        number=1
         name="X-arm"
     elif config == "LSC":
         channel="K1:GRD-LSC_LOCK_OK"

@@ -1,42 +1,115 @@
+'''Make q-transform plot.
+'''
+
+__author__ = "Chihiro Kozakai"
+
+import os
+import matplotlib
+matplotlib.use('Agg')  # this line is required for the batch job before importing other matplotlib modules.     
+
+import subprocess
 import glob
 from gwpy.timeseries import TimeSeries
+from gwpy.timeseries import TimeSeriesDict
+from gwpy.segments import DataQualityFlag
 
-def GetFilelist(gpsstart,gpsend):
-    '''                                                                           
-    This function gives full data frame file list.                                
-    '''
-    ingpsstart=float(gpsstart)
-    ingpsend=float(gpsend)
+from matplotlib import pylab as pl
+from gwpy.detector import Channel
+from matplotlib import cm
+from mylib import mylib
 
-    gpsstart=str(int(float(gpsstart)))
-    gpsend=str(int(float(gpsend)))
+#  argument processing
+import argparse
 
-    sources = []
+parser = argparse.ArgumentParser(description='Make coherencegram.')
+parser.add_argument('-o','--outdir',help='output directory.',default='result')
+parser.add_argument('-c','--channel',help='channel.',required=True)
+parser.add_argument('-s','--gpsstart',help='GPS starting time.',required=True)
+parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True)
+parser.add_argument('-t','--time',help='Plot time duration.',type=float,default=None)
 
-    for i in range(int(gpsstart[0:5]),int(gpsend[0:5])+1):
-        dir = '/data/full/' + str(i) + '/*'
-        source = glob.glob(dir)
-        sources.extend(source)
+#parser.add_argument('-f','--fftlength',help='FFT length.',type=float,default=1.)
+parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
 
-    sources.sort()
+parser.add_argument('-l','--lchannel',help='Make locked segment bar plot.',default='')
+parser.add_argument('--llabel',help='Label of the locked segment bar plot.',default='')
+parser.add_argument('-n','--lnumber',help='The requirement for judging locked. lchannel==lnumber will be used as locked.',default=99,type=int)
+parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',action='store_true')
 
-    removelist = []
+# define variables
+args = parser.parse_args()
+outdir=args.outdir
 
-    for x in sources:
-        if int(x[24:34])<(int(gpsstart)-31):
-            removelist.append(x)
-#        if int(x[24:34])>int(gpsend):
-        if int(x[24:34])>=ingpsend:
-            removelist.append(x)
+channel=args.channel
+latexchname = channel.replace('_','\_')
 
-    for y in removelist:
-        sources.remove(y)
+gpsstart=args.gpsstart
+gpsend=args.gpsend
 
-    return sources
+#margin=40
+margin=1
+# To see ~8Hz < f
+if float(gpsend)-float(gpsstart)<40:
+    margin=20
+
+print(margin)
+gpsstartmargin=float(gpsstart)-margin
+gpsendmargin=float(gpsend)+margin
 
 
-gpsstart=1246740736
-gpsend=1246740737
+index=args.index
+#fft=args.fftlength
+#ol=fft/2.  #  overlap in FFTs. 
 
-sources=GetFilelist(gpsstart,gpsend)
-print(sources)
+lchannel=args.lchannel
+lnumber=args.lnumber
+llabel=args.llabel
+
+lflag=bool(lchannel)
+
+kamioka = args.kamioka
+    
+unit = "Normalized energy"
+
+# Get data from frame files
+if kamioka:
+    sources = mylib.GetFilelist_Kamioka(gpsstartmargin,gpsendmargin)
+else:
+    sources = mylib.GetFilelist(gpsstartmargin,gpsendmargin)
+
+data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstartmargin),end=float(gpsendmargin))
+
+#maxf=1024
+#if maxf > 1./data.dt.value/4.:
+maxf=1./data.dt.value/4.
+
+qgram = data.q_transform(outseg=[float(gpsstart),float(gpsend)])
+# default parameter
+#qrange=(4, 64), frange=(0, inf), gps=None, search=0.5, tres='<default>', fres='<default>', logf=False, norm='median', mismatch=0.2, outseg=None, whiten=True, fduration=2, highpass=None, **asd_kw 
+#plot=qgram.plot(figsize = (12, 8),vmin=0.,vmax=25.)
+plot=qgram.plot(figsize = (12, 8),vmin=0.)
+
+ax = plot.gca()
+ax.set_ylabel('Frequency [Hz]')
+ax.set_yscale('log')
+ax.set_title(latexchname+" Q-transform")
+
+plot.add_colorbar(cmap='YlGnBu_r',label="Normalized energy")
+fname = outdir + '/' + channel + '_qtransform_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
+
+if lflag:
+    ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
+    locked = ldata == lnumber
+    flag = locked.to_dqflag(name = '', label = llabel, round = True)
+    plot.add_state_segments(flag)
+else:
+    pass
+
+
+plot.savefig(fname)
+
+plot.clf()
+plot.close()
+
+print(fname)
+print('Successfully finished !')

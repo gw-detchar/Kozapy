@@ -45,10 +45,17 @@ latexchname = channel.replace('_','\_')
 
 gpsstart=args.gpsstart
 gpsend=args.gpsend
-gpshalf=(float(gpsstart)+float(gpsend))/2.
-time = args.time
-if time == None:
-    time=(float(gpsend)-float(gpsstart))/2.
+
+#margin=40
+margin=1
+# To see ~8Hz < f
+if float(gpsend)-float(gpsstart)<40:
+    margin=20
+
+print(margin)
+gpsstartmargin=float(gpsstart)-margin
+gpsendmargin=float(gpsend)+margin
+
 
 index=args.index
 #fft=args.fftlength
@@ -66,20 +73,21 @@ unit = "Normalized energy"
 
 # Get data from frame files
 if kamioka:
-    sources = mylib.GetFilelist_Kamioka(gpsstart,gpsend)
+    sources = mylib.GetFilelist_Kamioka(gpsstartmargin,gpsendmargin)
 else:
-    sources = mylib.GetFilelist(gpsstart,gpsend)
+    sources = mylib.GetFilelist(gpsstartmargin,gpsendmargin)
 
-data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
+data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstartmargin),end=float(gpsendmargin))
 
-maxf=1024
-if maxf > 1./data.dt.value/4.:
-    maxf=1./data.dt.value/4.
+#maxf=1024
+#if maxf > 1./data.dt.value/4.:
+maxf=1./data.dt.value/4.
 
-qgram = data.q_transform(outseg=[gpshalf-time,gpshalf+time])
+qgram = data.q_transform(outseg=[float(gpsstart),float(gpsend)])
 # default parameter
 #qrange=(4, 64), frange=(0, inf), gps=None, search=0.5, tres='<default>', fres='<default>', logf=False, norm='median', mismatch=0.2, outseg=None, whiten=True, fduration=2, highpass=None, **asd_kw 
-plot=qgram.plot(figsize = (12, 8))
+#plot=qgram.plot(figsize = (12, 8),vmin=0.,vmax=25.)
+plot=qgram.plot(figsize = (12, 8),vmin=0.)
 
 ax = plot.gca()
 ax.set_ylabel('Frequency [Hz]')

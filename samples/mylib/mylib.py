@@ -5,6 +5,9 @@ def GetFilelist(gpsstart,gpsend):
     '''
     This function gives full data frame file list.
     '''
+    ingpsstart=float(gpsstart)
+    ingpsend=float(gpsend)
+
     gpsstart=str(int(float(gpsstart)))
     gpsend=str(int(float(gpsend)))
 
@@ -22,7 +25,7 @@ def GetFilelist(gpsstart,gpsend):
     for x in sources:
         if int(x[24:34])<(int(gpsstart)-31):
             removelist.append(x)
-        if int(x[24:34])>int(gpsend):
+        if int(x[24:34])>=ingpsend:
             removelist.append(x)
 
     for y in removelist:
@@ -34,6 +37,8 @@ def GetMtrendFilelist(gpsstart,gpsend):
     '''
     This function gives minutes trend data frame file list.
     '''
+    ingpsstart=float(gpsstart)
+    ingpsend=float(gpsend)
 
     gpsstart=str(int(float(gpsstart)))
     gpsend=str(int(float(gpsend)))
@@ -52,7 +57,7 @@ def GetMtrendFilelist(gpsstart,gpsend):
     for x in sources:
         if int(x[32:42])<(int(gpsstart)-3599):
             removelist.append(x)
-        if int(x[32:42])>int(gpsend):
+        if int(x[32:42])>=ingpsend:
             removelist.append(x)
 
     for y in removelist:
@@ -64,6 +69,8 @@ def GetStrendFilelist(gpsstart,gpsend):
     '''
     This function gives second trend data frame file list.
     '''
+    ingpsstart=float(gpsstart)
+    ingpsend=float(gpsend)
 
     gpsstart=str(int(float(gpsstart)))
     gpsend=str(int(float(gpsend)))
@@ -82,7 +89,7 @@ def GetStrendFilelist(gpsstart,gpsend):
     for x in sources:
         if int(x[32:42])<(int(gpsstart)-599):
             removelist.append(x)
-        if int(x[32:42])>int(gpsend):
+        if int(x[32:42])>=ingpsend:
             removelist.append(x)
 
     for y in removelist:
@@ -94,6 +101,9 @@ def GetFilelist_Kamioka(gpsstart,gpsend):
     '''
     This function gives full data frame file list for Kashiwa server.
     '''
+    ingpsstart=float(gpsstart)
+    ingpsend=float(gpsend)
+
     gpsstart=str(int(float(gpsstart)))
     gpsend=str(int(float(gpsend)))
 
@@ -111,7 +121,7 @@ def GetFilelist_Kamioka(gpsstart,gpsend):
     for x in sources:
         if int(x[26:36])<(int(gpsstart)-31):
             removelist.append(x)
-        if int(x[26:36])>int(gpsend):
+        if int(x[26:36])>=ingpsend:
             removelist.append(x)
 
     for y in removelist:
@@ -123,6 +133,9 @@ def GetMtrendFilelist_Kamioka(gpsstart,gpsend):
     '''
     This function gives minutes trend data frame file list.
     '''
+    ingpsstart=float(gpsstart)
+    ingpsend=float(gpsend)
+
     gpsstart=str(int(float(gpsstart)))
     gpsend=str(int(float(gpsend)))
 
@@ -140,7 +153,7 @@ def GetMtrendFilelist_Kamioka(gpsstart,gpsend):
     for x in sources:
         if int(x[34:44])<(int(gpsstart)-3599):
             removelist.append(x)
-        if int(x[34:44])>int(gpsend):
+        if int(x[34:44])>=ingpsend:
             removelist.append(x)
 
     for y in removelist:
@@ -152,6 +165,9 @@ def GetStrendFilelist_Kamioka(gpsstart,gpsend):
     '''
     This function gives second trend data frame file list.
     '''
+    ingpsstart=float(gpsstart)
+    ingpsend=float(gpsend)
+
     gpsstart=str(int(float(gpsstart)))
     gpsend=str(int(float(gpsend)))
 
@@ -169,7 +185,7 @@ def GetStrendFilelist_Kamioka(gpsstart,gpsend):
     for x in sources:
         if int(x[34:44])<(int(gpsstart)-3599):
             removelist.append(x)
-        if int(x[34:44])>int(gpsend):
+        if int(x[34:44])>=ingpsend:
             removelist.append(x)
 
     for y in removelist:
@@ -181,6 +197,9 @@ def GetTriggerList(gpsstart,gpsend,channel,kamioka=False):
     '''
     This function gives omicron trigger file list in Kamioka on K1sum0,1.
     '''
+
+    ingpsstart=float(gpsstart)
+    ingpsend=float(gpsend)
 
     sources = []
 
@@ -201,7 +220,7 @@ def GetTriggerList(gpsstart,gpsend,channel,kamioka=False):
         tmp = x.rsplit("-",2)
         if int(tmp[1])<(int(gpsstart)-59):
             removelist.append(x)
-        if int(tmp[1])>int(gpsend):
+        if int(tmp[1])>=ingpsend:
             removelist.append(x)
 
     for y in removelist:

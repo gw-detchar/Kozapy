@@ -25,7 +25,7 @@ def GetFilelist(gpsstart,gpsend):
     for x in sources:
         if int(x[24:34])<(int(gpsstart)-31):
             removelist.append(x)
-        if int(x[24:34])>=ingpsend:
+        elif int(x[24:34])>=ingpsend:
             removelist.append(x)
 
     for y in removelist:
@@ -57,7 +57,7 @@ def GetMtrendFilelist(gpsstart,gpsend):
     for x in sources:
         if int(x[32:42])<(int(gpsstart)-3599):
             removelist.append(x)
-        if int(x[32:42])>=ingpsend:
+        elif int(x[32:42])>=ingpsend:
             removelist.append(x)
 
     for y in removelist:
@@ -89,7 +89,7 @@ def GetStrendFilelist(gpsstart,gpsend):
     for x in sources:
         if int(x[32:42])<(int(gpsstart)-599):
             removelist.append(x)
-        if int(x[32:42])>=ingpsend:
+        elif int(x[32:42])>=ingpsend:
             removelist.append(x)
 
     for y in removelist:
@@ -121,7 +121,7 @@ def GetFilelist_Kamioka(gpsstart,gpsend):
     for x in sources:
         if int(x[26:36])<(int(gpsstart)-31):
             removelist.append(x)
-        if int(x[26:36])>=ingpsend:
+        elif int(x[26:36])>=ingpsend:
             removelist.append(x)
 
     for y in removelist:
@@ -153,7 +153,7 @@ def GetMtrendFilelist_Kamioka(gpsstart,gpsend):
     for x in sources:
         if int(x[34:44])<(int(gpsstart)-3599):
             removelist.append(x)
-        if int(x[34:44])>=ingpsend:
+        elif int(x[34:44])>=ingpsend:
             removelist.append(x)
 
     for y in removelist:
@@ -185,7 +185,7 @@ def GetStrendFilelist_Kamioka(gpsstart,gpsend):
     for x in sources:
         if int(x[34:44])<(int(gpsstart)-3599):
             removelist.append(x)
-        if int(x[34:44])>=ingpsend:
+        elif int(x[34:44])>=ingpsend:
             removelist.append(x)
 
     for y in removelist:
@@ -220,7 +220,7 @@ def GetTriggerList(gpsstart,gpsend,channel,kamioka=False):
         tmp = x.rsplit("-",2)
         if int(tmp[1])<(int(gpsstart)-59):
             removelist.append(x)
-        if int(tmp[1])>=ingpsend:
+        elif int(tmp[1])>=ingpsend:
             removelist.append(x)
 
     for y in removelist:

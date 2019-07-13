@@ -265,8 +265,8 @@ def GetDQFlag(gpsstart,gpsend,config="xarm",min_len=0,kamioka=False):
         number=1
         name="X-arm"
     elif config == "LSC":
-        channel="K1:GRD-LSC_LOCK_OK"
-        number=1
+        channel="K1:GRD-LSC_LOCK_STATE_N"
+        number=157
         name="LSC"
     elif config == "IMC":
         channel="K1:GRD-IO_STATE_N"

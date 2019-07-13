@@ -14,8 +14,8 @@ from gwpy.detector import Channel
 
 # readout from gwf file
 # measurement period 2018/12/29~2019/01/03, 1230044418~1230476418
-gpsstart = '1230044418'
-gpsend = '1230045418'
+gpsstart = '1247024238'
+gpsend = '1247027495'
 #gpsend = '1230130818' # 12/29 24:00
 #gpsend = '1230217218' # 12/30 24:00
 #gpsend = '1230303618' # 12/31 24:00
@@ -61,7 +61,7 @@ channels=['K1:PEM-PSL_ACC_PERI_REFCAV_OUT_DQ',
           'K1:PEM-TEMPERATURE_FIELD_PSL2',
           'K1:PEM-HUMIDITY_FIELD_PSL',
           'K1:PEM-TEMPERATURE_FIELD_PSL']
-
+channels=['K1:GRD-LSC_LOCK_STATE_N']
 if not os.path.exists('results'):
     cmd = 'mkdir results'
     subprocess.call(cmd.split())

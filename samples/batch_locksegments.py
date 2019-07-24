@@ -55,7 +55,7 @@ ax.plot(DAQ)
 
 
 fname = outdir+"/lockedsegments_"+index+".png"
-plot.savefig(fname)
+plot.savefig(fname,dpi=50)
 
 print(fname)
 print('Successfully finished !')

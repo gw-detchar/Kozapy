@@ -27,6 +27,7 @@ parser.add_argument('-e','--gpsend',help='GPS ending time list.',nargs='*',requi
 )
 parser.add_argument('-t','--ltype',help='Legend type. Choice is \'time\', \'channel\', or \'combined\'.',default='combined',choices=['time','channel','combined'])
 parser.add_argument('-p','--lposition',help='Legend position. Choice is \'br\'(bottom right), \'bl\'(bottom left), \'tr\'(top right), or \'tl\'(top left), .',default='tr',choices=['br','bl','tr','tl'])
+parser.add_argument('--dpi',help='Plot resolution. dot per inch.',type=int,default=100)
 parser.add_argument('-f','--fftlength',help='FFT length.',type=float,default=1.)
 parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
 parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',action='store_true')
@@ -43,7 +44,7 @@ ol=fft/2.  #  overlap in FFTs.
 
 ltype=args.ltype
 lposition=args.lposition
-
+dpi=args.dpi
 kamioka = args.kamioka
 
 # Loop over channels and gps times.
@@ -51,13 +52,12 @@ isFirst = True
 legend = []
 
 for channel in channels:
-    print(channel)
 
     unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
     if channel.find('ACC') != -1:
-        unit = r'Acceleration [$m/s^2$]'
+        unit = r'Acceleration [$m/s^2$ $/ \sqrt{\mathrm{Hz}^{-1}}$]'
     elif channel.find('MIC') != -1:
-        unit = 'Sound [Pa]'
+        unit = r'Sound [Pa $/ \sqrt{\mathrm{Hz}^{-1}}$]'
 
     for gpsstart,gpsend in zip(gpsstarts,gpsends):
 
@@ -103,7 +103,7 @@ ax.legend(legend,bbox_to_anchor = mylib.GetBBTA(lposition),loc=mylib.Getloc(lpos
 
 fname = outdir + '/' + channel + '_spectrum_' + gpsstart +  '_' + index + '.png'
 print(fname)
-fplot.savefig(fname)
+fplot.savefig(fname,dpi=dpi)
 fplot.clf()
 fplot.close()
 

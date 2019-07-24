@@ -34,6 +34,8 @@ parser.add_argument('-l','--lchannel',help='Make locked segment bar plot.',defau
 parser.add_argument('--llabel',help='Label of the locked segment bar plot.',default='')
 parser.add_argument('-n','--lnumber',help='The requirement for judging locked. lchannel==lnumber will be used as locked.',default=99,type=int)
 parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',action='store_true')
+
+parser.add_argument('--dpi',help='Plot resolution. dot per inch.',type=int,default=100)
 # define variables
 args = parser.parse_args()
 outdir=args.outdir
@@ -53,6 +55,8 @@ ol=fft/2.  #  overlap in FFTs.
 lchannel = args.lchannel
 lnumber = args.lnumber
 llabel = args.llabel
+
+dpi=args.dpi
 
 kamioka = args.kamioka
 
@@ -126,7 +130,7 @@ else:
     pass
 
 fname = outdir + refchannel + '_' + channel + '_coherence_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
-cohplot.savefig(fname)
+cohplot.savefig(fname,dpi=dpi)
 
 cohplot.clf()
 cohplot.close()

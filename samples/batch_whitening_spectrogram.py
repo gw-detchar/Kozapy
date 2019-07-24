@@ -38,6 +38,7 @@ parser.add_argument('--llabel',help='Label of the locked segment bar plot.',defa
 parser.add_argument('-n','--lnumber',help='The requirement for judging locked. lchannel==lnumber will be used as locked.',default=99,type=int)
 parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',action='store_true')
 
+parser.add_argument('--dpi',help='Plot resolution. dot per inch.',type=int,default=100)
 # define variables
 args = parser.parse_args()
 outdir=args.outdir
@@ -52,16 +53,13 @@ latexchname += " spectrogram"
 gpsstart=args.gpsstart
 gpsend=args.gpsend
 
-
+dpi=args.dpi
 
 index=args.index
 stride=args.stride
 fft=args.fftlength
 ol=fft/2.  #  overlap in FFTs. 
 
-print("fft="+str(fft))
-print("ol="+str(ol))
-print("stride="+str(stride))
 lchannel=args.lchannel
 lnumber=args.lnumber
 llabel=args.llabel
@@ -98,13 +96,11 @@ if fft <= data.dt.value:
     print("stride="+str(stride))
 
 if whitening:
-    print('Whitening applied.')
     white = data.whiten(fftlength=fft,overlap=ol)
     whitespectrogram = white.spectrogram(stride,fftlength=fft,overlap=ol) ** (1/2.)
 
     sgplot=whitespectrogram.plot(figsize = (12, 8))
 else:
-    print('Not whitening applied.')
     spectrogram = data.spectrogram(stride,fftlength=fft,overlap=ol) ** (1/2.)
     sgplot=spectrogram.plot(figsize = (12, 8),norm='log')
 
@@ -131,7 +127,7 @@ else:
     pass
 
 
-sgplot.savefig(fname)
+sgplot.savefig(fname,dpi=dpi)
 
 sgplot.clf()
 sgplot.close()

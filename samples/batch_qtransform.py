@@ -35,7 +35,7 @@ parser.add_argument('-l','--lchannel',help='Make locked segment bar plot.',defau
 parser.add_argument('--llabel',help='Label of the locked segment bar plot.',default='')
 parser.add_argument('-n','--lnumber',help='The requirement for judging locked. lchannel==lnumber will be used as locked.',default=99,type=int)
 parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',action='store_true')
-
+parser.add_argument('--dpi',help='Plot resolution. dot per inch.',type=int,default=100)
 # define variables
 args = parser.parse_args()
 outdir=args.outdir
@@ -46,13 +46,14 @@ latexchname = channel.replace('_','\_')
 gpsstart=args.gpsstart
 gpsend=args.gpsend
 
+dpi=args.dpi
+
 #margin=40
 margin=1
 # To see ~8Hz < f
 if float(gpsend)-float(gpsstart)<40:
     margin=20
 
-print(margin)
 gpsstartmargin=float(gpsstart)-margin
 gpsendmargin=float(gpsend)+margin
 
@@ -98,15 +99,17 @@ plot.add_colorbar(cmap='YlGnBu_r',label="Normalized energy")
 fname = outdir + '/' + channel + '_qtransform_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
 
 if lflag:
-    ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
-    locked = ldata == lnumber
-    flag = locked.to_dqflag(name = '', label = llabel, round = True)
+#    ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
+#    locked = ldata == lnumber
+#    flag = locked.to_dqflag(name = '', label = llabel, round = True)
+
+    flag = mylib.GetDQFlag(float(gpsstart),float(gpsend),config=llabel, kamioka=kamioka)
     plot.add_state_segments(flag)
 else:
     pass
 
 
-plot.savefig(fname)
+plot.savefig(fname,dpi=dpi)
 
 plot.clf()
 plot.close()

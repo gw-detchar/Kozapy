@@ -31,10 +31,12 @@ parser.add_argument('-i','--index',help='It will be added to the output file nam
 parser.add_argument('--nolegend',help='Flag to make legend or not.',action='store_false')
 parser.add_argument('-p','--lposition',help='Legend position. Choice is \'br\'(bottom right), \'bl\'(bottom left), \'tr\'(top right), or \'tl\'(top left), .',default='tr',choices=['br','bl','tr','tl'])
 parser.add_argument('-t','--title',help='Plot title.',default='')
+parser.add_argument('--dpi',help='Plot resolution. dot per inch.',type=int,default=100)
 
 parser.add_argument('-l','--lchannel',help='Make locked segment bar plot.',default='')
 parser.add_argument('--llabel',help='Label of the locked segment bar plot.',default='')
 parser.add_argument('-n','--lnumber',help='The requirement for judging locked. lchannel==lnumber will be used as locked.',default=99,type=int)
+
 parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',action='store_true')
 
 # define variables
@@ -53,7 +55,7 @@ index = args.index
 
 legend=args.nolegend
 lposition=args.lposition
-
+dpi=args.dpi
 lchannel = args.lchannel
 lnumber = args.lnumber
 llabel = args.llabel
@@ -115,7 +117,9 @@ else:
     pass
 
 fname = outdir + '/' + channel[0] + '_timeseries_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
-plot.savefig(fname)
+# dpi = dot per inch. It is figure resolution. default is 80 ?
+plot.savefig(fname,dpi=100)
+
 
 plot.clf()
 plot.close()

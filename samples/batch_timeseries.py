@@ -44,8 +44,9 @@ args = parser.parse_args()
 outdir = args.outdir
 
 channel = args.channel
+latexchnames = args.channel
 
-latexchnames = [c.replace('_','\_') for c in channel]
+#latexchnames = [c.replace('_','\_') for c in channel]
 
 gpsstart = args.gpsstart
 gpsend = args.gpsend
@@ -59,7 +60,8 @@ dpi=args.dpi
 lchannel = args.lchannel
 lnumber = args.lnumber
 llabel = args.llabel
-title = args.title.replace('_','\_')
+#title = args.title.replace('_','\_')
+title = args.title
 
 kamioka = args.kamioka
 
@@ -92,6 +94,7 @@ elif channel[0].find('MIC') != -1:
 
 data = TimeSeriesDict.read(sources,channel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
 
+
 for d in data:
     if len(data[d]) > 10000:
         rate = 10000./len(data[d])/data[d].dt
@@ -118,7 +121,7 @@ else:
 
 fname = outdir + '/' + channel[0] + '_timeseries_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
 # dpi = dot per inch. It is figure resolution. default is 80 ?
-plot.savefig(fname,dpi=100)
+plot.savefig(fname,dpi=dpi)
 
 
 plot.clf()

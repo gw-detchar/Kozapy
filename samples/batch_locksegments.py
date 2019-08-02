@@ -38,21 +38,20 @@ LSC = mylib.GetDQFlag(gpsstart,gpsend,config="LSC",kamioka=kamioka)
 IMC = mylib.GetDQFlag(gpsstart,gpsend,config="IMC",kamioka=kamioka)
 PMC = mylib.GetDQFlag(gpsstart,gpsend,config="PMC",kamioka=kamioka)
 FSS = mylib.GetDQFlag(gpsstart,gpsend,config="FSS",kamioka=kamioka)
-DAQ = mylib.GetDQFlag(gpsstart,gpsend,config="DAQ",kamioka=kamioka)
-MICH = mylib.GetDQFlag(gpsstart,gpsend,config="MICH",kamioka=kamioka)
+#DAQ = mylib.GetDQFlag(gpsstart,gpsend,config="DAQ",kamioka=kamioka)
+#MICH = mylib.GetDQFlag(gpsstart,gpsend,config="MICH",kamioka=kamioka)
     
 untriggered = ~trigger
 plot = untriggered.plot(figsize = (12,8))
 ax = plot.gca()
 ax.set_title("Interferometer state summary")
-ax.plot(LSC)
+#ax.plot(LSC)
 #ax.plot(xarm)
 #ax.plot(MICH)
 ax.plot(IMC)
 ax.plot(PMC)
 ax.plot(FSS)
-ax.plot(DAQ)
-
+#ax.plot(DAQ)
 
 fname = outdir+"/lockedsegments_"+index+".png"
 plot.savefig(fname,dpi=50)

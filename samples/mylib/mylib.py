@@ -258,7 +258,7 @@ def GetDQFlag(gpsstart,gpsend,config="xarm",min_len=0,kamioka=False):
     else:
         sources = GetFilelist(gpsstart,gpsend)
 
-    if config == "xarm":
+    if config == "xarm" or config == "X-arm":
         channel="K1:GRD-LSC_LOCK_STATE_N"
         number=31415
 #        channel="K1:GRD-ALS_PDHX_OK"
@@ -344,7 +344,8 @@ def GetTitlefromLegend(ltype,gpsstart,gpsend,channel):
     if(ltype=='channel'):
         return gpsstart + '-' + gpsend
 
-    latexchannel = channel.replace('_','\_')
+    #latexchannel = channel.replace('_','\_')
+    latexchannel = channel
 
     if(ltype=='time'):
         return latexchannel

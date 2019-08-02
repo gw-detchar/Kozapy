@@ -53,7 +53,8 @@ legend = []
 
 for channel in channels:
 
-    unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
+    #unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
+    unit = 'Amplitude [1/rHz]'
     if channel.find('ACC') != -1:
         unit = r'Acceleration [$m/s^2$ $/ \sqrt{\mathrm{Hz}^{-1}}$]'
     elif channel.find('MIC') != -1:

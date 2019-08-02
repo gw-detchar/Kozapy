@@ -129,7 +129,7 @@ if lflag:
 else:
     pass
 
-fname = outdir + refchannel + '_' + channel + '_coherence_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
+fname = outdir + '/' + refchannel + '_' + channel + '_coherence_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
 cohplot.savefig(fname,dpi=dpi)
 
 cohplot.clf()

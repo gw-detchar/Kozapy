@@ -46,7 +46,8 @@ outdir=args.outdir
 whitening=args.whitening
 
 channel=args.channel
-latexchname = channel.replace('_','\_')
+#latexchname = channel.replace('_','\_')
+latexchname = channel.replace
 if whitening:
     latexchname += " whitened"
 latexchname += " spectrogram"
@@ -72,7 +73,8 @@ if fft*2. > stride:
     print('Warning: stride is shorter than fft length. Set stride=fft*2.')
     stride=fft*2.
     
-unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
+#unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
+unit = r'Amplitude [1/rHz]'
 if channel.find('ACC') != -1:
     unit = r'Acceleration [$m/s^2$]'
 elif channel.find('MIC') != -1:

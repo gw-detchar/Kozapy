@@ -10,8 +10,11 @@ matplotlib.use('Agg')  # this line is required for the batch job before importin
 from gwpy.segments import DataQualityFlag
 from mylib import mylib
 
-#  argument processing
+from matplotlib import pylab as pl
+pl.rcParams['font.size'] = 18
+pl.rcParams['font.family'] = 'Verdana'
 
+#  argument processing
 
 parser = argparse.ArgumentParser(description='Make lock segment bars.')
 parser.add_argument('-o','--outdir',help='output directory.',default='result')
@@ -46,7 +49,7 @@ plot = untriggered.plot(figsize = (12,8))
 ax = plot.gca()
 ax.set_title("Interferometer state summary")
 #ax.plot(LSC)
-#ax.plot(xarm)
+ax.plot(xarm)
 #ax.plot(MICH)
 ax.plot(IMC)
 ax.plot(PMC)

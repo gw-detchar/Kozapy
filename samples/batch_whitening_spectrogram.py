@@ -18,6 +18,10 @@ from gwpy.detector import Channel
 from matplotlib import cm
 from mylib import mylib
 
+from matplotlib import pylab as pl
+pl.rcParams['font.size'] = 16
+pl.rcParams['font.family'] = 'Verdana'
+
 #  argument processing
 import argparse
 
@@ -47,7 +51,7 @@ whitening=args.whitening
 
 channel=args.channel
 #latexchname = channel.replace('_','\_')
-latexchname = channel.replace
+latexchname = channel
 if whitening:
     latexchname += " whitened"
 latexchname += " spectrogram"
@@ -76,9 +80,9 @@ if fft*2. > stride:
 #unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
 unit = r'Amplitude [1/rHz]'
 if channel.find('ACC') != -1:
-    unit = r'Acceleration [$m/s^2$]'
+    unit = 'Acceleration [m/s^2/rHz]'
 elif channel.find('MIC') != -1:
-    unit = 'Sound [Pa]'
+    unit = 'Sound [Pa/rHz]'
 
 # Get data from frame files
 if kamioka:
@@ -98,7 +102,7 @@ if fft <= data.dt.value:
     print("stride="+str(stride))
 
 if whitening:
-    white = data.whiten(fftlength=fft,overlap=ol)
+    white = data.whiten(fftlength=fft,overlap=ol,fduration=stride)
     whitespectrogram = white.spectrogram(stride,fftlength=fft,overlap=ol) ** (1/2.)
 
     sgplot=whitespectrogram.plot(figsize = (12, 8))

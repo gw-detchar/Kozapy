@@ -18,6 +18,11 @@ from gwpy.detector import Channel
 from matplotlib import cm
 from mylib import mylib
 
+#pl.rcParams['figure.figsize'] = 12, 8
+pl.rcParams['font.size'] = 16
+pl.rcParams['font.family'] = 'Verdana'
+#pl.rcParams['mathtext.fontset'] = 'stixsans'
+
 #  argument processing
 import argparse
 
@@ -88,7 +93,7 @@ else:
 #unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
 unit = ''
 if channel[0].find('ACC') != -1:
-    unit = r'Acceleration [$m/s^2$]'
+    unit = r'Acceleration [m/s^2]'
 elif channel[0].find('MIC') != -1:
     unit = 'Sound [Pa]'
 
@@ -101,7 +106,8 @@ for d in data:
         data[d] = data[d].resample(rate)
         print("The sample rate*duration is over capacity. Down sampled to rate of "+str(rate)+".")
 
-plot=data.plot(figsize = (12, 8))
+#plot=data.plot(figsize = (12, 8))
+plot=data.plot()
 
 ax = plot.gca()
 ax.set_title(title)
@@ -121,8 +127,8 @@ else:
 
 fname = outdir + '/' + channel[0] + '_timeseries_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
 # dpi = dot per inch. It is figure resolution. default is 80 ?
-plot.savefig(fname,dpi=dpi)
 
+plot.savefig(fname,dpi=dpi) #,bbox_inches="tight")
 
 plot.clf()
 plot.close()

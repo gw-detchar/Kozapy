@@ -16,6 +16,10 @@ from gwpy.detector import Channel
 from matplotlib import cm
 from mylib import mylib
 
+from matplotlib import pylab as pl
+pl.rcParams['font.size'] = 16
+pl.rcParams['font.family'] = 'Verdana'
+
 #  argument processing
 import argparse
 
@@ -42,8 +46,11 @@ outdir=args.outdir
 
 refchannel=args.refchannel
 channel=args.channel
-latexchname = channel.replace('_','\_')
-latexrefchname = refchannel.replace('_','\_')
+latexchname = channel
+latexrefchname = refchannel
+
+#latexchname = channel.replace('_','\_')
+#latexrefchname = refchannel.replace('_','\_')
 
 gpsstart=args.gpsstart
 gpsend=args.gpsend
@@ -67,12 +74,6 @@ if fft > stride/2.:
     print('Warning: stride is shorter than fft length. Set stride=fft*2.')
     stride=fft*2.
     
-unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
-if channel.find('ACC') != -1:
-    unit = r'Acceleration [$m/s^2$]'
-elif channel.find('MIC') != -1:
-    unit = 'Sound [Pa]'
-
 # Get data from frame files
 if kamioka:    
     sources = mylib.GetFilelist_Kamioka(gpsstart,gpsend)
@@ -91,8 +92,7 @@ if fft < ref.dt.value:
     fft=2*ref.dt.value
     ol=fft/2.  #  overlap in FFTs.                        
     stride=2*fft
-    print("Given fft/stride was bad against the sampling rate. Automatically set to\
-:")
+    print("Given fft/stride was bad against the sampling rate. Automatically set to:")
     print("fft="+str(fft))
     print("ol="+str(ol))
     print("stride="+str(stride))
@@ -100,8 +100,7 @@ if fft < com.dt.value:
     fft=2*com.dt.value
     ol=fft/2.  #  overlap in FFTs.                        
     stride=2*fft
-    print("Given fft/stride was bad against the sampling rate. Automatically set to\
-:")
+    print("Given fft/stride was bad against the sampling rate. Automatically set to:")
     print("fft="+str(fft))
     print("ol="+str(ol))
     print("stride="+str(stride))
@@ -109,7 +108,7 @@ if fft < com.dt.value:
 coh = ref.coherence_spectrogram(com,stride,fftlength=fft,overlap=ol)
 
 # The time axis of coherencegram seems buggy in this version. Temporal fix is needed.
-coh.dx = stride
+#coh.dx = stride
 
 cohplot=coh.plot(figsize = (12, 8),vmin=0.,vmax=1.)
 ax = cohplot.gca()

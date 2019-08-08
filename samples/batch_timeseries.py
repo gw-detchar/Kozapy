@@ -46,13 +46,22 @@ parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',actio
 
 # define variables
 args = parser.parse_args()
+
+kamioka = args.kamioka
+
 outdir = args.outdir
 
 channel = args.channel
+
+
 latexchnames = args.channel
 
-#latexchnames = [c.replace('_','\_') for c in channel]
-
+if kamioka:
+    latexchnames = [c.replace('_','\_') for c in channel]
+    title = args.title.replace('_','\_')
+else:
+    latexchnames = args.channel
+    title = args.title
 gpsstart = args.gpsstart
 gpsend = args.gpsend
 
@@ -65,10 +74,6 @@ dpi=args.dpi
 lchannel = args.lchannel
 lnumber = args.lnumber
 llabel = args.llabel
-#title = args.title.replace('_','\_')
-title = args.title
-
-kamioka = args.kamioka
 
 # If lflag is True, locked segments is plotted. 
 lflag = bool(lchannel)

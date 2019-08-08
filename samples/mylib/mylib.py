@@ -260,9 +260,7 @@ def GetDQFlag(gpsstart,gpsend,config="xarm",min_len=0,kamioka=False):
 
     if config == "xarm" or config == "X-arm":
         channel="K1:GRD-LSC_LOCK_STATE_N"
-        number=31415
-#        channel="K1:GRD-ALS_PDHX_OK"
-#        number=1
+        number=10
         name="X-arm"
     elif config == "LSC":
         channel="K1:GRD-LSC_LOCK_STATE_N"
@@ -288,6 +286,10 @@ def GetDQFlag(gpsstart,gpsend,config="xarm",min_len=0,kamioka=False):
         channel="K1:GRD-LSC_MICH_OK"
         number=1
         name="MICH"
+    elif config == "quiet":
+        channel="K1:MIF-WE_ARE_DOING_NOTHING"
+        number=1
+        name="quiet"
     else:
         print("mylib.GetDQFlag Error: No difinition for given config.")
         

@@ -24,7 +24,7 @@ pl.rcParams['font.family'] = 'Verdana'
 import argparse
 
 parser = argparse.ArgumentParser(description='Make coherencegram.')
-parser.add_argument('-o','--outdir',help='output directory.',default='result')
+parser.add_argument('-o','--outdir',help='output directory.',default='/tmp')
 parser.add_argument('-r','--refchannel',help='main reference channel.',required=True)
 parser.add_argument('-c','--channel',help='compared channel.',required=True)
 parser.add_argument('-s','--gpsstart',help='GPS starting time.',required=True)
@@ -42,15 +42,19 @@ parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',actio
 parser.add_argument('--dpi',help='Plot resolution. dot per inch.',type=int,default=100)
 # define variables
 args = parser.parse_args()
+
+kamioka = args.kamioka
+
 outdir=args.outdir
 
 refchannel=args.refchannel
 channel=args.channel
-latexchname = channel
-latexrefchname = refchannel
-
-#latexchname = channel.replace('_','\_')
-#latexrefchname = refchannel.replace('_','\_')
+if kamioka:
+    latexchname = channel.replace('_','\_')
+    latexrefchname = refchannel.replace('_','\_')
+else:
+    latexchname = channel
+    latexrefchname = refchannel
 
 gpsstart=args.gpsstart
 gpsend=args.gpsend
@@ -65,7 +69,7 @@ llabel = args.llabel
 
 dpi=args.dpi
 
-kamioka = args.kamioka
+
 
 # If lflag is True, locked segments is plotted.            
 lflag = bool(lchannel)

@@ -26,7 +26,7 @@ pl.rcParams['font.family'] = 'Verdana'
 import argparse
 
 parser = argparse.ArgumentParser(description='Make coherencegram.')
-parser.add_argument('-o','--outdir',help='output directory.',default='result')
+parser.add_argument('-o','--outdir',help='output directory.',default='/tmp')
 parser.add_argument('-c','--channel',help='channel.',required=True)
 parser.add_argument('-s','--gpsstart',help='GPS starting time.',required=True)
 parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True
@@ -34,7 +34,7 @@ parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True
 parser.add_argument('-w','--whitening',help='Apply whitening.',action='store_true')
 
 parser.add_argument('-f','--fftlength',help='FFT length.',type=float,default=1.)
-parser.add_argument('--stride',help='Stride of the coherencegram.',type=float,default=10.)
+parser.add_argument('--stride',help='Stride of the coherencegram.',type=float,default=1.)
 parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
 
 parser.add_argument('-l','--lchannel',help='Make locked segment bar plot.',default='')
@@ -45,13 +45,20 @@ parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',actio
 parser.add_argument('--dpi',help='Plot resolution. dot per inch.',type=int,default=100)
 # define variables
 args = parser.parse_args()
+
+kamioka = args.kamioka
+
 outdir=args.outdir
 
 whitening=args.whitening
 
 channel=args.channel
-#latexchname = channel.replace('_','\_')
-latexchname = channel
+
+if kamioka:
+    latexchname = channel.replace('_','\_')
+else:
+    latexchname = channel
+
 if whitening:
     latexchname += " whitened"
 latexchname += " spectrogram"
@@ -71,11 +78,11 @@ llabel=args.llabel
 
 lflag=bool(lchannel)
 
-kamioka = args.kamioka
 
-if fft*2. > stride:
-    print('Warning: stride is shorter than fft length. Set stride=fft*2.')
-    stride=fft*2.
+
+if fft > stride:
+    print('Warning: stride is shorter than fft length. Set stride=fft')
+    stride=fft
     
 #unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
 unit = r'Amplitude [1/rHz]'

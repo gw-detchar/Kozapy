@@ -26,7 +26,7 @@ pl.rcParams['font.family'] = 'Verdana'
 import argparse
 
 parser = argparse.ArgumentParser(description='Make coherencegram.')
-parser.add_argument('-o','--outdir',help='output directory.',default='result')
+parser.add_argument('-o','--outdir',help='output directory.',default='/tmp')
 parser.add_argument('-c','--channel',help='channel.',required=True)
 parser.add_argument('-s','--gpsstart',help='GPS starting time.',required=True)
 parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True)

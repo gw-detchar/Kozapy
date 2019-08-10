@@ -24,7 +24,7 @@ pl.rcParams['font.family'] = 'Verdana'
 import argparse
 
 parser = argparse.ArgumentParser(description='Make spectrums. If several channels or times are given, they are overlaid.')
-parser.add_argument('-o','--outdir',help='output directory.',default='result')
+parser.add_argument('-o','--outdir',help='output directory.',default='/tmp')
 parser.add_argument('-c','--channel',help='channel list.',nargs='*',required=True)
 parser.add_argument('-s','--gpsstart',help='GPS starting time list.',nargs='*',required=True)
 parser.add_argument('-e','--gpsend',help='GPS ending time list.',nargs='*',required=True

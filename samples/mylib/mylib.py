@@ -228,6 +228,15 @@ def GetTriggerList(gpsstart,gpsend,channel,kamioka=False):
 
     return sources
 
+def checkfile(gpsstart,gpsend):
+    '''
+    Give the list of missing files.
+    '''
+    sources = GetFilelist(gpsstart,gpsend)
+    missing = []
+    return missing
+
+
 def GetLegend(ltype,gpsstart,gpsend,channel):
     '''
     It gives string for legend description.

@@ -34,6 +34,8 @@ parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True
 parser.add_argument('-w','--whitening',help='Apply whitening.',action='store_true')
 
 parser.add_argument('-f','--fftlength',help='FFT length.',type=float,default=1.)
+parser.add_argument('--fmin',help='Frequency minimum limit.',type=float,default=-1.)
+parser.add_argument('--fmax',help='Frequency maximum limit.',type=float,default=8000.)
 parser.add_argument('--stride',help='Stride of the coherencegram.',type=float,default=1.)
 parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
 
@@ -71,6 +73,9 @@ index=args.index
 stride=args.stride
 fft=args.fftlength
 ol=fft/2.  #  overlap in FFTs. 
+
+fmin=args.fmin
+fmax=args.fmax
 
 lchannel=args.lchannel
 lnumber=args.lnumber
@@ -121,8 +126,15 @@ ax = sgplot.gca()
 ax.set_ylabel('Frequency [Hz]')
 ax.set_yscale('log')
 ax.set_title(latexchname)
-y_min = 0.8/fft
-ax.set_ylim(y_min,8000)
+if fmin < 0:    
+    fmin = 0.8/fft
+
+print(type(fmin))
+print(type(fmax))
+print(fmin)
+print(fmax)
+    
+ax.set_ylim(fmin,fmax)
 
 if whitening:
     sgplot.add_colorbar(cmap='YlGnBu_r',label='Arbitrary')

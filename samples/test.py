@@ -1,4 +1,4 @@
-'''Make q-transform plot.
+'''Make spectrogram.
 '''
 
 __author__ = "Chihiro Kozakai"
@@ -18,17 +18,23 @@ from gwpy.detector import Channel
 from matplotlib import cm
 from mylib import mylib
 
+from matplotlib import pylab as pl
+pl.rcParams['font.size'] = 16
+pl.rcParams['font.family'] = 'Verdana'
+
 #  argument processing
 import argparse
 
 parser = argparse.ArgumentParser(description='Make coherencegram.')
-parser.add_argument('-o','--outdir',help='output directory.',default='result')
+parser.add_argument('-o','--outdir',help='output directory.',default='/tmp')
 parser.add_argument('-c','--channel',help='channel.',required=True)
 parser.add_argument('-s','--gpsstart',help='GPS starting time.',required=True)
-parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True)
-parser.add_argument('-t','--time',help='Plot time duration.',type=float,default=None)
+parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True
+)
+parser.add_argument('-w','--whitening',help='Apply whitening.',action='store_true')
 
-#parser.add_argument('-f','--fftlength',help='FFT length.',type=float,default=1.)
+parser.add_argument('-f','--fftlength',help='FFT length.',type=float,default=1.)
+parser.add_argument('--stride',help='Stride of the coherencegram.',type=float,default=1.)
 parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
 
 parser.add_argument('-l','--lchannel',help='Make locked segment bar plot.',default='')
@@ -36,30 +42,35 @@ parser.add_argument('--llabel',help='Label of the locked segment bar plot.',defa
 parser.add_argument('-n','--lnumber',help='The requirement for judging locked. lchannel==lnumber will be used as locked.',default=99,type=int)
 parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',action='store_true')
 
+parser.add_argument('--dpi',help='Plot resolution. dot per inch.',type=int,default=100)
 # define variables
 args = parser.parse_args()
+
+kamioka = args.kamioka
+
 outdir=args.outdir
 
-channel=args.channel
-latexchname = channel.replace('_','\_')
+whitening=args.whitening
 
+channel=args.channel
+
+if kamioka:
+    latexchname = channel.replace('_','\_')
+else:
+    latexchname = channel
+
+if whitening:
+    latexchname += " whitened"
+latexchname += " spectrogram"
 gpsstart=args.gpsstart
 gpsend=args.gpsend
 
-#margin=40
-margin=1
-# To see ~8Hz < f
-if float(gpsend)-float(gpsstart)<40:
-    margin=20
-
-print(margin)
-gpsstartmargin=float(gpsstart)-margin
-gpsendmargin=float(gpsend)+margin
-
+dpi=args.dpi
 
 index=args.index
-#fft=args.fftlength
-#ol=fft/2.  #  overlap in FFTs. 
+stride=args.stride
+fft=args.fftlength
+ol=fft/2.  #  overlap in FFTs. 
 
 lchannel=args.lchannel
 lnumber=args.lnumber
@@ -67,49 +78,71 @@ llabel=args.llabel
 
 lflag=bool(lchannel)
 
-kamioka = args.kamioka
+
+
+if fft > stride:
+    print('Warning: stride is shorter than fft length. Set stride=fft')
+    stride=fft
     
-unit = "Normalized energy"
+#unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
+unit = r'Amplitude [1/rHz]'
+if channel.find('ACC') != -1:
+    unit = 'Acceleration [m/s^2/rHz]'
+elif channel.find('MIC') != -1:
+    unit = 'Sound [Pa/rHz]'
 
 # Get data from frame files
 if kamioka:
-    sources = mylib.GetFilelist_Kamioka(gpsstartmargin,gpsendmargin)
+    data = TimeSeries.fetch(channel,float(gpsstart),float(gpsend),host='k1nds0',port=8088)
 else:
-    sources = mylib.GetFilelist(gpsstartmargin,gpsendmargin)
+    sources = mylib.GetFilelist(gpsstart,gpsend)
+    data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
 
-data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstartmargin),end=float(gpsendmargin))
+if fft <= data.dt.value:
+    fft=2*data.dt.value
+    ol=fft/2.  #  overlap in FFTs. 
+    stride=2*fft
+    print("Given fft/stride was bad against the sampling rate. Automatically set to:")
+    print("fft="+str(fft))
+    print("ol="+str(ol))
+    print("stride="+str(stride))
 
-#maxf=1024
-#if maxf > 1./data.dt.value/4.:
-maxf=1./data.dt.value/4.
+if whitening:
+    white = data.whiten(fftlength=fft,overlap=ol,fduration=stride)
+    whitespectrogram = white.spectrogram(stride,fftlength=fft,overlap=ol) ** (1/2.)
 
-qgram = data.q_transform(outseg=[float(gpsstart),float(gpsend)])
-# default parameter
-#qrange=(4, 64), frange=(0, inf), gps=None, search=0.5, tres='<default>', fres='<default>', logf=False, norm='median', mismatch=0.2, outseg=None, whiten=True, fduration=2, highpass=None, **asd_kw 
-#plot=qgram.plot(figsize = (12, 8),vmin=0.,vmax=25.)
-plot=qgram.plot(figsize = (12, 8),vmin=0.)
+    sgplot=whitespectrogram.plot(figsize = (12, 8))
+else:
+    spectrogram = data.spectrogram(stride,fftlength=fft,overlap=ol) ** (1/2.)
+    sgplot=spectrogram.plot(figsize = (12, 8),norm='log')
 
-ax = plot.gca()
+ax = sgplot.gca()
 ax.set_ylabel('Frequency [Hz]')
 ax.set_yscale('log')
-ax.set_title(latexchname+" Q-transform")
+ax.set_title(latexchname)
+y_min = 0.8/fft
+ax.set_ylim(y_min,8000)
 
-plot.add_colorbar(cmap='YlGnBu_r',label="Normalized energy")
-fname = outdir + '/' + channel + '_qtransform_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
+if whitening:
+    sgplot.add_colorbar(cmap='YlGnBu_r',label='Arbitrary')
+    fname = outdir + '/' + channel + '_whiteningspectrogram_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
+else:
+    sgplot.add_colorbar(cmap='YlGnBu_r',label=unit,log=True)
+    fname = outdir + '/' + channel + '_spectrogram_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
 
 if lflag:
     ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
     locked = ldata == lnumber
     flag = locked.to_dqflag(name = '', label = llabel, round = True)
-    plot.add_state_segments(flag)
+    sgplot.add_state_segments(flag)
 else:
     pass
 
 
-plot.savefig(fname)
+sgplot.savefig(fname,dpi=dpi)
 
-plot.clf()
-plot.close()
+sgplot.clf()
+sgplot.close()
 
 print(fname)
 print('Successfully finished !')

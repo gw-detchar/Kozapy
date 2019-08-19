@@ -98,11 +98,10 @@ elif channel.find('MIC') != -1:
 
 # Get data from frame files
 if kamioka:
-    sources = mylib.GetFilelist_Kamioka(gpsstart,gpsend)
+    data = TimeSeries.fetch(channel,float(gpsstart),float(gpsend),host='k1nds0',port=8088)
 else:
     sources = mylib.GetFilelist(gpsstart,gpsend)
-
-data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
+    data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
 
 if fft <= data.dt.value:
     fft=2*data.dt.value

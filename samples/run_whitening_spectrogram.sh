@@ -10,6 +10,7 @@ elif [ `hostname` == "m31-02.kagra.icrr.u-tokyo.ac.jp" ]; then
     Kozapy=/home/chihiro.kozakai/detchar/analysis/code/gwpy/Kozapy/samples
 else
     Kozapy=/users/DET/tools/GlitchPlot/Script/Kozapy/samples
+    export PATH=/home/controls/bin:/home/controls/opt/summary-2.7/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
 fi
 
 echo $@

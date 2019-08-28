@@ -272,7 +272,7 @@ def GetDQFlag(gpsstart,gpsend,config="FPMI",min_len=0,kamioka=False):
         number=10
         name="X-arm"
     elif config == "FPMI":
-        channel="K1:GRD-LSC_LOCK_SIMPLE_STATE_N"
+        channel="K1:GRD-LSC_FPMI_LOCK_STATE_N"
         number=16
         name="FPMI"
     elif config == "LSC":

@@ -256,7 +256,7 @@ def GetLegend(ltype,gpsstart,gpsend,channel):
         print('Warning! Legend type is out of option.')
         return [latexchannel]
 
-def GetDQFlag(gpsstart,gpsend,config="xarm",min_len=0,kamioka=False):
+def GetDQFlag(gpsstart,gpsend,config="FPMI",min_len=0,kamioka=False):
     '''
     It gives Detector Quality Flag for pointed configuration.
     '''
@@ -271,6 +271,10 @@ def GetDQFlag(gpsstart,gpsend,config="xarm",min_len=0,kamioka=False):
         channel="K1:GRD-LSC_LOCK_STATE_N"
         number=10
         name="X-arm"
+    elif config == "FPMI":
+        channel="K1:GRD-LSC_LOCK_SIMPLE_STATE_N"
+        number=16
+        name="FPMI"
     elif config == "LSC":
         channel="K1:GRD-LSC_LOCK_STATE_N"
         number=157

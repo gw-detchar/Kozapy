@@ -31,6 +31,8 @@ parser.add_argument('-s','--gpsstart',help='GPS starting time.',required=True)
 parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True
 )
 parser.add_argument('-f','--fftlength',help='FFT length.',type=float,default=1.)
+parser.add_argument('--fmin',help='Frequency minimum limit.',type=float,default=-1.)
+parser.add_argument('--fmax',help='Frequency maximum limit.',type=float,default=8000.)
 parser.add_argument('--stride',help='Stride of the coherencegram.',type=float,default=10.)
 parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
 
@@ -62,6 +64,9 @@ index=args.index
 stride=args.stride
 fft=args.fftlength
 ol=fft/2.  #  overlap in FFTs. 
+
+fmin=args.fmin
+fmax=args.fmax
 
 lchannel = args.lchannel
 lnumber = args.lnumber
@@ -119,8 +124,10 @@ ax = cohplot.gca()
 ax.set_ylabel('Frequency [Hz]')
 ax.set_yscale('log')
 ax.set_title(latexrefchname + ' ' + latexchname)
-y_min=0.8/fft
-ax.set_ylim(y_min,8000)
+
+if fmin < 0:
+    fmin = 0.8/fft
+ax.set_ylim(fmin,fmax)
 
 cohplot.add_colorbar(cmap='YlGnBu_r',label='Coherence')
 

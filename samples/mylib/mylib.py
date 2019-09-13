@@ -275,6 +275,10 @@ def GetDQFlag(gpsstart,gpsend,config="FPMI",min_len=0,kamioka=False):
         channel="K1:GRD-LSC_FPMI_LOCK_STATE_N"
         number=16
         name="FPMI"
+    elif config == "ALSDARM":
+        channel="K1:GRD-LSC_LOCK_STATE_N"
+        number=40
+        name="ALSDARM"
     elif config == "LSC":
         channel="K1:GRD-LSC_LOCK_STATE_N"
         number=157

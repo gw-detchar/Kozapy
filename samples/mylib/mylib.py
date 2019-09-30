@@ -268,13 +268,19 @@ def GetDQFlag(gpsstart,gpsend,config="FPMI",min_len=0,kamioka=False):
         sources = GetFilelist(gpsstart,gpsend)
 
     if config == "xarm" or config == "X-arm":
-        channel="K1:GRD-LSC_LOCK_STATE_N"
-        number=10
+        #channel="K1:GRD-LSC_LOCK_STATE_N"
+        #number=10
+        channel="K1:GRD-LSC_SRFPMI_LOCK_STATE_N"
+        number=44
         name="X-arm"
     elif config == "FPMI":
         channel="K1:GRD-LSC_FPMI_LOCK_STATE_N"
         number=16
         name="FPMI"
+    elif config == "prmialsdarm":
+        channel="K1:GRD-LSC_LOCK_STATE_N"
+        number=171
+        name="PRMI+ALS DARM"
     elif config == "ALSDARM":
         channel="K1:GRD-LSC_LOCK_STATE_N"
         number=40

@@ -35,6 +35,10 @@ parser.add_argument('-d','--datatype',help='Data type. Options are minute(defaul
 parser.add_argument('-w','--whitening',help='Apply whitening.',action='store_true')
 parser.add_argument('-m','--margin',help='Marginal time for better whitening.',type=float,default=2.)
 parser.add_argument('-f','--fftlength',help='FFT length for whitening.',type=float,default=1.)
+parser.add_argument('-b','--bandpass',help='Apply band pass filter. If blow or bhigh is not given, blow is determined by given time duration and bhigh is determined by sampling frequency.',action='store_true')
+parser.add_argument('--blow',help='Band pass lower frequency.',type=float,default=40)
+parser.add_argument('--bhigh',help='Band pass higher frequency.',type=float,default=1000)
+
 parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
 parser.add_argument('--nolegend',help='Flag to make legend or not.',action='store_false')
 parser.add_argument('-p','--lposition',help='Legend position. Choice is \'br\'(bottom right), \'bl\'(bottom left), \'tr\'(top right), or \'tl\'(top left), .',default='tr',choices=['br','bl','tr','tl'])
@@ -59,6 +63,10 @@ channel = args.channel
 whitening=args.whitening
 margin=args.margin
 
+bandpass = args.bandpass
+blow = args.blow
+bhigh = args.bhigh
+
 latexchnames = args.channel
 
 if kamioka:
@@ -73,13 +81,14 @@ gpsend = args.gpsend
 gpsstartmargin=gpsstart
 gpsendmargin=gpsend
 
-if whitening:
+if whitening or bandpass:
     gpsstartmargin=str(float(gpsstart)-margin)
     gpsendmargin=str(float(gpsend)+margin)
 
 
 fft=args.fftlength
 ol=fft/2.  #  overlap in FFTs.
+
 
 datatype = args.datatype
 index = args.index
@@ -124,6 +133,16 @@ data = TimeSeriesDict.read(sources,channel,format='gwf.lalframe',start=float(gps
 for d in data:
     if whitening:
         data[d] = data[d].whiten(fftlength=fft,overlap=ol)
+
+
+    if bandpass:
+        if blow < 0:
+            blow = 4/(float(gpsendmargin)-float(gpsstartmargin))
+        if bhigh < 0:
+            bhigh = 0.25/data[d].dt.value
+        data[d] = data[d].bandpass(blow,bhigh)
+
+    if whitening or bandpass:
         data[d] = data[d].crop(float(gpsstart),float(gpsend))
 
     if len(data[d]) > 10000:

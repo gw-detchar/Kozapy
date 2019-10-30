@@ -29,10 +29,9 @@ parser = argparse.ArgumentParser(description='Make coherencegram.')
 parser.add_argument('-o','--outdir',help='output directory.',default='/tmp')
 parser.add_argument('-c','--channel',help='channel.',required=True)
 parser.add_argument('-s','--gpsstart',help='GPS starting time.',required=True)
-parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True
-)
+parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True)
 parser.add_argument('-w','--whitening',help='Apply whitening.',action='store_true')
-
+parser.add_argument('-m','--margin',help='Marginal time for better whitening.',type=float,default=2.)
 parser.add_argument('-f','--fftlength',help='FFT length.',type=float,default=1.)
 parser.add_argument('--fmin',help='Frequency minimum limit.',type=float,default=-1.)
 parser.add_argument('--fmax',help='Frequency maximum limit.',type=float,default=8000.)
@@ -53,7 +52,7 @@ kamioka = args.kamioka
 outdir=args.outdir
 
 whitening=args.whitening
-
+margin=args.margin
 channel=args.channel
 
 if kamioka:
@@ -61,11 +60,18 @@ if kamioka:
 else:
     latexchname = channel
 
-if whitening:
-    latexchname += " whitened"
-latexchname += " spectrogram"
 gpsstart=args.gpsstart
 gpsend=args.gpsend
+
+gpsstartmargin=gpsstart
+gpsendmargin=gpsend
+
+if whitening:
+    
+    gpsstartmargin=str(float(gpsstart)-margin)
+    gpsendmargin=str(float(gpsend)+margin)
+    latexchname += " whitened"
+latexchname += " spectrogram"
 
 dpi=args.dpi
 
@@ -83,8 +89,6 @@ llabel=args.llabel
 
 lflag=bool(lchannel)
 
-
-
 if fft > stride:
     print('Warning: stride is shorter than fft length. Set stride=fft')
     stride=fft
@@ -98,10 +102,10 @@ elif channel.find('MIC') != -1:
 
 # Get data from frame files
 if kamioka:
-    data = TimeSeries.fetch(channel,float(gpsstart),float(gpsend),host='k1nds0',port=8088)
+    data = TimeSeries.fetch(channel,float(gpsstartmargin),float(gpsendmargin),host='k1nds0',port=8088)
 else:
-    sources = mylib.GetFilelist(gpsstart,gpsend)
-    data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
+    sources = mylib.GetFilelist(gpsstartmargin,gpsendmargin)
+    data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstartmargin),end=float(gpsendmargin))
 
 if fft <= data.dt.value:
     fft=2*data.dt.value
@@ -115,7 +119,7 @@ if fft <= data.dt.value:
 if whitening:
     white = data.whiten(fftlength=fft,overlap=ol,fduration=stride)
     whitespectrogram = white.spectrogram(stride,fftlength=fft,overlap=ol) ** (1/2.)
-
+    whitespectrogram = whitespectrogram.crop(float(gpsstart),float(gpsend))
     sgplot=whitespectrogram.plot(figsize = (12, 8))
 else:
     spectrogram = data.spectrogram(stride,fftlength=fft,overlap=ol) ** (1/2.)

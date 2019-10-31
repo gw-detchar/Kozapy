@@ -127,6 +127,7 @@ if channel[0].find('ACC') != -1:
 elif channel[0].find('MIC') != -1:
     unit = 'Sound [Pa]'
 
+print(sources)
 data = TimeSeriesDict.read(sources,channel,format='gwf.lalframe',start=float(gpsstartmargin),end=float(gpsendmargin))
 
 
@@ -157,6 +158,12 @@ ax = plot.gca()
 ax.set_title(title)
 ax.set_ylabel(unit)
 #ax.set_yscale('log')
+
+if whitening:
+    latexchnames = [c + " whitening" for c in latexchnames]
+if bandpass:
+    latexchnames = [c + " bandpass" for c in latexchnames]
+
 if legend:
     ax.legend(latexchnames,bbox_to_anchor = mylib.GetBBTA(lposition),loc=mylib.Getloc(lposition),borderaxespad=1)
 
@@ -169,7 +176,14 @@ if lflag:
 else:
     pass
 
-fname = outdir + '/' + channel[0] + '_timeseries_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
+option=""
+if whitening:
+    option += "whitened_"
+if bandpass:
+    option += "bandpass_"
+fname = outdir + '/' + channel[0] + '_timeseries_' + option + gpsstart + '_' + gpsend +'_' + index +'.png'
+
+
 # dpi = dot per inch. It is figure resolution. default is 80 ?
 
 plot.savefig(fname,dpi=dpi) #,bbox_inches="tight")

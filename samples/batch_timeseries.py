@@ -127,7 +127,7 @@ if channel[0].find('ACC') != -1:
 elif channel[0].find('MIC') != -1:
     unit = 'Sound [Pa]'
 
-print(sources)
+
 data = TimeSeriesDict.read(sources,channel,format='gwf.lalframe',start=float(gpsstartmargin),end=float(gpsendmargin))
 
 

@@ -292,8 +292,10 @@ def GetDQFlag(gpsstart,gpsend,config="FPMI",min_len=0,kamioka=False):
         number=157
         name="LSC"
     elif config == "IMC":
-        channel="K1:GRD-IO_STATE_N"
-        number=99
+        #channel="K1:GRD-IO_STATE_N"
+        #number=99
+        channel="K1:GRD-IMC_STATE_N"
+        number=6100
         name="IMC"
     elif config == "PMC":
         channel="K1:GRD-PMC_OK"

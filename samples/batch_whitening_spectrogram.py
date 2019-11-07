@@ -119,7 +119,7 @@ if fft <= data.dt.value:
 if whitening:
     white = data.whiten(fftlength=fft,overlap=ol,fduration=stride)
     whitespectrogram = white.spectrogram(stride,fftlength=fft,overlap=ol) ** (1/2.)
-    whitespectrogram = whitespectrogram.crop(float(gpsstart),float(gpsend))
+    whitespectrogram = whitespectrogram.crop(float(gpsstart)+stride,float(gpsend)+stride)
     sgplot=whitespectrogram.plot(figsize = (12, 8))
 else:
     spectrogram = data.spectrogram(stride,fftlength=fft,overlap=ol) ** (1/2.)

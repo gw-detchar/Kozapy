@@ -78,12 +78,14 @@ else:
 gpsstart = args.gpsstart
 gpsend = args.gpsend
 
-gpsstartmargin=gpsstart
-gpsendmargin=gpsend
+#gpsstartmargin=gpsstart
+#gpsendmargin=gpsend
+gpsstartmargin=str(float(gpsstart)-margin)
+gpsendmargin=str(float(gpsend)+margin)
 
-if whitening or bandpass:
-    gpsstartmargin=str(float(gpsstart)-margin)
-    gpsendmargin=str(float(gpsend)+margin)
+#if whitening or bandpass:
+#    gpsstartmargin=str(float(gpsstart)-margin)
+#    gpsendmargin=str(float(gpsend)+margin)
 
 
 fft=args.fftlength
@@ -135,7 +137,6 @@ for d in data:
     if whitening:
         data[d] = data[d].whiten(fftlength=fft,overlap=ol)
 
-
     if bandpass:
         if blow < 0:
             blow = 4/(float(gpsendmargin)-float(gpsstartmargin))
@@ -143,13 +144,7 @@ for d in data:
             bhigh = 0.25/data[d].dt.value
         data[d] = data[d].bandpass(blow,bhigh)
 
-    if whitening or bandpass:
-        data[d] = data[d].crop(float(gpsstart),float(gpsend))
-
-    if len(data[d]) > 10000:
-        rate = 10000./len(data[d])/data[d].dt
-        data[d] = data[d].resample(rate)
-        print("The sample rate*duration is over capacity. Down sampled to rate of "+str(rate)+".")
+    data[d] = data[d].crop(float(gpsstart),float(gpsend))
 
 #plot=data.plot(figsize = (12, 8))
 plot=data.plot()

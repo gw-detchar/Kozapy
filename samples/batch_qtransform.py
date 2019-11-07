@@ -55,7 +55,8 @@ fmin=args.fmin
 dpi=args.dpi
 
 #margin=40
-margin=1
+margin=4
+
 # To see ~8Hz < f
 #if float(gpsend)-float(gpsstart)<40:
 #    margin=20
@@ -90,7 +91,8 @@ data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstar
 #if maxf > 1./data.dt.value/4.:
 fmax=1./data.dt.value/4.
 
-qgram = data.q_transform(outseg=[float(gpsstart),float(gpsend)],frange=(fmin,fmax),qrange=(2,100),gps=float(gpsstart)/2.+float(gpsend)/2.,logf=True)
+qgram = data.q_transform(outseg=[float(gpsstart),float(gpsend)],frange=(fmin,fmax),qrange=(4,100),gps=float(gpsstart)/2.+float(gpsend)/2.,logf=True)
+
 # default parameter
 #qrange=(4, 64), frange=(0, inf), gps=None, search=0.5, tres='<default>', fres='<default>', logf=False, norm='median', mismatch=0.2, outseg=None, whiten=True, fduration=2, highpass=None, **asd_kw 
 #plot=qgram.plot(figsize = (12, 8),vmin=0.,vmax=25.)

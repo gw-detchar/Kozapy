@@ -117,7 +117,8 @@ if fft <= data.dt.value:
     print("stride="+str(stride))
 
 if whitening:
-    white = data.whiten(fftlength=fft,overlap=ol,fduration=stride)
+    #white = data.whiten(fftlength=fft,overlap=ol,fduration=stride)
+    white = data.whiten()
     whitespectrogram = white.spectrogram(stride,fftlength=fft,overlap=ol) ** (1/2.)
     whitespectrogram = whitespectrogram.crop(float(gpsstart)+stride,float(gpsend)+stride)
     sgplot=whitespectrogram.plot(figsize = (12, 8))
@@ -131,11 +132,6 @@ ax.set_yscale('log')
 ax.set_title(latexchname)
 if fmin < 0:    
     fmin = 0.8/fft
-
-print(type(fmin))
-print(type(fmax))
-print(fmin)
-print(fmax)
     
 ax.set_ylim(fmin,fmax)
 

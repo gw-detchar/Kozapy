@@ -75,6 +75,8 @@ if kamioka:
 else:
     latexchnames = args.channel
     title = args.title
+
+
 gpsstart = args.gpsstart
 gpsend = args.gpsend
 
@@ -138,13 +140,16 @@ for d in data:
         data[d] = data[d].whiten(fftlength=fft,overlap=ol)
 
     if bandpass:
-        if blow < 0:
-            blow = 4/(float(gpsendmargin)-float(gpsstartmargin))
-        if bhigh < 0:
-            bhigh = 0.25/data[d].dt.value
+        if blow < 26:
+            blow=26
+        if bhigh < 0 or bhigh > 8000:
+            bhigh = 8000
         data[d] = data[d].bandpass(blow,bhigh)
 
     data[d] = data[d].crop(float(gpsstart),float(gpsend))
+
+if bandpass:
+    title += " bandpass ("+str(blow)+"-"+str(bhigh)+ "Hz)"
 
 #plot=data.plot(figsize = (12, 8))
 plot=data.plot()

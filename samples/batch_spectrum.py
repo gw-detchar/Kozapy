@@ -36,7 +36,10 @@ parser.add_argument('--dpi',help='Plot resolution. dot per inch.',type=int,defau
 parser.add_argument('-f','--fftlength',help='FFT length.',type=float,default=1.)
 parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
 parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',action='store_true')
-
+parser.add_argument('--ymin',help='Yaxis minimum limit.',type=float,default=-1)
+parser.add_argument('--ymax',help='Yaxis maximum limit.',type=float,default=-1)
+parser.add_argument('--fmin',help='Frequency minimum limit.',type=float,default=-1)
+parser.add_argument('--fmax',help='Frequency maximum limit.',type=float,default=-1)
 
 # define variables
 args = parser.parse_args()
@@ -53,6 +56,11 @@ ltype=args.ltype
 lposition=args.lposition
 dpi=args.dpi
 kamioka = args.kamioka
+
+ymin = args.ymin
+ymax = args.ymax
+fmin = args.fmin
+fmax = args.fmax
 
 # Loop over channels and gps times.
 isFirst = True
@@ -76,6 +84,8 @@ for channel in channels:
     elif channel.find('MIC') != -1:
         #unit = r'Sound [Pa $/ \sqrt{\mathrm{Hz}^{-1}}$]'
         unit = 'Sound [Pa/rHz]'
+    elif channel.find('DARM_DISPLACEMENT_DQ') != -1:
+        unit = 'Amplitude [nm/rHz]'
 
     for gpsstart,gpsend in zip(gpsstarts,gpsends):
 
@@ -110,6 +120,14 @@ for channel in channels:
             ax.set_ylabel(unit)
             ax.set_yscale('log')
             ax.set_title(mylib.GetTitlefromLegend(ltype,gpsstart,gpsend,channel)+" Spectrum")
+            if channel.find('DARM_DISPLACEMENT_DQ') != -1:
+                ax.set_title("Sensitivity")
+
+            if ymin > 0 and ymax > 0:
+                ax.set_ylim(ymin,ymax)
+            if fmin > 0 and fmax > 0:
+                ax.set_xlim(fmin,fmax)
+
             isFirst = False
 
         else:

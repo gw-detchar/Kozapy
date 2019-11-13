@@ -142,8 +142,8 @@ for d in data:
     if bandpass:
         if blow < 26:
             blow=26
-        if bhigh < 0 or bhigh > 8000:
-            bhigh = 8000
+        if bhigh < blow:
+            bhigh = blow+10
         data[d] = data[d].bandpass(blow,bhigh)
 
     data[d] = data[d].crop(float(gpsstart),float(gpsend))

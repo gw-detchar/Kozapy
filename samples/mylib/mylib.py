@@ -295,16 +295,23 @@ def GetDQFlag(gpsstart,gpsend,config="FPMI",min_len=0,kamioka=False):
         #channel="K1:GRD-IO_STATE_N"
         #number=99
         channel="K1:GRD-IMC_STATE_N"
-        number=6100
+        #number=6100
+        number=100
         name="IMC"
     elif config == "PMC":
         channel="K1:GRD-PMC_OK"
         number=1
         name="PMC"
     elif config == "FSS":
-        channel="K1:GRD-FSS_OK"
-        number=1
+        #channel="K1:GRD-FSS_OK"
+        #number=1
+        channel="K1:GRD-FSS_STATE_N"
+        number=100
         name="FSS"
+    elif config == "ISS":
+        channel="K1:GRD-ISS_STATE_N"
+        number=100
+        name="ISS"
     elif config == "DAQ":
         channel="K1:GRD-SYS_DAQ_OK"
         number=1

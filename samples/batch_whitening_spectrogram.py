@@ -67,10 +67,13 @@ gpsstartmargin=gpsstart
 gpsendmargin=gpsend
 
 if whitening:
-    
-    gpsstartmargin=str(float(gpsstart)-margin)
-    gpsendmargin=str(float(gpsend)+margin)
+    # To keep small number, tricky method is used. Commented out expression is what intended.
+    #gpsstartmargin=gpsstart-margin
+    #gpsendmargin=gpsend+margin
+    gpsstartmargin=str(int(int(float(gpsstart))-margin))+'.'+gpsstart.split('.')[1]
+    gpsendmargin=str(int(int(float(gpsend))+margin))+'.'+gpsend.split('.')[1]
     latexchname += " whitened"
+
 latexchname += " spectrogram"
 
 dpi=args.dpi

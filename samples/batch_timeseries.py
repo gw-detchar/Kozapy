@@ -4,6 +4,7 @@
 __author__ = "Chihiro Kozakai"
 
 import os
+import numpy as np
 import matplotlib
 matplotlib.use('Agg')  # this line is required for the batch job before importing other matplotlib modules.     
 
@@ -82,8 +83,12 @@ gpsend = args.gpsend
 
 #gpsstartmargin=gpsstart
 #gpsendmargin=gpsend
-gpsstartmargin=str(float(gpsstart)-margin)
-gpsendmargin=str(float(gpsend)+margin)
+
+# To keep small number, tricky method is used. Commented out expression is what intended. 
+#gpsstartmargin=gpsstart-margin
+#gpsendmargin=gpsend+margin
+gpsstartmargin=str(int(int(float(gpsstart))-margin))+'.'+gpsstart.split('.')[1]
+gpsendmargin=str(int(int(float(gpsend))+margin))+'.'+gpsend.split('.')[1]
 
 #if whitening or bandpass:
 #    gpsstartmargin=str(float(gpsstart)-margin)
@@ -136,17 +141,44 @@ data = TimeSeriesDict.read(sources,channel,format='gwf.lalframe',start=float(gps
 
 
 for d in data:
-    if whitening:
-        data[d] = data[d].whiten(fftlength=fft,overlap=ol)
+    print(data)
+    done=False
+    while not done:
+        tmp=data[d]
+        if whitening:
+            tmp = tmp.whiten(fftlength=fft,overlap=ol)
 
-    if bandpass:
-        if blow < 26:
-            blow=26
-        if bhigh < blow:
-            bhigh = blow+10
-        data[d] = data[d].bandpass(blow,bhigh)
+        if bandpass:
+            if 1./tmp.dt.value/4. < bhigh:
+                bhigh = 1./tmp.dt.value/4.
+            tmp = tmp.bandpass(blow,bhigh)
 
-    data[d] = data[d].crop(float(gpsstart),float(gpsend))
+        # below is to avoid buggy parameter choice.
+        print(tmp.value[0])
+        print(data[d].value[0])
+
+        if tmp.value[0] < data[d].value[0] and not np.isnan(tmp.value[0]) :
+            done = True
+        #if bhigh == int(32768./blow):
+        if bhigh == 32768./blow:
+            print("Band pass frequency adjustment failed. blow = "+str(blow)+", bhigh = "+str(bhigh)) 
+            break
+        else: 
+            #bhigh = int(32768./blow)
+            bhigh = 32768./blow
+        print(done)
+
+    #data[d] = data[d].crop(float(gpsstart),float(gpsend))
+    
+    if len(tmp) > 360000:
+        rate = 360000./len(tmp)/tmp.dt
+        tmp = tmp.resample(rate)
+        print("The sample rate*duration is over capacity. Down sampled to rate of "+str(rate)+".")
+
+    data[d] = tmp.crop(float(gpsstart),float(gpsend))
+
+
+    print(data)
 
 if bandpass:
     title += " bandpass ("+str(blow)+"-"+str(bhigh)+ "Hz)"

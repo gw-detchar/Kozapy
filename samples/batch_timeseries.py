@@ -87,8 +87,19 @@ gpsend = args.gpsend
 # To keep small number, tricky method is used. Commented out expression is what intended. 
 #gpsstartmargin=gpsstart-margin
 #gpsendmargin=gpsend+margin
-gpsstartmargin=str(int(int(float(gpsstart))-margin))+'.'+gpsstart.split('.')[1]
-gpsendmargin=str(int(int(float(gpsend))+margin))+'.'+gpsend.split('.')[1]
+
+if '.' in gpsstart:
+    smallstart='.'+gpsstart.split('.')[1]
+else:
+    smallstart=''
+if '.' in gpsend:
+    smallend='.'+gpsend.split('.')[1]
+else:
+    smallend=''
+#gpsstartmargin=str(int(int(float(gpsstart))-margin))+'.'+gpsstart.split('.')[1]
+#gpsendmargin=str(int(int(float(gpsend))+margin))+'.'+gpsend.split('.')[1]
+gpsstartmargin=str(int(int(float(gpsstart))-margin))+smallstart
+gpsendmargin=str(int(int(float(gpsend))+margin))+smallend
 
 #if whitening or bandpass:
 #    gpsstartmargin=str(float(gpsstart)-margin)
@@ -141,7 +152,7 @@ data = TimeSeriesDict.read(sources,channel,format='gwf.lalframe',start=float(gps
 
 
 for d in data:
-    print(data)
+
     done=False
     while not done:
         tmp=data[d]
@@ -154,31 +165,23 @@ for d in data:
             tmp = tmp.bandpass(blow,bhigh)
 
         # below is to avoid buggy parameter choice.
-        print(tmp.value[0])
-        print(data[d].value[0])
-
-        if tmp.value[0] < data[d].value[0] and not np.isnan(tmp.value[0]) :
+        if tmp.value[0] <= 10.*data[d].value[0] and not np.isnan(tmp.value[0]) :
             done = True
         #if bhigh == int(32768./blow):
-        if bhigh == 32768./blow:
+        elif bhigh == 32768./blow:
             print("Band pass frequency adjustment failed. blow = "+str(blow)+", bhigh = "+str(bhigh)) 
             break
         else: 
             #bhigh = int(32768./blow)
             bhigh = 32768./blow
-        print(done)
 
-    #data[d] = data[d].crop(float(gpsstart),float(gpsend))
-    
+
     if len(tmp) > 360000:
         rate = 360000./len(tmp)/tmp.dt
         tmp = tmp.resample(rate)
         print("The sample rate*duration is over capacity. Down sampled to rate of "+str(rate)+".")
 
     data[d] = tmp.crop(float(gpsstart),float(gpsend))
-
-
-    print(data)
 
 if bandpass:
     title += " bandpass ("+str(blow)+"-"+str(bhigh)+ "Hz)"

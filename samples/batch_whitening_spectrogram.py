@@ -70,8 +70,20 @@ if whitening:
     # To keep small number, tricky method is used. Commented out expression is what intended.
     #gpsstartmargin=gpsstart-margin
     #gpsendmargin=gpsend+margin
-    gpsstartmargin=str(int(int(float(gpsstart))-margin))+'.'+gpsstart.split('.')[1]
-    gpsendmargin=str(int(int(float(gpsend))+margin))+'.'+gpsend.split('.')[1]
+    
+    #gpsstartmargin=str(int(int(float(gpsstart))-margin))+'.'+gpsstart.split('.')[1]
+    #gpsendmargin=str(int(int(float(gpsend))+margin))+'.'+gpsend.split('.')[1]
+    if '.' in gpsstart:
+        smallstart='.'+gpsstart.split('.')[1]
+    else:
+        smallstart=''
+    if '.' in gpsend:
+        smallend='.'+gpsend.split('.')[1]
+    else:
+        smallend=''
+    gpsstartmargin=str(int(int(float(gpsstart))-margin))+smallstart
+    gpsendmargin=str(int(int(float(gpsend))+margin))+smallend
+
     latexchname += " whitened"
 
 latexchname += " spectrogram"

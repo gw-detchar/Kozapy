@@ -329,7 +329,15 @@ def GetDQFlag(gpsstart,gpsend,config="FPMI",min_len=0,kamioka=False):
         
     ldata = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
     locked = ldata == number
+
+
     flag = locked.to_dqflag(label = name,minlen=min_len)
+
+    if config == "FPMI":
+        locked_woASC = ldata == 59
+        flag_woASC = locked_woASC.to_dqflag(label = name,minlen=min_len)
+        flag = flag | flag_woASC
+
     return flag
     
 def GetBBTA(lposition):

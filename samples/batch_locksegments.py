@@ -17,7 +17,7 @@ pl.rcParams['font.family'] = 'Verdana'
 #  argument processing
 
 parser = argparse.ArgumentParser(description='Make lock segment bars.')
-parser.add_argument('-o','--outdir',help='output directory.',default='result')
+parser.add_argument('-o','--outdir',help='output directory.',default='/tmp')
 parser.add_argument('-s','--gpsstart',help='GPS starting time.',required=True)
 parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True)
 parser.add_argument('-t','--triggertime',help='trigger starting time.',type=float,default=0)

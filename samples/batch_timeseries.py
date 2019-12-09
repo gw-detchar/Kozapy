@@ -121,7 +121,7 @@ lnumber = args.lnumber
 llabel = args.llabel
 
 # If lflag is True, locked segments is plotted. 
-lflag = bool(lchannel)
+lflag = bool(llabel)
 
 # Get data from frame files
 

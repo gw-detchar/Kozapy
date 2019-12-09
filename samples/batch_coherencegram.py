@@ -77,7 +77,7 @@ dpi=args.dpi
 
 
 # If lflag is True, locked segments is plotted.            
-lflag = bool(lchannel)
+lflag = bool(llabel)
 
 if fft > stride/2.:
     print('Warning: stride is shorter than fft length. Set stride=fft*2.')

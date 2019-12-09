@@ -75,7 +75,7 @@ lchannel=args.lchannel
 lnumber=args.lnumber
 llabel=args.llabel
 
-lflag=bool(lchannel)
+lflag=bool(llabel)
 
 kamioka = args.kamioka
     

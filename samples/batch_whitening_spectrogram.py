@@ -102,7 +102,7 @@ lchannel=args.lchannel
 lnumber=args.lnumber
 llabel=args.llabel
 
-lflag=bool(lchannel)
+lflag=bool(llabel)
 
 if fft > stride:
     print('Warning: stride is shorter than fft length. Set stride=fft')

@@ -282,8 +282,12 @@ def GetDQFlag(gpsstart,gpsend,config="FPMI",min_len=0,kamioka=False):
         #channel="K1:GRD-LSC_FPMI_LOCK_STATE_N"
         #number=16
         channel="K1:GRD-LSC_LOCK_STATE_N"
-        number=300
-        equal=False
+        if float(gpsstart) < 1260576018:
+            number=300
+            equal=False
+        else:
+            number=1000
+            equal=True
         name="FPMI"
     elif config == "prmialsdarm":
         channel="K1:GRD-LSC_LOCK_STATE_N"

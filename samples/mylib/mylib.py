@@ -336,6 +336,7 @@ def GetDQFlag(gpsstart,gpsend,config="FPMI",min_len=0,kamioka=False):
         name="quiet"
     else:
         print("mylib.GetDQFlag Error: No difinition for given config.")
+        return None
         
     ldata = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
 

@@ -262,6 +262,7 @@ def GetDQFlag(gpsstart,gpsend,config="FPMI",min_len=0,kamioka=False):
     '''
     channel=""
     number=-1
+    equal=True  # If this is true, "== number" will be used. If False, ">= number" will be used.
     if kamioka:
         sources = GetFilelist_Kamioka(gpsstart,gpsend)
     else:
@@ -281,7 +282,8 @@ def GetDQFlag(gpsstart,gpsend,config="FPMI",min_len=0,kamioka=False):
         #channel="K1:GRD-LSC_FPMI_LOCK_STATE_N"
         #number=16
         channel="K1:GRD-LSC_LOCK_STATE_N"
-        number=60
+        number=300
+        equal=False
         name="FPMI"
     elif config == "prmialsdarm":
         channel="K1:GRD-LSC_LOCK_STATE_N"
@@ -332,15 +334,18 @@ def GetDQFlag(gpsstart,gpsend,config="FPMI",min_len=0,kamioka=False):
         print("mylib.GetDQFlag Error: No difinition for given config.")
         
     ldata = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
-    locked = ldata == number
 
-
+    if equal:
+        locked = ldata == number
+    else:
+        locked = ldata >= number
+        
     flag = locked.to_dqflag(label = name,minlen=min_len)
 
-    if config == "FPMI":
-        locked_woASC = ldata == 59
-        flag_woASC = locked_woASC.to_dqflag(label = name,minlen=min_len)
-        flag = flag | flag_woASC
+    #if config == "FPMI":
+    #    locked_woASC = ldata == 59
+    #    flag_woASC = locked_woASC.to_dqflag(label = name,minlen=min_len)
+    #    flag = flag | flag_woASC
 
     return flag
     

@@ -132,9 +132,12 @@ ax.set_ylim(fmin,fmax)
 cohplot.add_colorbar(cmap='YlGnBu_r',label='Coherence')
 
 if lflag:
-    ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
-    locked = ldata == lnumber
-    flag = locked.to_dqflag(name = '', label = llabel, round = True)
+    flag = mylib.GetDQFlag(gpsstart,gpsend,config=llabel,kamioka=kamioka)
+
+    if flag == None:
+        ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
+        locked = ldata == lnumber
+        flag = locked.to_dqflag(name = '', label = llabel, round = True)
     cohplot.add_state_segments(flag)
 else:
     pass

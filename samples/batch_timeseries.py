@@ -203,10 +203,13 @@ if legend:
     ax.legend(latexchnames,bbox_to_anchor = mylib.GetBBTA(lposition),loc=mylib.Getloc(lposition),borderaxespad=1)
 
 if lflag:
-#    ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=int(tmpgpsstart),end=int(tmpgpsend))
-    ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
-    locked = ldata == lnumber
-    flag = locked.to_dqflag(name = '', label = llabel)
+    flag = mylib.GetDQFlag(gpsstart,gpsend,config=llabel,kamioka=kamioka)
+
+    if flag == None:
+        ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
+        locked = ldata == lnumber
+        flag = locked.to_dqflag(name = '', label = llabel)
+
     plot.add_state_segments(flag)
 else:
     pass

@@ -111,6 +111,10 @@ fname = outdir + '/' + channel + '_qtransform_'+ gpsstart + '_' + gpsend +'_' + 
 
 if lflag:
     flag = mylib.GetDQFlag(float(gpsstart),float(gpsend),config=llabel, kamioka=kamioka)
+    if flag == None:
+        ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
+        locked = ldata == lnumber
+        flag = locked.to_dqflag(name = '', label = llabel)
     plot.add_state_segments(flag)
 else:
     pass

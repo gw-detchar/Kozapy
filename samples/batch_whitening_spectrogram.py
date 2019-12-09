@@ -151,16 +151,21 @@ if fmin < 0:
 ax.set_ylim(fmin,fmax)
 
 if whitening:
+    print('whitening')
     sgplot.add_colorbar(cmap='YlGnBu_r',label='Arbitrary')
     fname = outdir + '/' + channel + '_whiteningspectrogram_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
 else:
+    print('not whitening')
     sgplot.add_colorbar(cmap='YlGnBu_r',label=unit,log=True)
     fname = outdir + '/' + channel + '_spectrogram_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
 
 if lflag:
-    ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
-    locked = ldata == lnumber
-    flag = locked.to_dqflag(name = '', label = llabel, round = True)
+    flag = mylib.GetDQFlag(gpsstart,gpsend,config=llabel,kamioka=kamioka)
+
+    if flag == None:
+        ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
+        locked = ldata == lnumber
+        flag = locked.to_dqflag(name = '', label = llabel, round = True)
     sgplot.add_state_segments(flag)
 else:
     pass

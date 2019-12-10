@@ -110,9 +110,9 @@ if fft > stride:
     
 #unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
 unit = r'Amplitude [1/rHz]'
-if channel.find('ACC') != -1:
+if channel.find('ACC_') != -1:
     unit = 'Acceleration [m/s^2/rHz]'
-elif channel.find('MIC') != -1:
+elif channel.find('MIC_') != -1:
     unit = 'Sound [Pa/rHz]'
 
 # Get data from frame files
@@ -163,8 +163,13 @@ if lflag:
     flag = mylib.GetDQFlag(gpsstart,gpsend,config=llabel,kamioka=kamioka)
 
     if flag == None:
-        ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
+        if kamioka:
+            ldata = TimeSeries.fetch(lchannel,float(gpsstart),float(gpsend),host='k1nds0',port=8088)
+        else:
+            ldata = TimeSeries.read(sources,lchannel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
+        print(ldata)
         locked = ldata == lnumber
+        print(locked)
         flag = locked.to_dqflag(name = '', label = llabel, round = True)
     sgplot.add_state_segments(flag)
 else:

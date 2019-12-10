@@ -78,10 +78,10 @@ for channel in channels:
 
     #unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
     unit = 'Amplitude [1/rHz]'
-    if channel.find('ACC') != -1:
+    if channel.find('ACC_') != -1:
         #unit = r'Acceleration [$m/s^2$ $/ \sqrt{\mathrm{Hz}^{-1}}$]'
         unit = 'Acceleration [m/s^2/rHz]'
-    elif channel.find('MIC') != -1:
+    elif channel.find('MIC_') != -1:
         #unit = r'Sound [Pa $/ \sqrt{\mathrm{Hz}^{-1}}$]'
         unit = 'Sound [Pa/rHz]'
     elif channel.find('DARM_DISPLACEMENT_DQ') != -1:

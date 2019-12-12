@@ -139,6 +139,8 @@ if whitening:
     sgplot=whitespectrogram.plot(figsize = (12, 8))
 else:
     spectrogram = data.spectrogram(stride,fftlength=fft,overlap=ol) ** (1/2.)
+    if channel == "K1:CAL-CS_PROC_DARM_DISPLACEMENT_DQ":
+        spectrogram = spectrogram.filter([10]*4,[1]*4,1e-9/3000.) * 1e-4 #1e-9/3000.*1e-4)   
     sgplot=spectrogram.plot(figsize = (12, 8),norm='log')
 
 ax = sgplot.gca()

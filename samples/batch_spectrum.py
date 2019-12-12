@@ -85,7 +85,8 @@ for channel in channels:
         #unit = r'Sound [Pa $/ \sqrt{\mathrm{Hz}^{-1}}$]'
         unit = 'Sound [Pa/rHz]'
     elif channel.find('DARM_DISPLACEMENT_DQ') != -1:
-        unit = 'Amplitude [nm/rHz]'
+        #unit = 'Amplitude [nm/rHz]'
+        unit = 'Strain [/rHz]'
 
     for gpsstart,gpsend in zip(gpsstarts,gpsends):
 
@@ -114,15 +115,16 @@ for channel in channels:
             tmpol = ol
         spectrum = data.asd(fftlength=tmpfft,overlap=tmpol)
 
+        if channel == "K1:CAL-CS_PROC_DARM_DISPLACEMENT_DQ":
+            spectrum = spectrum.filter([10]*4,[1]*4,1e-9/3000.) * 1e-4 #1e-9/3000.*1e-4)
+            
         if isFirst:           
             fplot=spectrum.plot(figsize = (12, 8),color=color[colorindex])
             ax = fplot.gca()
             ax.set_ylabel(unit)
             ax.set_yscale('log')
             ax.set_title(mylib.GetTitlefromLegend(ltype,gpsstart,gpsend,channel)+" Spectrum")
-            if channel.find('DARM_DISPLACEMENT_DQ') != -1:
-                ax.set_title("Sensitivity")
-
+            
             if ymin > 0 and ymax > 0:
                 ax.set_ylim(ymin,ymax)
             if fmin > 0 and fmax > 0:

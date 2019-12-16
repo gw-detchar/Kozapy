@@ -1,6 +1,6 @@
 '''Make timeseries.
 '''
-print(0)
+
 __author__ = "Chihiro Kozakai"
 
 import os
@@ -52,10 +52,9 @@ parser.add_argument('-n','--lnumber',help='The requirement for judging locked. l
 
 parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',action='store_true')
 
-print(1)
 # define variables
 args = parser.parse_args()
-print(args)
+
 kamioka = args.kamioka
 
 outdir = args.outdir
@@ -148,10 +147,8 @@ if channel[0].find('ACC_') != -1:
 elif channel[0].find('MIC_') != -1:
     unit = 'Sound [Pa]'
 
-print(sources)
 data = TimeSeriesDict.read(sources,channel,format='gwf.lalframe',start=float(gpsstartmargin),end=float(gpsendmargin))
 
-print(data)
 for d in data:
 
     done=False

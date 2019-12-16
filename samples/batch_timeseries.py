@@ -1,6 +1,6 @@
 '''Make timeseries.
 '''
-
+print(0)
 __author__ = "Chihiro Kozakai"
 
 import os
@@ -52,9 +52,10 @@ parser.add_argument('-n','--lnumber',help='The requirement for judging locked. l
 
 parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',action='store_true')
 
+print(1)
 # define variables
 args = parser.parse_args()
-
+print(args)
 kamioka = args.kamioka
 
 outdir = args.outdir
@@ -147,35 +148,41 @@ if channel[0].find('ACC_') != -1:
 elif channel[0].find('MIC_') != -1:
     unit = 'Sound [Pa]'
 
-
+print(sources)
 data = TimeSeriesDict.read(sources,channel,format='gwf.lalframe',start=float(gpsstartmargin),end=float(gpsendmargin))
 
-
+print(data)
 for d in data:
 
     done=False
-    while not done:
+
+    #while not done:
+
+    tmp=data[d]
+    if whitening:
+        tmp = tmp.whiten(fftlength=fft,overlap=ol)
+
+    if bandpass:
+        if 1./tmp.dt.value/4. < bhigh:
+            bhigh = 1./tmp.dt.value/4.
+        tmp = tmp.bandpass(blow,bhigh)
+    # below is to avoid buggy parameter choice.
+    if tmp.value[0] <= 10.*data[d].value[0] and not np.isnan(tmp.value[0]):
+        done = True
+
+    elif bandpass:
+
+        print("Band pass failed. blow = "+str(blow)+", bhigh = "+str(bhigh)+". To be retried with modified parameter. ") 
+        bhigh = 32768./blow
+        if bhigh > 8192:
+            bhigh = 8191
         tmp=data[d]
-        if whitening:
-            tmp = tmp.whiten(fftlength=fft,overlap=ol)
-
-        if bandpass:
-            if 1./tmp.dt.value/4. < bhigh:
-                bhigh = 1./tmp.dt.value/4.
-            tmp = tmp.bandpass(blow,bhigh)
-
-        # below is to avoid buggy parameter choice.
-        if tmp.value[0] <= 10.*data[d].value[0] and not np.isnan(tmp.value[0]) :
-            done = True
-        #if bhigh == int(32768./blow):
-        elif bhigh == 32768./blow:
-            print("Band pass frequency adjustment failed. blow = "+str(blow)+", bhigh = "+str(bhigh)) 
-            break
-        else: 
-            #bhigh = int(32768./blow)
-            bhigh = 32768./blow
-
-
+        tmp = tmp.bandpass(blow,bhigh)
+        if tmp.value[0] <= 10.*data[d].value[0] and not np.isnan(tmp.value[0]):
+            print("Band pass frequency adjustment is done. blow = "+str(blow)+", bhigh = "+str(bhigh)) 
+        else:
+            print("Band pass frequency adjustment failed. blow = "+str(blow)+", bhigh = "+str(bhigh))
+ 
     if len(tmp) > 360000:
         rate = 360000./len(tmp)/tmp.dt
         tmp = tmp.resample(rate)

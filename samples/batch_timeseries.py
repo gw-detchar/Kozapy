@@ -174,7 +174,7 @@ for d in data:
         #if bhigh > 8192:
             #bhigh = 8191
         if bhigh > 1./data.dt.value/2.:
-            bhigh = 1./data.dt.value/2. -1:
+            bhigh = 1./data.dt.value/2. -1
         tmp=data[d]
         tmp = tmp.bandpass(blow,bhigh)
         if tmp.value[0] <= 10.*data[d].value[0] and not np.isnan(tmp.value[0]):

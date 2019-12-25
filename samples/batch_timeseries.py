@@ -160,6 +160,10 @@ for d in data:
         tmp = tmp.whiten(fftlength=fft,overlap=ol)
 
     if bandpass:
+        
+        if 1./tmp.dt.value/4. < blow:
+            print("Failed: bandpass frequency setting is too high, more than sampling rate / 4. ")
+            exit()
         if 1./tmp.dt.value/4. < bhigh:
             bhigh = 1./tmp.dt.value/4.
         tmp = tmp.bandpass(blow,bhigh)

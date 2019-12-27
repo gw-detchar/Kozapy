@@ -107,7 +107,6 @@ do
     echo "Arguments = -c ${chlist} -s ${gpsstart[@]} -e ${gpsend[@]} -o ${outdir} -i ${index} -t combined ${option}"
     echo "Output       = log/out_\$(Cluster).\$(Process).txt"
     echo "Error        = log/err_\$(Cluster).\$(Process).txt"
-    echo "Log          = log/log_\$(Cluster).\$(Process).txt"
     echo "Queue"
     } >> job_${name}.sdf
 done

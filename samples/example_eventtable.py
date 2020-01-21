@@ -7,6 +7,8 @@ matplotlib.use('Agg')  # this line is required for the batch job before importin
 
 import numpy as np
 from gwpy.table import EventTable
+from gwpy.table.filters import in_segmentlist
+from mylib import mylib
 
 import argparse
 
@@ -25,9 +27,7 @@ events = EventTable.read(inputfile,tablename='sngl_burst')
 #ifo peak_time peak_time_ns start_time start_time_ns duration search process_id event_id peak_frequency central_freq bandwidth channel amplitude snr confidence chisq chisq_dof param_one_name param_one_value
 #events = EventTable.read('K1-IMC_CAV_ERR_OUT_DQ_OMICRON-1241900058-60.xml.gz', tablename='sngl_burst', columns=['peak_time', 'peak_time_ns', 'start_time', 'start_time_ns', 'duration', 'peak_frequency', 'central_freq', 'bandwidth', 'channel', 'amplitude', 'snr', 'confidence', 'chisq', 'chisq_dof', 'param_one_name', 'param_one_value'])
 
-#np.get_printoptions()
-#np.set_printoptions(threshold=1000)
+#events = events.filter(('snr', mylib.Islarger,  snrthreshold))
+#events=events.filter(('peak_time', mylib.between,(1261070423,1261070424)))
 
-#print(events)
-
-events.pprint(max_lines=100,max_width=1000)
+events.pprint(max_lines=200,max_width=1000)

@@ -118,7 +118,6 @@ for refchannel in ${refchannels[@]}; do
 		echo "Arguments = -r ${refchannel} -c ${channel} -s ${gpsstarts[i]} -e ${gpsends[i]} -o ${outdir} -i ${index} ${option}"
 		echo "Output       = log/out_\$(Cluster).\$(Process).txt"
 		echo "Error        = log/err_\$(Cluster).\$(Process).txt"
-		echo "Log          = log/log_\$(Cluster).\$(Process).txt"
 		echo "Queue"
 	    } >> job_${name}.sdf
 	done

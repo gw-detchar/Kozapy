@@ -74,28 +74,29 @@ if title != None:
 color=["orange","royalblue","limegreen","red","gold","magenta","lightskyblue","black","aquamarine","darkorchid","saddlebrown","salmon","greenyellow","navy"]
 colorindex=0
 
-for channel in channels:
+for gpsstart,gpsend in zip(gpsstarts,gpsends):
 
-    #unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
-    unit = 'Amplitude [1/rHz]'
-    if channel.find('ACC_') != -1:
-        #unit = r'Acceleration [$m/s^2$ $/ \sqrt{\mathrm{Hz}^{-1}}$]'
-        unit = 'Acceleration [m/s^2/rHz]'
-    elif channel.find('MIC_') != -1:
-        #unit = r'Sound [Pa $/ \sqrt{\mathrm{Hz}^{-1}}$]'
-        unit = 'Sound [Pa/rHz]'
-    elif channel.find('DARM_DISPLACEMENT_DQ') != -1:
-        #unit = 'Amplitude [nm/rHz]'
-        unit = 'Strain [/rHz]'
+    if kamioka:
+        sources = mylib.GetFilelist_Kamioka(gpsstart,gpsend)
+    else:
+        sources = mylib.GetFilelist(gpsstart,gpsend)
 
-    for gpsstart,gpsend in zip(gpsstarts,gpsends):
+    datas = TimeSeriesDict.read(sources,channels,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
 
-        if kamioka:
-            sources = mylib.GetFilelist_Kamioka(gpsstart,gpsend)
-        else:
-            sources = mylib.GetFilelist(gpsstart,gpsend)
+    for channel in channels:
+        data = datas[channel]
+        #unit = r'Amplitude [$\sqrt{\mathrm{Hz}^{-1}}$]'
+        unit = 'Amplitude [1/rHz]'
+        if channel.find('ACC_') != -1:
+            #unit = r'Acceleration [$m/s^2$ $/ \sqrt{\mathrm{Hz}^{-1}}$]'
+            unit = 'Acceleration [m/s^2/rHz]'
+        elif channel.find('MIC_') != -1:
+            #unit = r'Sound [Pa $/ \sqrt{\mathrm{Hz}^{-1}}$]'
+            unit = 'Sound [Pa/rHz]'
+        elif channel.find('DARM_DISPLACEMENT_DQ') != -1:
+            #unit = 'Amplitude [nm/rHz]'
+            unit = 'Strain [/rHz]'
 
-        data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
         
         if fft > float(gpsend)-float(gpsstart): 
             tmpfft = float(gpsend)-float(gpsstart)

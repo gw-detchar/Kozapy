@@ -36,9 +36,9 @@ parser.add_argument('-d','--datatype',help='Data type. Options are minute(defaul
 parser.add_argument('-w','--whitening',help='Apply whitening.',action='store_true')
 parser.add_argument('-m','--margin',help='Marginal time for better whitening.',type=float,default=2.)
 parser.add_argument('-f','--fftlength',help='FFT length for whitening.',type=float,default=1.)
-parser.add_argument('-b','--bandpass',help='Apply band pass filter. If blow or bhigh is not given, blow is determined by given time duration and bhigh is determined by sampling frequency.',action='store_true')
-parser.add_argument('--blow',help='Band pass lower frequency.',type=float,default=40)
-parser.add_argument('--bhigh',help='Band pass higher frequency.',type=float,default=1000)
+#parser.add_argument('-b','--bandpass',help='Apply band pass filter. If blow or bhigh is not given, blow is determined by given time duration and bhigh is determined by sampling frequency.',action='store_true')
+parser.add_argument('--blow',help='Low pass cutoff frequency.',type=float,default=-1) #40)
+parser.add_argument('--bhigh',help='High pass cutoff frequency.',type=float,default=-1) #1000)
 
 parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
 parser.add_argument('--nolegend',help='Flag to make legend or not.',action='store_false')
@@ -64,9 +64,19 @@ channel = args.channel
 whitening=args.whitening
 margin=args.margin
 
-bandpass = args.bandpass
+#bandpass = args.bandpass
 blow = args.blow
 bhigh = args.bhigh
+
+if blow > 0:
+    lowpass = True
+else:
+    lowpass = False
+
+if bhigh > 0:
+    highpass = True
+else:
+    highpass = False
 
 latexchnames = args.channel
 
@@ -159,32 +169,42 @@ for d in data:
     if whitening:
         tmp = tmp.whiten(fftlength=fft,overlap=ol)
 
-    if bandpass:
+    #if bandpass:
         
-        if 1./tmp.dt.value/4. < blow:
-            print("Failed: bandpass frequency setting is too high, more than sampling rate / 4. ")
-            exit()
+    #    if 1./tmp.dt.value/4. < blow:
+    #        print("Failed: bandpass frequency setting is too high, more than sampling rate / 4. ")
+    #        exit()
+    #    if 1./tmp.dt.value/4. < bhigh:
+    #        bhigh = 1./tmp.dt.value/4.
+    #    tmp = tmp.bandpass(blow,bhigh)
+    if highpass:
         if 1./tmp.dt.value/4. < bhigh:
             bhigh = 1./tmp.dt.value/4.
-        tmp = tmp.bandpass(blow,bhigh)
+        tmp = tmp.highpass(bhigh)
+
+    if lowpass:
+        if 1./tmp.dt.value/4. < blow:
+             print("Failed: bandpass frequency setting is too high, more than sampling rate / 4. ")
+             exit()
+        tmp = tmp.lowpass(blow)
+
     # below is to avoid buggy parameter choice.
-    if tmp.value[0] <= 10.*data[d].value[0] and not np.isnan(tmp.value[0]):
-        done = True
+    #if tmp.value[0] <= 10.*data[d].value[0] and not np.isnan(tmp.value[0]):
+    #    done = True
+    #elif bandpass:
 
-    elif bandpass:
-
-        print("Band pass failed. blow = "+str(blow)+", bhigh = "+str(bhigh)+". To be retried with modified parameter. ") 
-        bhigh = 32768./blow
+    #    print("Band pass failed. blow = "+str(blow)+", bhigh = "+str(bhigh)+". To be retried with modified parameter. ") 
+    #    bhigh = 32768./blow
         #if bhigh > 8192:
             #bhigh = 8191
-        if bhigh > 1./data[d].dt.value/2.:
-            bhigh = 1./data[d].dt.value/2. -1
-        tmp=data[d]
-        tmp = tmp.bandpass(blow,bhigh)
-        if tmp.value[0] <= 10.*data[d].value[0] and not np.isnan(tmp.value[0]):
-            print("Band pass frequency adjustment is done. blow = "+str(blow)+", bhigh = "+str(bhigh)) 
-        else:
-            print("Band pass frequency adjustment failed. blow = "+str(blow)+", bhigh = "+str(bhigh))
+    #    if bhigh > 1./data[d].dt.value/2.:
+    #        bhigh = 1./data[d].dt.value/2. -1
+    #    tmp=data[d]
+    #    tmp = tmp.bandpass(blow,bhigh)
+    #    if tmp.value[0] <= 10.*data[d].value[0] and not np.isnan(tmp.value[0]):
+    #        print("Band pass frequency adjustment is done. blow = "+str(blow)+", bhigh = "+str(bhigh)) 
+    #    else:
+    #        print("Band pass frequency adjustment failed. blow = "+str(blow)+", bhigh = "+str(bhigh))
  
     if len(tmp) > 360000:
         rate = 360000./len(tmp)/tmp.dt
@@ -193,8 +213,14 @@ for d in data:
 
     data[d] = tmp.crop(float(gpsstart),float(gpsend))
 
-if bandpass:
-    title += " bandpass ("+str(blow)+"-"+str(bhigh)+ "Hz)"
+#if bandpass:
+#    title += " bandpass ("+str(blow)+"-"+str(bhigh)+ "Hz)"
+if lowpass and highpass:
+    title += " bandpass ("+str(bhigh)+"-"+str(blow)+ "Hz)"
+elif lowpass:
+    title += " lowpass ("+str(blow)+ "Hz)"
+elif highpass:
+    title += " highpass ("+str(high)+ "Hz)"
 
 #plot=data.plot(figsize = (12, 8))
 plot=data.plot()
@@ -206,8 +232,13 @@ ax.set_ylabel(unit)
 
 if whitening:
     latexchnames = [c + " whitening" for c in latexchnames]
-if bandpass:
+
+if lowpass and highpass:
     latexchnames = [c + " bandpass" for c in latexchnames]
+elif lowpass:
+    latexchnames = [c + " lowpass" for c in latexchnames]
+elif highpass:
+    latexchnames = [c + " highpass" for c in latexchnames]
 
 if legend:
     ax.legend(latexchnames,bbox_to_anchor = mylib.GetBBTA(lposition),loc=mylib.Getloc(lposition),borderaxespad=1)
@@ -227,8 +258,14 @@ else:
 option=""
 if whitening:
     option += "whitened_"
-if bandpass:
+#if bandpass:
+#    option += "bandpass_"
+if lowpass and highpass:
     option += "bandpass_"
+if lowpass:
+    option += "lowpass_"
+if highpass:
+    option += "highpass_"
 fname = outdir + '/' + channel[0] + '_timeseries_' + option + gpsstart + '_' + gpsend +'_' + index +'.png'
 
 

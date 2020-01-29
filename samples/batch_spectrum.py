@@ -10,6 +10,7 @@ matplotlib.use('Agg')  # this line is required for the batch job before importin
 import subprocess
 import glob
 from gwpy.timeseries import TimeSeries
+from gwpy.frequencyseries import FrequencySeries
 from gwpy.timeseries import TimeSeriesDict
 from matplotlib import pylab as pl
 from gwpy.detector import Channel
@@ -40,6 +41,8 @@ parser.add_argument('--ymin',help='Yaxis minimum limit.',type=float,default=-1)
 parser.add_argument('--ymax',help='Yaxis maximum limit.',type=float,default=-1)
 parser.add_argument('--fmin',help='Frequency minimum limit.',type=float,default=-1)
 parser.add_argument('--fmax',help='Frequency maximum limit.',type=float,default=-1)
+parser.add_argument('-r','--reffile',help='Reference FrequencySeries file.',default=None)
+parser.add_argument('--reftitle',help='Reference FrequencySeries title.',nargs=1, default='Reference')
 
 # define variables
 args = parser.parse_args()
@@ -54,6 +57,9 @@ ol=fft/2.  #  overlap in FFTs.
 title=args.title
 ltype=args.ltype
 lposition=args.lposition
+reffile=args.reffile
+reftitle=args.reftitle
+print(reftitle)
 dpi=args.dpi
 kamioka = args.kamioka
 
@@ -69,6 +75,9 @@ legend = []
 #legend title
 if title != None:
     legend=title
+
+    if reffile != None
+    legend.append(reftitle)
 
 #color list
 color=["orange","royalblue","limegreen","red","gold","magenta","lightskyblue","black","aquamarine","darkorchid","saddlebrown","salmon","greenyellow","navy"]
@@ -118,7 +127,7 @@ for gpsstart,gpsend in zip(gpsstarts,gpsends):
 
         if channel == "K1:CAL-CS_PROC_DARM_DISPLACEMENT_DQ":
             spectrum = spectrum.filter([10]*4,[1]*4,1e-9/3000.) * 1e-4 #1e-9/3000.*1e-4)
-            
+
         if isFirst:           
             fplot=spectrum.plot(figsize = (12, 8),color=color[colorindex])
             ax = fplot.gca()
@@ -140,6 +149,10 @@ for gpsstart,gpsend in zip(gpsstarts,gpsends):
         if title == None:
             legend+=(mylib.GetLegend(ltype,gpsstart,gpsend,channel))
 
+if reffile:
+    ref = FrequencySeries.read(reffile)
+    ax.plot(ref,color=color[colorindex+1])
+    
 ax.legend(legend,bbox_to_anchor = mylib.GetBBTA(lposition),loc=mylib.Getloc(lposition),borderaxespad=1)
 
 fname = outdir + '/' + channel + '_spectrum_' + gpsstart +  '_' + index + '.png'

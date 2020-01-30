@@ -43,6 +43,7 @@ parser.add_argument('--fmin',help='Frequency minimum limit.',type=float,default=
 parser.add_argument('--fmax',help='Frequency maximum limit.',type=float,default=-1)
 parser.add_argument('-r','--reffile',help='Reference FrequencySeries file.',default=None)
 parser.add_argument('--reftitle',help='Reference FrequencySeries title.',nargs=1, default='Reference')
+parser.add_argument('--makefile',help='Reference FrequencySeries output file name.',action='store_true')
 
 # define variables
 args = parser.parse_args()
@@ -59,7 +60,8 @@ ltype=args.ltype
 lposition=args.lposition
 reffile=args.reffile
 reftitle=args.reftitle
-print(reftitle)
+makefile=args.makefile
+
 dpi=args.dpi
 kamioka = args.kamioka
 
@@ -76,8 +78,8 @@ legend = []
 if title != None:
     legend=title
 
-    if reffile != None
-    legend.append(reftitle)
+    if reffile != None:
+        legend.append(reftitle)
 
 #color list
 color=["orange","royalblue","limegreen","red","gold","magenta","lightskyblue","black","aquamarine","darkorchid","saddlebrown","salmon","greenyellow","navy"]
@@ -127,6 +129,9 @@ for gpsstart,gpsend in zip(gpsstarts,gpsends):
 
         if channel == "K1:CAL-CS_PROC_DARM_DISPLACEMENT_DQ":
             spectrum = spectrum.filter([10]*4,[1]*4,1e-9/3000.) * 1e-4 #1e-9/3000.*1e-4)
+
+        if makefile:
+            spectrum.write(outdir + '/' + channel + '_spectrum_' + gpsstart +  '_' + index + '.hdf5')
 
         if isFirst:           
             fplot=spectrum.plot(figsize = (12, 8),color=color[colorindex])

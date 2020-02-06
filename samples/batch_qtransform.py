@@ -41,7 +41,7 @@ parser.add_argument('--llabel',help='Label of the locked segment bar plot.',defa
 parser.add_argument('-n','--lnumber',help='The requirement for judging locked. lchannel==lnumber will be used as locked.',default=99,type=int)
 parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',action='store_true')
 parser.add_argument('--dpi',help='Plot resolution. dot per inch.',type=int,default=100)
-
+parser.add_argument('--ll',help='Flag to use low latency files. Valid only in Kashiwa.',action='store_true')
 # define variables
 args = parser.parse_args()
 outdir=args.outdir
@@ -78,12 +78,15 @@ llabel=args.llabel
 lflag=bool(llabel)
 
 kamioka = args.kamioka
+ll = args.ll
     
 unit = "Normalized energy"
 
 # Get data from frame files
 if kamioka:
     sources = mylib.GetFilelist_Kamioka(gpsstartmargin,gpsendmargin)
+elif ll:
+    sources = mylib.GetLLFilelist(gpsstartmargin,gpsendmargin)
 else:
     sources = mylib.GetFilelist(gpsstartmargin,gpsendmargin)
 

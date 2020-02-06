@@ -42,12 +42,13 @@ parser.add_argument('-l','--lchannel',help='Make locked segment bar plot.',defau
 parser.add_argument('--llabel',help='Label of the locked segment bar plot.',default='')
 parser.add_argument('-n','--lnumber',help='The requirement for judging locked. lchannel==lnumber will be used as locked.',default=99,type=int)
 parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',action='store_true')
-
+parser.add_argument('--ll',help='Flag to use low latency files. Valid only in Kashiwa.',action='store_true')
 parser.add_argument('--dpi',help='Plot resolution. dot per inch.',type=int,default=100)
 # define variables
 args = parser.parse_args()
 
 kamioka = args.kamioka
+ll = args.ll
 
 outdir=args.outdir
 
@@ -119,7 +120,10 @@ elif channel.find('MIC_') != -1:
 if kamioka:
     data = TimeSeries.fetch(channel,float(gpsstartmargin),float(gpsendmargin),host='k1nds0',port=8088)
 else:
-    sources = mylib.GetFilelist(gpsstartmargin,gpsendmargin)
+    if ll:
+        sources = mylib.GetLLFilelist(gpsstartmargin,gpsendmargin)
+    else:
+        sources = mylib.GetFilelist(gpsstartmargin,gpsendmargin)
     data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstartmargin),end=float(gpsendmargin))
 
 if fft <= data.dt.value:

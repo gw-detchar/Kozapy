@@ -51,11 +51,13 @@ parser.add_argument('--llabel',help='Label of the locked segment bar plot.',defa
 parser.add_argument('-n','--lnumber',help='The requirement for judging locked. lchannel==lnumber will be used as locked.',default=99,type=int)
 
 parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',action='store_true')
+parser.add_argument('--ll',help='Flag to use low latency files. Valid only in Kashiwa.',action='store_true')
 
 # define variables
 args = parser.parse_args()
 
 kamioka = args.kamioka
+ll = args.ll
 
 outdir = args.outdir
 
@@ -142,6 +144,8 @@ if kamioka:
         sources = mylib.GetStrendFilelist_Kamioka(gpsstartmargin,gpsendmargin)
     elif datatype == 'full':
         sources = mylib.GetFilelist_Kamioka(gpsstartmargin,gpsendmargin)
+elif ll:
+    sources = mylib.GetLLFilelist(gpsstartmargin,gpsendmargin)
 else:
     if datatype == 'minute':
         sources = mylib.GetMtrendFilelist(gpsstartmargin,gpsendmargin)

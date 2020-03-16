@@ -102,10 +102,23 @@ data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstar
 #if maxf > 1./data.dt.value/4.:
 fmax=1./data.dt.value/4.
 
+if data.value[0] == data.value[1]:
+    print("Warning !!! : The data is constant. Plot is not provided.")
+
+    # following is for successcheck.sh to take it as OK.                                         
+    if kamioka:
+        print("/users/DET/tools/GlitchPlot/Script/Kozapy/samples/dummy")
+    else:
+        print("/home/chihiro.kozakai/detchar/analysis/code/gwpy/Kozapy/samples/dummy")
+        
+    print('Successfully finished !')
+
+    exit()
+
 qgram = data.q_transform(outseg=[float(gpsstart),float(gpsend)],frange=(fmin,fmax),qrange=(qmin,qmax),gps=float(gpsstart)/2.+float(gpsend)/2.,logf=True)
 
 #qgram = data.q_transform(outseg=[float(1267205087),float(1267205098)],frange=(fmin,fmax),qrange=(qmin,qmax),gps=float(gpsstart)/2.+float(gpsend)/2.,logf=True)
-print(qgram)
+
 # default parameter
 #qrange=(4, 64), frange=(0, inf), gps=None, search=0.5, tres='<default>', fres='<default>', logf=False, norm='median', mismatch=0.2, outseg=None, whiten=True, fduration=2, highpass=None, **asd_kw 
 #plot=qgram.plot(figsize = (12, 8),vmin=0.,vmax=25.)

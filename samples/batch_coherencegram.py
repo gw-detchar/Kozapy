@@ -124,6 +124,7 @@ ax = cohplot.gca()
 ax.set_ylabel('Frequency [Hz]')
 ax.set_yscale('log')
 ax.set_title(latexrefchname + ' ' + latexchname)
+ax.grid(b=True, which='both', axis='y')
 
 if fmin < 0:
     fmin = 0.8/fft

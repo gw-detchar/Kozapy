@@ -136,8 +136,8 @@ if fft <= data.dt.value:
     print("stride="+str(stride))
 
 if whitening:
-    #white = data.whiten(fftlength=fft,overlap=ol,fduration=stride)
-    white = data.whiten()
+    white = data.whiten(fftlength=float(gpsendmargin)-float(gpsstartmargin),overlap=float(gpsendmargin)/2.-float(gpsstartmargin)/2.) #,fduration=stride)
+    #white = data.whiten()
     whitespectrogram = white.spectrogram(stride,fftlength=fft,overlap=ol) ** (1/2.)
     whitespectrogram = whitespectrogram.crop(float(gpsstart)+stride,float(gpsend)+stride)
 

@@ -188,9 +188,12 @@ for d in data:
 
     if lowpass:
         if 1./tmp.dt.value/4. < blow:
-             print("Failed: bandpass frequency setting is too high, more than sampling rate / 4. ")
-             exit()
-        tmp = tmp.lowpass(blow)
+             print("Caution !!! : bandpass frequency setting is too high, more than sampling rate / 4. Low pass is not applied. ")
+             blow = "*"
+             lowpass = False
+             #exit()
+        else:
+            tmp = tmp.lowpass(blow)
 
     # below is to avoid buggy parameter choice.
     #if tmp.value[0] <= 10.*data[d].value[0] and not np.isnan(tmp.value[0]):
@@ -224,7 +227,7 @@ if lowpass and highpass:
 elif lowpass:
     title += " lowpass ("+str(blow)+ "Hz)"
 elif highpass:
-    title += " highpass ("+str(high)+ "Hz)"
+    title += " highpass ("+str(bhigh)+ "Hz)"
 
 #plot=data.plot(figsize = (12, 8))
 plot=data.plot()

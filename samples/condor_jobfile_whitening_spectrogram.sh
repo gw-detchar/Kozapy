@@ -96,7 +96,7 @@ echo "Universe   = vanilla"
 echo "Notification = never"
 # if needed, use following line to set the necessary amount of the memory for a job. In Kashiwa, each node has total memory 256 GB, 2 CPU, 28 cores.
 echo "request_memory = 1 GB"
-echo "Getenv  = True            # the environment variables will be copied."
+echo "Getenv  = True "
 echo ""
 echo "should_transfer_files = YES"
 echo "when_to_transfer_output = ON_EXIT"

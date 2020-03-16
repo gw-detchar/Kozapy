@@ -4,6 +4,7 @@
 __author__ = "Chihiro Kozakai"
 
 import os
+import pprint
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')  # this line is required for the batch job before importing other matplotlib modules.     
@@ -164,7 +165,6 @@ elif channel[0].find('MIC_') != -1:
 data = TimeSeriesDict.read(sources,channel,format='gwf.lalframe',start=float(gpsstartmargin),end=float(gpsendmargin))
 
 for d in data:
-
     done=False
 
     #while not done:
@@ -216,7 +216,7 @@ for d in data:
         print("The sample rate*duration is over capacity. Down sampled to rate of "+str(rate)+".")
 
     data[d] = tmp.crop(float(gpsstart),float(gpsend))
-
+    
 #if bandpass:
 #    title += " bandpass ("+str(blow)+"-"+str(bhigh)+ "Hz)"
 if lowpass and highpass:

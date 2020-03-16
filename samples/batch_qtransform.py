@@ -32,7 +32,7 @@ parser.add_argument('-s','--gpsstart',help='GPS starting time.',required=True)
 parser.add_argument('-e','--gpsend',help='GPS ending time.',required=True)
 parser.add_argument('-t','--time',help='Plot time duration.',type=float,default=None)
 parser.add_argument('-f','--fmin',help='frequency range.',default=8 )
-parser.add_argument('-q','--q',help='Q range.',default=-1 )
+parser.add_argument('-q','--q',help='Q range.',type=float, default=-1 )
 
 parser.add_argument('-i','--index',help='It will be added to the output file name.',default='test')
 
@@ -59,6 +59,12 @@ dpi=args.dpi
 #margin=40
 margin=4
 
+# Adjust margin to match the requirement from Q and fmin.
+if (float(gpsend)-float(gpsstart)+2.*margin) * float(fmin) < float(args.q):
+    margin = (float(args.q)/float(fmin)-(float(gpsend)-float(gpsstart))) /2.
+    # for safety.
+    margin+=1
+
 gpsstartmargin=float(gpsstart)-margin
 gpsendmargin=float(gpsend)+margin
 
@@ -66,8 +72,8 @@ qmin = 4
 qmax = 100
 
 if args.q > 0:
-    qmin = args.q
-    qmax = args.q
+    qmin = int(args.q)
+    qmax = int(args.q)
 
 index=args.index
 
@@ -96,12 +102,14 @@ data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstar
 #if maxf > 1./data.dt.value/4.:
 fmax=1./data.dt.value/4.
 
-#qgram = data.q_transform(outseg=[float(gpsstart),float(gpsend)],frange=(fmin,fmax),qrange=(4,100),gps=float(gpsstart)/2.+float(gpsend)/2.,logf=True)
 qgram = data.q_transform(outseg=[float(gpsstart),float(gpsend)],frange=(fmin,fmax),qrange=(qmin,qmax),gps=float(gpsstart)/2.+float(gpsend)/2.,logf=True)
 
+#qgram = data.q_transform(outseg=[float(1267205087),float(1267205098)],frange=(fmin,fmax),qrange=(qmin,qmax),gps=float(gpsstart)/2.+float(gpsend)/2.,logf=True)
+print(qgram)
 # default parameter
 #qrange=(4, 64), frange=(0, inf), gps=None, search=0.5, tres='<default>', fres='<default>', logf=False, norm='median', mismatch=0.2, outseg=None, whiten=True, fduration=2, highpass=None, **asd_kw 
 #plot=qgram.plot(figsize = (12, 8),vmin=0.,vmax=25.)
+
 plot=qgram.plot(figsize = (12, 8))
 
 ax = plot.gca()

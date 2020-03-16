@@ -140,11 +140,40 @@ if whitening:
     white = data.whiten()
     whitespectrogram = white.spectrogram(stride,fftlength=fft,overlap=ol) ** (1/2.)
     whitespectrogram = whitespectrogram.crop(float(gpsstart)+stride,float(gpsend)+stride)
+
+    nullcheck=sum(sum(whitespectrogram.value))
+    if nullcheck == 0.0:
+        print("Warning !!! : The data is constant. Plot is not provided.")
+
+        # following is for successcheck.sh to take it as OK.                               
+        if kamioka:
+            print("/users/DET/tools/GlitchPlot/Script/Kozapy/samples/dummy")
+        else:
+            print("/home/chihiro.kozakai/detchar/analysis/code/gwpy/Kozapy/samples/dummy")
+            
+        print('Successfully finished !')
+        exit()
+
     sgplot=whitespectrogram.plot(figsize = (12, 8))
+
 else:
     spectrogram = data.spectrogram(stride,fftlength=fft,overlap=ol) ** (1/2.)
     if channel == "K1:CAL-CS_PROC_DARM_DISPLACEMENT_DQ":
         spectrogram = spectrogram.filter([10]*4,[1]*4,1e-9/3000.) * 1e-4 #1e-9/3000.*1e-4)   
+
+    nullcheck=sum(sum(spectrogram.value))
+    if nullcheck == 0.0:
+        print("Warning !!! : The data is constant. Plot is not provided.")
+
+        # following is for successcheck.sh to take it as OK.                               
+        if kamioka:
+            print("/users/DET/tools/GlitchPlot/Script/Kozapy/samples/dummy")
+        else:
+            print("/home/chihiro.kozakai/detchar/analysis/code/gwpy/Kozapy/samples/dummy")
+            
+        print('Successfully finished !')
+        exit()
+
     sgplot=spectrogram.plot(figsize = (12, 8),norm='log')
 
 ax = sgplot.gca()
@@ -165,6 +194,7 @@ if whitening:
 else:
     print('not whitening')
     sgplot.add_colorbar(cmap='YlGnBu_r',label=unit,log=True)
+    
     fname = outdir + '/' + channel + '_spectrogram_'+ gpsstart + '_' + gpsend +'_' + index +'.png'
 
 if lflag:

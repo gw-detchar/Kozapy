@@ -105,7 +105,7 @@ fmax=1./data.dt.value/4.
 if data.value[0] == data.value[1]:
     print("Warning !!! : The data is constant. Plot is not provided.")
 
-    # following is for successcheck.sh to take it as OK.                                         
+    # following is for successcheck.sh to take it as OK.
     if kamioka:
         print("/users/DET/tools/GlitchPlot/Script/Kozapy/samples/dummy")
     else:

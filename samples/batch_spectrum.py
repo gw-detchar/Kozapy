@@ -130,6 +130,20 @@ for gpsstart,gpsend in zip(gpsstarts,gpsends):
             tmpol = ol
         spectrum = data.asd(fftlength=tmpfft,overlap=tmpol)
 
+        print(spectrum.value)
+        print(sum(spectrum.value))
+        if sum(spectrum.value) == 0.:
+            print("Warning !!! : The data is constant. Plot is not provided.")
+
+            # following is for successcheck.sh to take it as OK. 
+            if kamioka:
+                print("/users/DET/tools/GlitchPlot/Script/Kozapy/samples/dummy")
+            else:
+                print("/home/chihiro.kozakai/detchar/analysis/code/gwpy/Kozapy/samples/dummy")
+            print('Successfully finished !')
+
+            exit()
+
         if channel == "K1:CAL-CS_PROC_DARM_DISPLACEMENT_DQ":
             spectrum = spectrum.filter([10]*4,[1]*4,1e-9/3000.) * 1e-4 #1e-9/3000.*1e-4)
 

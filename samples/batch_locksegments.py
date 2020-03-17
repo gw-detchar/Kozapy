@@ -13,6 +13,8 @@ from mylib import mylib
 from matplotlib import pylab as pl
 pl.rcParams['font.size'] = 18
 pl.rcParams['font.family'] = 'Verdana'
+pl.rcParams['figure.subplot.left'] = 0.15
+
 
 #  argument processing
 
@@ -35,7 +37,7 @@ duration = args.triggerduration
 index = args.index
 kamioka = args.kamioka
 
-trigger = DataQualityFlag(name="Trigger",known=[(float(gpsstart),float(gpsend))],active=[(triggertime,triggertime+duration)])
+#trigger = DataQualityFlag(name="Trigger",known=[(float(gpsstart),float(gpsend))],active=[(triggertime,triggertime+duration)])
 #xarm = mylib.GetDQFlag(gpsstart,gpsend,config="xarm",kamioka=kamioka)
 #LSC = mylib.GetDQFlag(gpsstart,gpsend,config="LSC",kamioka=kamioka)
 #FPMI = mylib.GetDQFlag(gpsstart,gpsend,config="FPMI",kamioka=kamioka)
@@ -47,6 +49,7 @@ FSS = mylib.GetDQFlag(gpsstart,gpsend,config="FSS",kamioka=kamioka)
 ISS = mylib.GetDQFlag(gpsstart,gpsend,config="ISS",kamioka=kamioka)
 #DAQ = mylib.GetDQFlag(gpsstart,gpsend,config="DAQ",kamioka=kamioka)
 #MICH = mylib.GetDQFlag(gpsstart,gpsend,config="MICH",kamioka=kamioka)
+trigger = DataQualityFlag(name="Trigger",known=IFO.known,active=[(triggertime,triggertime+duration)])
     
 untriggered = ~trigger
 plot = untriggered.plot(figsize = (12,8))
@@ -63,6 +66,7 @@ ax.plot(IMC)
 ax.plot(PMC)
 ax.plot(FSS)
 #ax.plot(DAQ)
+ax.set_xlim(IFO.known[0][0],IFO.known[0][1])
 
 fname = outdir+"/lockedsegments_"+index+".png"
 plot.savefig(fname,dpi=50)

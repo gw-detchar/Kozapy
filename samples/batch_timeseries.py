@@ -235,6 +235,7 @@ plot=data.plot()
 ax = plot.gca()
 ax.set_title(title)
 ax.set_ylabel(unit)
+ax.set_xlim(float(gpsstart),float(gpsend))
 #ax.set_yscale('log')
 
 if whitening:

@@ -129,6 +129,8 @@ ax = plot.gca()
 ax.set_ylabel('Frequency [Hz]')
 ax.set_yscale('log')
 ax.set_title(latexchname+" Q-transform")
+ax.grid(b=True, which='both', axis='y')
+ax.set_xlim(float(gpsstart),float(gpsend))
 
 plot.add_colorbar(cmap='YlGnBu_r',label="Normalized energy",log=True, clim=[0.1,None])
 fname = outdir + '/' + channel + '_qtransform_'+ gpsstart + '_' + gpsend +'_' + index +'.png'

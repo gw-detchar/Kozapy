@@ -91,11 +91,20 @@ else:
     
 channels = [refchannel, channel]
 
-data = TimeSeriesDict.read(sources,channels,format='gwf.lalframe',start=float(gpsstart),end=float(gpsend))
+data = TimeSeriesDict.read(sources,channels,format='gwf.lalframe',start=int(float(gpsstart)),end=int(float(gpsend))+1)
 
 
 ref = data[refchannel]
 com = data[channel]
+
+# Use same sampling rate
+if com.dt.value < ref.dt.value:
+    com=com.resample(1./ref.dt.value)
+if com.dt.value > ref.dt.value:
+    ref=ref.resample(1./com.dt.value)
+
+ref = ref.crop(float(gpsstart),float(gpsend))
+com = com.crop(float(gpsstart),float(gpsend))
 
 if fft < ref.dt.value:
     fft=2*ref.dt.value

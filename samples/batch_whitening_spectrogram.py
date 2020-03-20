@@ -126,10 +126,10 @@ else:
         sources = mylib.GetFilelist(gpsstartmargin,gpsendmargin)
     data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstartmargin),end=float(gpsendmargin))
 
-if fft <= data.dt.value:
-    fft=2*data.dt.value
+if fft <= 2.*data.dt.value:
+    fft=2.*data.dt.value
     ol=fft/2.  #  overlap in FFTs. 
-    stride=2*fft
+    stride=2.*fft
     print("Given fft/stride was bad against the sampling rate. Automatically set to:")
     print("fft="+str(fft))
     print("ol="+str(ol))

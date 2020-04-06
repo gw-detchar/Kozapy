@@ -130,8 +130,6 @@ for gpsstart,gpsend in zip(gpsstarts,gpsends):
             tmpol = ol
         spectrum = data.asd(fftlength=tmpfft,overlap=tmpol)
 
-        print(spectrum.value)
-        print(sum(spectrum.value))
         if sum(spectrum.value) == 0.:
             print("Warning !!! : The data is constant. Plot is not provided.")
 

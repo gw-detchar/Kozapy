@@ -347,7 +347,7 @@ def GetDQFlag(gpsstart,gpsend,config="IFO",min_len=0,kamioka=False):
         name="FSS"
     elif config == "ISS":
         channel="K1:GRD-ISS_STATE_N"
-        number=100
+        number=1000
         name="ISS"
     elif config == "DAQ":
         channel="K1:GRD-SYS_DAQ_OK"

@@ -126,17 +126,17 @@ else:
         sources = mylib.GetFilelist(gpsstartmargin,gpsendmargin)
     data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstartmargin),end=float(gpsendmargin))
 
-if fft <= data.dt.value:
-    fft=2*data.dt.value
+if fft <= 2.*data.dt.value:
+    fft=2.*data.dt.value
     ol=fft/2.  #  overlap in FFTs. 
-    stride=2*fft
+    stride=2.*fft
     print("Given fft/stride was bad against the sampling rate. Automatically set to:")
     print("fft="+str(fft))
     print("ol="+str(ol))
     print("stride="+str(stride))
 
 if whitening:
-    white = data.whiten(fftlength=float(gpsendmargin)-float(gpsstartmargin),overlap=float(gpsendmargin)/2.-float(gpsstartmargin)/2.) #,fduration=stride)
+    white = data.whiten(fftlength=float(gpsendmargin)/2.-float(gpsstartmargin)/2.,overlap=float(gpsendmargin)/4.-float(gpsstartmargin)/4.) #,fduration=stride)
     #white = data.whiten()
     whitespectrogram = white.spectrogram(stride,fftlength=fft,overlap=ol) ** (1/2.)
     whitespectrogram = whitespectrogram.crop(float(gpsstart)+stride,float(gpsend)+stride)

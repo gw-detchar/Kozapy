@@ -333,7 +333,7 @@ def GetDQFlag(gpsstart,gpsend,config="IFO",min_len=0,kamioka=False):
         #number=99
         channel="K1:GRD-IMC_STATE_N"
         #number=6100
-        number=100
+        number=1000
         name="IMC"
     elif config == "PMC":
         channel="K1:GRD-PMC_OK"

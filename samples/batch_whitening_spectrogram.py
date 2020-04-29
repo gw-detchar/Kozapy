@@ -44,11 +44,15 @@ parser.add_argument('-n','--lnumber',help='The requirement for judging locked. l
 parser.add_argument('-k','--kamioka',help='Flag to run on Kamioka server.',action='store_true')
 parser.add_argument('--ll',help='Flag to use low latency files. Valid only in Kashiwa.',action='store_true')
 parser.add_argument('--dpi',help='Plot resolution. dot per inch.',type=int,default=100)
+parser.add_argument('-g','--geo',help='Flag to use GEO files. Valid only in Kashiwa.',action='store_true')
+# GEO h(t) channel G1:DER_DATA_H 16384     
+
 # define variables
 args = parser.parse_args()
 
 kamioka = args.kamioka
 ll = args.ll
+GEO = args.geo
 
 outdir=args.outdir
 
@@ -122,6 +126,8 @@ if kamioka:
 else:
     if ll:
         sources = mylib.GetLLFilelist(gpsstartmargin,gpsendmargin)
+    elif GEO:
+        sources = mylib.GetGeoFilelist(gpsstart,gpsend)
     else:
         sources = mylib.GetFilelist(gpsstartmargin,gpsendmargin)
     data = TimeSeries.read(sources,channel,format='gwf.lalframe',start=float(gpsstartmargin),end=float(gpsendmargin))

@@ -45,6 +45,8 @@ parser.add_argument('-r','--reffile',help='Reference FrequencySeries file.',defa
 parser.add_argument('--reftitle',help='Reference FrequencySeries title.',nargs=1, default='Reference')
 parser.add_argument('--makefile',help='Reference FrequencySeries output file name.',action='store_true')
 parser.add_argument('--ll',help='Flag to use low latency files. Valid only in Kashiwa.',action='store_true')
+parser.add_argument('-g','--geo',help='Flag to use GEO files. Valid only in Kashiwa.',action='store_true')
+# GEO h(t) channel G1:DER_DATA_H 16384
 # define variables
 args = parser.parse_args()
 outdir=args.outdir
@@ -65,6 +67,7 @@ makefile=args.makefile
 dpi=args.dpi
 kamioka = args.kamioka
 ll = args.ll
+GEO = args.geo
 
 ymin = args.ymin
 ymax = args.ymax
@@ -92,6 +95,8 @@ for gpsstart,gpsend in zip(gpsstarts,gpsends):
         sources = mylib.GetFilelist_Kamioka(gpsstart,gpsend)
     elif ll:
         sources = mylib.GetLLFilelist(gpsstart,gpsend)
+    elif GEO:
+        sources = mylib.GetGeoFilelist(gpsstart,gpsend)
     else:
         sources = mylib.GetFilelist(gpsstart,gpsend)
 

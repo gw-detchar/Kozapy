@@ -130,6 +130,39 @@ def GetLLFilelist(gpsstart,gpsend):
 
     return sources
 
+def GetGeoFilelist(gpsstart,gpsend):
+    '''
+    This function gives low latency data frame file list.
+    '''
+    ingpsstart=float(gpsstart)
+    ingpsend=float(gpsend)
+
+    gpsstart=str(int(float(gpsstart)))
+    gpsend=str(int(float(gpsend)))
+
+    sources = []
+
+    for i in range(int(gpsstart[0:5]),int(gpsend[0:5])+1):
+        tmpdir = '/data/hl/postO3/C01/G1/' + str(i) + '/G-G1_RDS_C01_L3-'+ str(i) + '*'
+        source = glob.glob(tmpdir)
+        sources.extend(source)
+
+    sources.sort()
+        
+    removelist = []
+
+    for x in sources:
+        tmpgps = int(x.rsplit('-',2)[1])
+        if tmpgps<(int(gpsstart)-59):
+            removelist.append(x)
+        elif tmpgps>=ingpsend:
+            removelist.append(x)
+
+    for y in removelist:
+        sources.remove(y)
+
+    return sources
+
 def GetFilelist_Kamioka(gpsstart,gpsend):
     '''
     This function gives full data frame file list for Kashiwa server.

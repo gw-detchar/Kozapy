@@ -1,9 +1,9 @@
 #!/bin/bash
 
 DARM=K1:CAL-CS_PROC_DARM_DISPLACEMENT_DQ
-channels=("K1:ASC-REFL_QPDA1_DC_PIT_OUT_DQ" "K1:ASC-REFL_QPDA1_DC_YAW_OUT_DQ")
-gpsstart=1270974173
-gpsend=1270974237
+channels=("K1:PEM-MIC_OMC_TABLE_AS_Z_OUT_DQ")
+gpsstart=1270998759
+gpsend=1270998823
 outdir=/home/$USER/omicron0415
 
 kozapy=/home/chihiro.kozakai/detchar/analysis/code/gwpy/Kozapy/samples
